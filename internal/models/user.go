@@ -1,4 +1,4 @@
-package domain
+package models
 
 import (
 	"github.com/google/uuid"
@@ -15,11 +15,11 @@ const (
 
 type User struct {
 	gorm.Model `json:"-"`
-	ID         uuid.UUID  `json:"userId" gorm:"primaryKey"`
-	FirstName  string     `json:"firstName"`
+	ID         uuid.UUID  `json:"userId" gorm:"primaryKey" default:"gen_random_uuid()"`
+	FirstName  string     `json:"firstName" gorm:"notNull"`
 	LastName   string     `json:"lastName"`
 	Email      string     `json:"email" gorm:"notNull"`
-	Phone      string     `json:"phone"`
-	Password   string     `json:"password"`
+	Phone      string     `json:"phone" gorm:"notNull"`
+	Password   string     `json:"password" gorm:"notNull"`
 	Status     UserStatus `json:"-" gorm:"default: Active"`
 }

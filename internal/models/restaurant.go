@@ -1,4 +1,4 @@
-package domain
+package models
 
 import (
 	"github.com/google/uuid"
@@ -16,10 +16,10 @@ const (
 
 type Restaurant struct {
 	gorm.Model  `json:"-"`
-	ID          uuid.UUID        `json:"restaurantId" gorm:"primaryKey"`
-	Name        string           `json:"restaurantName"`
+	ID          uuid.UUID        `json:"restaurantId" gorm:"primaryKey" default:"gen_random_uuid()"`
+	Name        string           `json:"restaurantName" gorm:"notNull"`
 	Description string           `json:"restaurantDescription"`
-	Email       string           `json:"email"`
-	Password    string           `json:"password"`
+	Email       string           `json:"email" gorm:"notNull"`
+	Password    string           `json:"password" gorm:"notNull"`
 	Status      RestaurantStatus `json:"-" gorm:"default: Pending"`
 }
