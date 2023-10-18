@@ -68,5 +68,17 @@ func AdminDashboard(c *fiber.Ctx) error {
 		"dashboard": "dashboard data will be generated here",
 		"admin":     c.Locals("AdminModel"),
 	})
+}
 
+func VerifyRestaurant(c *fiber.Ctx) error {
+	resId := c.Params("id")
+	fmt.Println("ID is", resId)
+
+	result := initializers.DB.Exec(`UPDATE restaurants SET status = 'Verified' WHERE id = ?`, resId)
+	if result.Error != nil {
+		fmt.Println("Restaurant Verified")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Restaurant Verified Successfully"})
 }
