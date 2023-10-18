@@ -5,6 +5,7 @@ import (
 
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/initializers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/routes"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,5 +20,6 @@ func main() {
 
 	routes.AdminRoutes(app)
 
-	app.Listen(":" + os.Getenv("PORT"))
+	app.Listen("localhost:" + os.Getenv("PORT"))
+
 }

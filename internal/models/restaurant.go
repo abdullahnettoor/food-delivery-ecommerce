@@ -20,6 +20,6 @@ type Restaurant struct {
 	Name        string           `json:"restaurantName" gorm:"notNull"`
 	Description string           `json:"restaurantDescription"`
 	Email       string           `json:"email" gorm:"notNull"`
-	Password    string           `json:"password" gorm:"notNull"`
+	Password    string           `json:"-" gorm:"notNull"`
 	Status      RestaurantStatus `json:"-" gorm:"default: Pending"`
 }

@@ -20,6 +20,6 @@ type User struct {
 	LastName   string     `json:"lastName"`
 	Email      string     `json:"email" gorm:"notNull"`
 	Phone      string     `json:"phone" gorm:"notNull"`
-	Password   string     `json:"password" gorm:"notNull"`
+	Password   string     `json:"-" gorm:"notNull"`
 	Status     UserStatus `json:"-" gorm:"default: Active"`
 }
