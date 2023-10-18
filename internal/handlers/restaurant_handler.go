@@ -132,3 +132,12 @@ func RestaurantDashboard(c *fiber.Ctx) error {
 		"dashboard":  "Dasboard data will be passed here",
 	})
 }
+
+func AddDish(c *fiber.Ctx) error {
+	Body := models.Dish{}
+	c.BodyParser(&Body)
+
+	// Add new dish to DB
+
+	return c.JSON("Dish Added")
+}
