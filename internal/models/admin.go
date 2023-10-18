@@ -12,4 +12,5 @@ type Admin struct {
 	LastName   string    `json:"lastName"`
 	Email      string    `json:"email" gorm:"notNull"`
 	Password   string    `json:"-" gorm:"notNull"`
+
 }

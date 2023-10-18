@@ -21,4 +21,5 @@ func main() {
 	routes.AdminRoutes(app)
 
 	app.Listen("localhost:" + os.Getenv("PORT"))
+
 }

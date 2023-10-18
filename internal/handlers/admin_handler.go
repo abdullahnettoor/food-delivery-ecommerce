@@ -7,6 +7,7 @@ import (
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/helpers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/initializers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/models"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -23,6 +24,7 @@ func AdminLogin(c *fiber.Ctx) error {
 	}{}
 
 	AdminDetails := models.Admin{}
+
 	c.BodyParser(&Body)
 
 	fmt.Println("From Request", Body)
@@ -33,6 +35,7 @@ func AdminLogin(c *fiber.Ctx) error {
 	}
 
 	result := initializers.DB.Raw(`SELECT * FROM admins WHERE email = ?`, Body.Email).Scan(&AdminDetails)
+
 	if result.Error != nil {
 		fmt.Println("Error Occured while fetching Admin", result.Error)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "DB Error"})
@@ -46,6 +49,7 @@ func AdminLogin(c *fiber.Ctx) error {
 	fmt.Println("From DB", AdminDetails)
 
 	if Body.Email != AdminDetails.Email || Body.Password != AdminDetails.Password {
+
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"failed": "Invalid Email or Password"})
 	}
 
@@ -75,4 +79,5 @@ func AdminDashboard(c *fiber.Ctx) error {
 		"dashboard": "dashboard data will be generated here",
 		"admin":     c.Locals("userModel"),
 	})
+
 }
