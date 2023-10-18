@@ -11,12 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetAdminLogin(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"success": "admin login loaded",
-	})
-}
-
 func AdminLogin(c *fiber.Ctx) error {
 	Body := struct {
 		Email    string `json:"email"`
@@ -43,41 +37,36 @@ func AdminLogin(c *fiber.Ctx) error {
 
 	if result.RowsAffected < 1 {
 		fmt.Println("Admin with provided email don't exist")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "no admin exist with email entered"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! no admin exist with email entered"})
 	}
 
 	fmt.Println("From DB", AdminDetails)
 
 	if Body.Email != AdminDetails.Email || Body.Password != AdminDetails.Password {
 
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"failed": "Invalid Email or Password"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Invalid Email or Password"})
 	}
 
 	token, err := helpers.CreateToken(c, "Admin", time.Hour*24, AdminDetails)
 	if err != nil {
 		fmt.Println("Error Creating token")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"failed": err})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! Error occured", "error": err})
 	}
 	fmt.Println("Token created")
 	c.Cookie(&fiber.Cookie{Name: "Authorize Admin", Value: token})
 
-	c.Locals("adminDetails", AdminDetails)
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status": "success",
 		"token":  token,
-		// "admin":  c.Locals("userModel"),
-		"admin": AdminDetails,
+		"admin":  c.Locals("AdminModel"),
 	})
 }
 
 func AdminDashboard(c *fiber.Ctx) error {
-	fmt.Println("FibDboordLocaaaalsss", c.Locals("adminDetails"))
-
 	return c.JSON(fiber.Map{
 		"status":    "success",
 		"dashboard": "dashboard data will be generated here",
-		"admin":     c.Locals("userModel"),
+		"admin":     c.Locals("AdminModel"),
 	})
 
 }

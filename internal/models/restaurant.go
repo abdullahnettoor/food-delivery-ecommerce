@@ -16,10 +16,10 @@ const (
 
 type Restaurant struct {
 	gorm.Model  `json:"-"`
-	ID          uuid.UUID        `json:"restaurantId" gorm:"primaryKey" default:"gen_random_uuid()"`
+	ID          uuid.UUID        `json:"restaurantId" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 	Name        string           `json:"restaurantName" gorm:"notNull"`
 	Description string           `json:"restaurantDescription"`
-	Email       string           `json:"email" gorm:"notNull"`
+	Email       string           `json:"email" gorm:"notNull;unique"`
 	Password    string           `json:"-" gorm:"notNull"`
-	Status      RestaurantStatus `json:"-" gorm:"default: Pending"`
+	Status      RestaurantStatus `json:"status" gorm:"default: Pending"`
 }

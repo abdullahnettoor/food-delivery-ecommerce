@@ -22,24 +22,30 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 	}
 	admin := claims.(*helpers.CustomClaims).Model
 
-	c.Locals("userModel", admin)
+	c.Locals("adminModel", admin)
 
 	return c.Next()
 }
 
-// // Authorize restaurant
-// func AuthorizeRestaurant(c *fiber.Ctx) error {
-// 	fmt.Println("MW: Authorize Restaurant")
+// Authorize restaurant
+func AuthorizeRestaurant(c *fiber.Ctx) error {
+	fmt.Println("MW: Authorize Restaurant")
 
-// 	tokenString := c.Cookies("Authorize Restaurant")
+	tokenString := c.Cookies("Authorize Restaurant")
 
-// 	// Check if it is restaurant
-// 	isValid := helpers.IsValidToken(tokenString, c)
-// 	if !isValid {
-// 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-// 			"failed": "Unauthorized access",
-// 		})
-// 	}
+	// Check if it is admin
+	isValid, claims := helpers.IsValidToken(tokenString, c)
+	if !isValid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status": "failed! Unauthorized access",
+		})
+	}
+	restaurant := claims.(*helpers.CustomClaims).Model
+
+	c.Locals("restaurantModel", restaurant)
+
+	return c.Next()
+}
 
 // 	return c.Next()
 // }

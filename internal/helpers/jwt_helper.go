@@ -17,26 +17,6 @@ type CustomClaims struct {
 
 var secretKey = []byte(os.Getenv("KEY"))
 
-// func CreateToken(name, email, role string, expiryDuration time.Duration) (ts string, err error) {
-// 	claims := &CustomClaims{
-// 		name,
-// 		email,
-// 		role,
-// 		jwt.RegisteredClaims{
-// 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiryDuration)),
-// 		},
-// 	}
-
-// 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
-
-// 	ts, err = token.SignedString([]byte(secretKey))
-// 	if err != nil {
-// 		fmt.Println(err, ": Inside JWT")
-// 		return "", err
-// 	}
-// 	return ts, nil
-// }
-
 func CreateToken(c *fiber.Ctx, role string, expireAfter time.Duration, userModel interface{}) (string, error) {
 
 	// Create the Custom Claims
@@ -60,10 +40,10 @@ func CreateToken(c *fiber.Ctx, role string, expireAfter time.Duration, userModel
 	}
 
 	// Set user values to fiber context
-	c.Locals("userModel", claims.Model)
+	c.Locals(role+"Model", claims.Model)
 	c.Locals("role", claims.Role)
 
-	fmt.Println("User Model is : ", c.Locals("userModel"))
+	fmt.Println(role, "Model is : ", c.Locals(role+"Model"))
 	return tokenString, nil
 }
 
@@ -91,7 +71,7 @@ func IsValidToken(tokenString string, c *fiber.Ctx) (bool, interface{}) {
 		}
 
 		// Set user values to fiber Ctx
-		c.Locals("userModel", claims.Model)
+		c.Locals(claims.Role+"Model", claims.Model)
 		c.Locals("role", claims.Role)
 
 		return true, claims

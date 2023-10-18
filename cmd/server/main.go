@@ -19,6 +19,7 @@ func main() {
 	app := fiber.New()
 
 	routes.AdminRoutes(app)
+	routes.RestaurantRoutes(app)
 
 	app.Listen("localhost:" + os.Getenv("PORT"))
 
