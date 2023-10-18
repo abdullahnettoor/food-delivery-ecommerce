@@ -10,9 +10,8 @@ import (
 )
 
 type CustomClaims struct {
-	Name  string
-	Email string
 	Role  string
+	Model interface{}
 	jwt.RegisteredClaims
 }
 
@@ -38,13 +37,12 @@ var secretKey = []byte(os.Getenv("KEY"))
 // 	return ts, nil
 // }
 
-func CreateToken(c *fiber.Ctx, name, email, role string, expireAfter time.Duration) (string, error) {
+func CreateToken(c *fiber.Ctx, role string, expireAfter time.Duration, userModel interface{}) (string, error) {
 
 	// Create the Custom Claims
 	claims := &CustomClaims{
-		name,
-		email,
 		role,
+		userModel,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expireAfter)), // Token expires in 24 hours
 		},
@@ -62,14 +60,15 @@ func CreateToken(c *fiber.Ctx, name, email, role string, expireAfter time.Durati
 	}
 
 	// Set user values to fiber context
-	c.Locals("name", claims.Name)
-	c.Locals("email", claims.Email)
+	c.Locals("userModel", claims.Model)
 	c.Locals("role", claims.Role)
+
+	fmt.Println("User Model is : ", c.Locals("userModel"))
 	return tokenString, nil
 }
 
 // Validate Token
-func IsValidToken(tokenString string, c *fiber.Ctx) bool {
+func IsValidToken(tokenString string, c *fiber.Ctx) (bool, interface{}) {
 
 	// Parse jwt token with custom claims
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -79,7 +78,7 @@ func IsValidToken(tokenString string, c *fiber.Ctx) bool {
 	// Check if token is valid
 	if err != nil || !token.Valid {
 		fmt.Println("Error occured whilr fetching token")
-		return false
+		return false, nil
 	}
 
 	// Assign parsed data from token to calims
@@ -88,18 +87,17 @@ func IsValidToken(tokenString string, c *fiber.Ctx) bool {
 		// Check if token is expired
 		if claims.ExpiresAt.Before(time.Now()) {
 			fmt.Println("token expired")
-			return false
+			return false, nil
 		}
 
 		// Set user values to fiber Ctx
-		c.Locals("userEmail", claims.Email)
-		c.Locals("username", claims.Name)
+		c.Locals("userModel", claims.Model)
 		c.Locals("role", claims.Role)
 
-		return true
+		return true, claims
 
 	} else {
 		fmt.Println("Error occured while parsing token:", err)
-		return false
+		return false, nil
 	}
 }
