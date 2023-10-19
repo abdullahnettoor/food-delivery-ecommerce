@@ -20,6 +20,7 @@ func main() {
 
 	routes.AdminRoutes(app)
 	routes.RestaurantRoutes(app)
+	routes.UserRoutes(app)
 
 	app.Listen("localhost:" + os.Getenv("PORT"))
 

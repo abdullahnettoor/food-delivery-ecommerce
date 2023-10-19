@@ -15,7 +15,7 @@ const (
 
 type User struct {
 	gorm.Model `json:"-"`
-	ID         uuid.UUID  `json:"userId" gorm:"primaryKey" default:"gen_random_uuid()"`
+	ID         uuid.UUID  `json:"userId" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 	FirstName  string     `json:"firstName" gorm:"notNull"`
 	LastName   string     `json:"lastName"`
 	Email      string     `json:"email" gorm:"notNull"`

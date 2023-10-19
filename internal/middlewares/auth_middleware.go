@@ -22,7 +22,7 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 	}
 	admin := claims.(*helpers.CustomClaims).Model
 
-	c.Locals("adminModel", admin)
+	c.Locals("AdminModel", admin)
 
 	return c.Next()
 }
@@ -33,7 +33,7 @@ func AuthorizeRestaurant(c *fiber.Ctx) error {
 
 	tokenString := c.Cookies("Authorize Restaurant")
 
-	// Check if it is admin
+	// Check if it is restaurant
 	isValid, claims := helpers.IsValidToken(tokenString, c)
 	if !isValid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -42,28 +42,27 @@ func AuthorizeRestaurant(c *fiber.Ctx) error {
 	}
 	restaurant := claims.(*helpers.CustomClaims).Model
 
-	c.Locals("restaurantModel", restaurant)
+	c.Locals("RestaurantModel", restaurant)
 
 	return c.Next()
 }
 
-// 	return c.Next()
-// }
+// Authorize user
+func AuthorizeUser(c *fiber.Ctx) error {
+	fmt.Println("MW: Authorize User")
 
-// // Authorize user
-// func AuthorizeUser(c *fiber.Ctx) error {
-// 	fmt.Println("MW: Authorize User")
+	tokenString := c.Cookies("Authorize User")
 
-// 	tokenString := c.Cookies("Authorize User")
+	// Check if it is user
+	isValid, claims := helpers.IsValidToken(tokenString, c)
+	if !isValid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status": "failed! Unauthorized access",
+		})
+	}
+	user := claims.(*helpers.CustomClaims).Model
 
-// 	// Check if it is user
-// 	isValid := helpers.IsValidToken(tokenString, c)
-// 	if !isValid {
-// 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-// 			"failed": "Unauthorized access",
-// 		})
-// 	}
+	c.Locals("UserModel", user)
 
-// 	return c.Next()
-// }
-
+	return c.Next()
+}
