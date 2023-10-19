@@ -9,19 +9,19 @@ func VerifyRestaurant(c *fiber.Ctx) error {
 
 	switch r["Status"] {
 	case "Pending":
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":     "failed",
 			"restaurant": c.Locals("RestaurantModel"),
 			"dashboard":  "You can see dashboard after admin's verification",
 		})
 	case "Blocked":
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":     "failed",
 			"restaurant": c.Locals("RestaurantModel"),
 			"dashboard":  "Your account is blocked",
 		})
 	case "Rejected":
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status":     "failed",
 			"restaurant": c.Locals("RestaurantModel"),
 			"dashboard":  "Your account verification is rejected",
