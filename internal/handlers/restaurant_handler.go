@@ -118,14 +118,6 @@ func RestaurantLogin(c *fiber.Ctx) error {
 }
 
 func RestaurantDashboard(c *fiber.Ctx) error {
-	r := c.Locals("RestaurantModel").(models.Restaurant)
-	if r.Status == "Pending" {
-		return c.JSON(fiber.Map{
-			"status":     "success",
-			"restaurant": c.Locals("RestaurantModel"),
-			"dashboard":  "You can see dashboard after admin's verification",
-		})
-	}
 	return c.JSON(fiber.Map{
 		"status":     "success",
 		"restaurant": c.Locals("RestaurantModel"),
@@ -134,10 +126,24 @@ func RestaurantDashboard(c *fiber.Ctx) error {
 }
 
 func AddDish(c *fiber.Ctx) error {
-	Body := models.Dish{}
-	c.BodyParser(&Body)
+
+	dish := models.Dish{}
+	c.BodyParser(&dish)
+
+	if 0 > dish.Price || dish.Name == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Given datas are invalid"})
+	}
 
 	// Add new dish to DB
+	dishId := initializers.DB.Create(&dish)
+	if dishId.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": dishId.Error})
+	}
 
-	return c.JSON("Dish Added")
+	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE id = ?`, dish.ID).Scan(&dish)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": dishId.Error})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Dish Added", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
 }

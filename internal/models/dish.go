@@ -3,11 +3,11 @@ package models
 import "github.com/google/uuid"
 
 type Dish struct {
-	ID           uuid.UUID `json:"dishId" gorm:"primaryKey"`
-	RestaurantID uuid.UUID `json:"restaurantId"`
-	Name         string    `json:"dishName"`
+	ID           uuid.UUID `json:"dishId" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	RestaurantID uuid.UUID `json:"restaurantId" gorm:"foreignKey:restaurant.id;notNull"`
+	Name         string    `json:"dishName" gorm:"notNull"`
 	Description  string    `json:"dishDescription"`
-	Price        float32   `json:"dishPrice"`
-	Quantity     uint      `json:"dishQuantity"`
-	Availability bool      `json:"-" gorm:"default:true"`
+	Price        float32   `json:"dishPrice" gorm:"notNull"`
+	Quantity     uint      `json:"dishQuantity" gorm:"notNull"`
+	Availability bool      `json:"isAvailable" gorm:"default:true"`
 }
