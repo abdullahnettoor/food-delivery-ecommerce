@@ -147,3 +147,33 @@ func AddDish(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Dish Added", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
 }
+
+func GetDishes(c *fiber.Ctx) error {
+	restaurant := c.Locals("RestaurantModel").(map[string]interface{})
+	dishesList := []models.Dish{}
+
+	fmt.Println("Restaurant ID is", restaurant["restaurantId"])
+
+	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE restaurant_id = ? AND deleted_at IS NULL`, restaurant["restaurantId"]).Scan(&dishesList)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dishes": dishesList, "restaurant": c.Locals("RestaurantModel")})
+}
+
+func DeleteDish(c *fiber.Ctx) error {
+	dishId := c.Params("id")
+
+	fmt.Println("Dish ID to Delete", dishId)
+
+	result := initializers.DB.Exec(`UPDATE dishes SET deleted_at = NOW() WHERE id = ?`, dishId)
+	if result.Error != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "failed! DB Error",
+			"error":  result.Error,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Dish deleted"})
+}

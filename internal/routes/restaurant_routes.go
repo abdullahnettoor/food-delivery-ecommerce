@@ -15,4 +15,6 @@ func RestaurantRoutes(f *fiber.App) {
 
 	restaurant.Get("/dashboard", handlers.RestaurantDashboard)
 	restaurant.Post("/addDish", handlers.AddDish)
+	restaurant.Get("/dishes", handlers.GetDishes)
+	restaurant.Delete("/dishes/delete/dish/:id", handlers.DeleteDish)
 }
