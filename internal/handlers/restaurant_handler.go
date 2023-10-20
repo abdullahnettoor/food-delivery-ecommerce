@@ -8,6 +8,7 @@ import (
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/initializers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/models"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func RestuarantSignUp(c *fiber.Ctx) error {
@@ -126,9 +127,11 @@ func RestaurantDashboard(c *fiber.Ctx) error {
 }
 
 func AddDish(c *fiber.Ctx) error {
+	restaurant := c.Locals("RestaurantModel").(map[string]interface{})
 
 	dish := models.Dish{}
 	c.BodyParser(&dish)
+	dish.RestaurantID, _ = uuid.Parse(restaurant["restaurantId"].(string))
 
 	if 0 > dish.Price || dish.Name == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Given datas are invalid"})
@@ -148,18 +151,61 @@ func AddDish(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Dish Added", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
 }
 
-func GetDishes(c *fiber.Ctx) error {
+func GetDish(c *fiber.Ctx) error {
 	restaurant := c.Locals("RestaurantModel").(map[string]interface{})
-	dishesList := []models.Dish{}
+	dish := models.Dish{}
+	dishId := c.Params("id")
 
 	fmt.Println("Restaurant ID is", restaurant["restaurantId"])
 
-	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE restaurant_id = ? AND deleted_at IS NULL`, restaurant["restaurantId"]).Scan(&dishesList)
+	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE restaurant_id = ? AND id = ? AND deleted_at IS NULL`, restaurant["restaurantId"], dishId).Scan(&dish)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dishes": dishesList, "restaurant": c.Locals("RestaurantModel")})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
+}
+
+func GetAllDishes(c *fiber.Ctx) error {
+	restaurant := c.Locals("RestaurantModel").(map[string]interface{})
+	dishList := []models.Dish{}
+
+	fmt.Println("Restaurant ID is", restaurant["restaurantId"])
+
+	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE restaurant_id = ? AND deleted_at IS NULL`, restaurant["restaurantId"]).Scan(&dishList)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dishList": dishList, "restaurant": c.Locals("RestaurantModel")})
+}
+
+func EditDish(c *fiber.Ctx) error {
+	restaurant := c.Locals("RestaurantModel").(map[string]interface{})
+	dishId := c.Params("id")
+	dbDish := models.Dish{}
+
+	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE id = ?`, dishId).Scan(&dbDish)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+	}
+
+	dish := models.Dish{}
+	c.BodyParser(&dish)
+	dish.ID, _ = uuid.Parse(dishId)
+	dish.RestaurantID, _ = uuid.Parse(restaurant["restaurantId"].(string))
+
+	if 0 > dish.Price || dish.Name == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Given datas are invalid"})
+	}
+
+	// Save edits to DB
+	result = initializers.DB.Save(&dish)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Dish Edited Successfully", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
 }
 
 func DeleteDish(c *fiber.Ctx) error {
