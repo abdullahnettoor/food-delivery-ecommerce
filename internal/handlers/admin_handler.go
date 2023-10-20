@@ -63,11 +63,48 @@ func AdminLogin(c *fiber.Ctx) error {
 }
 
 func AdminDashboard(c *fiber.Ctx) error {
+	restaurantList := []models.Restaurant{}
+	result := initializers.DB.Raw(`SELECT * FROM restaurants LIMIT 5`).Scan(&restaurantList)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	}
+
+	userList := []models.User{}
+	res := initializers.DB.Raw(`SELECT * FROM users`).Scan(&userList)
+	if res.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": res.Error})
+	}
+
 	return c.JSON(fiber.Map{
-		"status":    "success",
-		"dashboard": "dashboard data will be generated here",
-		"admin":     c.Locals("AdminModel"),
+		"status":         "success",
+		"dashboard":      "dashboard data will be generated here",
+		"admin":          c.Locals("AdminModel"),
+		"restaurantList": restaurantList,
+		"userList":       userList,
 	})
+}
+
+func GetAllRestaurants(c *fiber.Ctx) error {
+	restaurantList := []models.Restaurant{}
+	result := initializers.DB.Raw(`SELECT * FROM restaurants`).Scan(&restaurantList)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "admin": c.Locals("AdminModel"), "restaurantCount": result.RowsAffected, "restaurantList": restaurantList})
+}
+
+func GetRestaurant(c *fiber.Ctx) error {
+	resId := c.Params("id")
+
+	restaurant := models.Restaurant{}
+	result := initializers.DB.Raw(`SELECT * FROM restaurants WHERE id = ?`, resId).Scan(&restaurant)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	}
+	if result.RowsAffected < 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "Restaurant Not found"})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "admin": c.Locals("AdminModel"), "restaurant": restaurant})
 }
 
 func VerifyRestaurant(c *fiber.Ctx) error {
@@ -81,4 +118,51 @@ func VerifyRestaurant(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Restaurant Verified Successfully"})
+}
+
+func BlockRestaurant(c *fiber.Ctx) error {
+	resId := c.Params("id")
+
+	result := initializers.DB.Exec(`UPDATE restaurants SET status = 'Blocked' WHERE id = ?`, resId)
+	if result.Error != nil {
+		fmt.Println("Restaurant Blocked")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Restaurant Blocked"})
+}
+
+func GetAllUsers(c *fiber.Ctx) error {
+	userList := []models.User{}
+	result := initializers.DB.Raw(`SELECT * FROM users`).Scan(&userList)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "admin": c.Locals("AdminModel"), "userCount": result.RowsAffected, "userList": userList})
+}
+
+func GetUser(c *fiber.Ctx) error {
+	resId := c.Params("id")
+
+	user := models.User{}
+	result := initializers.DB.Raw(`SELECT * FROM users WHERE id = ?`, resId).Scan(&user)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	}
+	if result.RowsAffected < 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "User Not found"})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "admin": c.Locals("AdminModel"), "user": user})
+}
+
+func BlockUser(c *fiber.Ctx) error {
+	resId := c.Params("id")
+
+	result := initializers.DB.Exec(`UPDATE users SET status = 'Blocked' WHERE id = ?`, resId)
+	if result.Error != nil {
+		fmt.Println("User Blocked")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "User Blocked"})
 }
