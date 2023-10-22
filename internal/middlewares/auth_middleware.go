@@ -17,7 +17,8 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 	isValid, claims := helpers.IsValidToken(tokenString, c)
 	if !isValid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"failed": "Unauthorized access",
+			"status":  "failed!",
+			"message": " Unauthorized access. Invalid Token",
 		})
 	}
 	admin := claims.(*helpers.CustomClaims).Model
@@ -37,7 +38,8 @@ func AuthorizeRestaurant(c *fiber.Ctx) error {
 	isValid, claims := helpers.IsValidToken(tokenString, c)
 	if !isValid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status": "failed! Unauthorized access",
+			"status":  "failed!",
+			"message": " Unauthorized access. Invalid Token",
 		})
 	}
 	restaurant := claims.(*helpers.CustomClaims).Model
@@ -57,7 +59,8 @@ func AuthorizeUser(c *fiber.Ctx) error {
 	isValid, claims := helpers.IsValidToken(tokenString, c)
 	if !isValid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status": "failed! Unauthorized access",
+			"status":  "failed!",
+			"message": " Unauthorized access. Invalid Token",
 		})
 	}
 	user := claims.(*helpers.CustomClaims).Model
@@ -68,8 +71,8 @@ func AuthorizeUser(c *fiber.Ctx) error {
 
 	if u["status"] == "Blocked" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status":  "failed! Unauthorized access",
-			"message": "You have been blocked!",
+			"status":  "failed! ",
+			"message": "Unauthorized access. You have been blocked!",
 		})
 	}
 

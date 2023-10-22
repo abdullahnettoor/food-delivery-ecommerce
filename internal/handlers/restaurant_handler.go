@@ -23,17 +23,17 @@ func RestuarantSignUp(c *fiber.Ctx) error {
 
 	if Body.Email == "" || Body.Password == "" || Body.Name == "" || Body.Description == "" {
 		fmt.Println("All fields should be filled")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! All fields should be filled"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "All fields should be filled"})
 	}
 	fmt.Println("Finding email", Body.Email)
 	result := initializers.DB.Exec(`SELECT email FROM restaurants WHERE email = ?`, Body.Email)
 	if result.Error != nil {
 		fmt.Println("Error Occured while fetching Restaurant", result.Error)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 	if result.RowsAffected != 0 {
 		fmt.Println("Restaurant with provided email already exist")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Restaurant with email entered already exist"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Restaurant with email entered already exist"})
 	}
 
 	restaurant := models.Restaurant{
@@ -46,19 +46,19 @@ func RestuarantSignUp(c *fiber.Ctx) error {
 	result = initializers.DB.Create(&restaurant)
 	if result.Error != nil {
 		fmt.Println("Error occured while creating new Restaurant", result.Error)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	result = initializers.DB.Raw(`SELECT * FROM restaurants WHERE email = ?`, Body.Email).Scan(&restaurant)
 	if result.Error != nil {
 		fmt.Println("Error Occured while fetching Restaurant", result.Error)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	token, err := helpers.CreateToken(c, "Restaurant", time.Hour*24, restaurant)
 	if err != nil {
 		fmt.Println("Error Creating token")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! JWT Error", "error": err})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "JWT Error", "error": err})
 	}
 	fmt.Println("Token created")
 	c.Cookie(&fiber.Cookie{Name: "Authorize Restaurant", Value: token})
@@ -83,36 +83,37 @@ func RestaurantLogin(c *fiber.Ctx) error {
 
 	if Body.Email == "" {
 		fmt.Println("Email shouldn't be empty")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "Failed! Email field shouldn't be empty"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Email field shouldn't be empty"})
 	}
 
 	result := initializers.DB.Raw(`SELECT * FROM restaurants WHERE email = ?`, Body.Email).Scan(&RestaurantDetails)
 	if result.Error != nil {
 		fmt.Println("Error Occured while fetching Restaurant", result.Error)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	if result.RowsAffected < 1 {
 		fmt.Println("Restaurant with provided email don't exist")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! No Restaurant exist with email entered"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "No Restaurant exist with email entered"})
 	}
 
 	fmt.Println("From DB", RestaurantDetails)
 
 	if Body.Email != RestaurantDetails.Email || Body.Password != RestaurantDetails.Password {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Invalid Email or Password"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Invalid Email or Password"})
 	}
 
 	token, err := helpers.CreateToken(c, "Restaurant", time.Hour*24, RestaurantDetails)
 	if err != nil {
 		fmt.Println("Error Creating token")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! JWT Error", "error": err})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "JWT Error", "error": err})
 	}
 	fmt.Println("Token created")
 	c.Cookie(&fiber.Cookie{Name: "Authorize Restaurant", Value: token})
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":     "success",
+		"message":    "Restaurant Logged in successfully",
 		"token":      token,
 		"restaurant": c.Locals("RestaurantModel"),
 	})
@@ -134,18 +135,18 @@ func AddDish(c *fiber.Ctx) error {
 	dish.RestaurantID, _ = uuid.Parse(restaurant["restaurantId"].(string))
 
 	if 0 > dish.Price || dish.Name == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Given datas are invalid"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Given datas are invalid"})
 	}
 
 	// Add new dish to DB
 	dishId := initializers.DB.Create(&dish)
 	if dishId.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": dishId.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": dishId.Error})
 	}
 
 	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE id = ?`, dish.ID).Scan(&dish)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": dishId.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": dishId.Error})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Dish Added", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
@@ -160,7 +161,7 @@ func GetDish(c *fiber.Ctx) error {
 
 	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE restaurant_id = ? AND id = ? AND deleted_at IS NULL`, restaurant["restaurantId"], dishId).Scan(&dish)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dish": dish, "restaurant": c.Locals("RestaurantModel")})
@@ -174,7 +175,7 @@ func GetAllDishes(c *fiber.Ctx) error {
 
 	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE restaurant_id = ? AND deleted_at IS NULL`, restaurant["restaurantId"]).Scan(&dishList)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dishList": dishList, "restaurant": c.Locals("RestaurantModel")})
@@ -187,7 +188,7 @@ func EditDish(c *fiber.Ctx) error {
 
 	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE id = ?`, dishId).Scan(&dbDish)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	dish := models.Dish{}
@@ -196,13 +197,13 @@ func EditDish(c *fiber.Ctx) error {
 	dish.RestaurantID, _ = uuid.Parse(restaurant["restaurantId"].(string))
 
 	if 0 > dish.Price || dish.Name == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Given datas are invalid"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Given datas are invalid"})
 	}
 
 	// Save edits to DB
 	result = initializers.DB.Save(&dish)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Dish Edited Successfully", "dish": dish, "restaurant": c.Locals("RestaurantModel")})

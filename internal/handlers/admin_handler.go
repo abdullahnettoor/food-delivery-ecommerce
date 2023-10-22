@@ -25,40 +25,41 @@ func AdminLogin(c *fiber.Ctx) error {
 
 	if Body.Email == "" {
 		fmt.Println("Email shouldn't be empty")
-		return c.JSON(fiber.Map{"failed": "Email field shouldn't be empty"})
+		return c.JSON(fiber.Map{"status": "failed", "message": "Email field shouldn't be empty"})
 	}
 
 	result := initializers.DB.Raw(`SELECT * FROM admins WHERE email = ?`, Body.Email).Scan(&AdminDetails)
 
 	if result.Error != nil {
 		fmt.Println("Error Occured while fetching Admin", result.Error)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "DB Error"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	if result.RowsAffected < 1 {
 		fmt.Println("Admin with provided email don't exist")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! no admin exist with email entered"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "No admin exist with email entered"})
 	}
 
 	fmt.Println("From DB", AdminDetails)
 
 	if Body.Email != AdminDetails.Email || Body.Password != AdminDetails.Password {
 
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed! Invalid Email or Password"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Invalid Email or Password"})
 	}
 
 	token, err := helpers.CreateToken(c, "Admin", time.Hour*24, AdminDetails)
 	if err != nil {
 		fmt.Println("Error Creating token")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! Error occured", "error": err})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "JWT Error", "error": err})
 	}
 	fmt.Println("Token created")
 	c.Cookie(&fiber.Cookie{Name: "Authorize Admin", Value: token})
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status": "success",
-		"token":  token,
-		"admin":  c.Locals("AdminModel"),
+		"status":  "success",
+		"message": "Admin Logged in successfully",
+		"token":   token,
+		"admin":   c.Locals("AdminModel"),
 	})
 }
 
@@ -114,7 +115,7 @@ func VerifyRestaurant(c *fiber.Ctx) error {
 	result := initializers.DB.Exec(`UPDATE restaurants SET status = 'Verified' WHERE id = ?`, resId)
 	if result.Error != nil {
 		fmt.Println("Restaurant Verified")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Restaurant Verified Successfully"})
@@ -126,7 +127,7 @@ func BlockRestaurant(c *fiber.Ctx) error {
 	result := initializers.DB.Exec(`UPDATE restaurants SET status = 'Blocked' WHERE id = ?`, resId)
 	if result.Error != nil {
 		fmt.Println("Restaurant Blocked")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "Restaurant Blocked"})
@@ -161,7 +162,7 @@ func BlockUser(c *fiber.Ctx) error {
 	result := initializers.DB.Exec(`UPDATE users SET status = 'Blocked' WHERE id = ?`, resId)
 	if result.Error != nil {
 		fmt.Println("User Blocked")
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "User Blocked"})
