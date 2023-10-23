@@ -63,12 +63,18 @@ func VerifyOtp(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "OTP is invalid"})
 	}
 
+	hashedPassword, err := helpers.HashPassword(user.Password)
+	if err != nil {
+		fmt.Println("Error Occured while fetching Restaurant", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "Bcrypt Error", "error": err})
+	}
+
 	newUser := models.User{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Email:     user.Email,
 		Phone:     user.Phone,
-		Password:  user.Password,
+		Password:  hashedPassword,
 	}
 	result := initializers.DB.Create(&newUser)
 	if result.Error != nil {
@@ -104,8 +110,10 @@ func UserLogin(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "No user registered with this email"})
 	}
 
-	if user.Password != dbUser.Password {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "Wrong Password"})
+	if ok, err := helpers.CompareHashedPassword(dbUser.Password, user.Password); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Bcrypt Error", "error": err})
+	} else if !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Password is wrong"})
 	}
 
 	token, err := helpers.CreateToken(c, "User", time.Hour*24, dbUser)

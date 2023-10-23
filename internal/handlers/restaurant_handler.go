@@ -36,9 +36,15 @@ func RestuarantSignUp(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Restaurant with email entered already exist"})
 	}
 
+	hashedPassword, err := helpers.HashPassword(Body.Password)
+	if err != nil {
+		fmt.Println("Error Occured while fetching Restaurant", result.Error)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "Bcrypt Error", "error": err})
+	}
+
 	restaurant := models.Restaurant{
 		Email:       Body.Email,
-		Password:    Body.Password,
+		Password:    hashedPassword,
 		Name:        Body.Name,
 		Description: Body.Description,
 	}
@@ -101,6 +107,12 @@ func RestaurantLogin(c *fiber.Ctx) error {
 
 	if Body.Email != RestaurantDetails.Email || Body.Password != RestaurantDetails.Password {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Invalid Email or Password"})
+	}
+
+	if ok, err := helpers.CompareHashedPassword(RestaurantDetails.Password, Body.Password); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Bcrypt Error", "error": err})
+	} else if !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Password is wrong"})
 	}
 
 	token, err := helpers.CreateToken(c, "Restaurant", time.Hour*24, RestaurantDetails)
