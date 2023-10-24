@@ -23,3 +23,13 @@ type User struct {
 	Password   string     `json:"-" gorm:"notNull"`
 	Status     UserStatus `json:"status" gorm:"default: Active"`
 }
+
+type Address struct {
+	gorm.Model `json:"-"`
+	ID         uuid.UUID `json:"addressId" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	UserID     uuid.UUID `json:"userId" gorm:"type:uuid;foreignKey:user.id;notNull"`
+	City       string    `json:"street" gorm:"notNull"`
+	District   string    `json:"district" gorm:"notNull"`
+	State      string    `json:"state" gorm:"notNull"`
+	PinCode    string    `json:"pinCode" gorm:"notNull"`
+}
