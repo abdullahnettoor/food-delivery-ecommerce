@@ -12,5 +12,5 @@ func UserRoutes(f *fiber.App) {
 	f.Post("/verifyOtp", middlewares.AuthorizeUser, handlers.VerifyOtp)
 
 	user := f.Group("/", middlewares.AuthorizeUser, middlewares.VerifyUser)
-	user.Get("/dishes/p/:page", handlers.GetDishPagewise)
+	user.Get("/dishes", handlers.GetDishes)
 }

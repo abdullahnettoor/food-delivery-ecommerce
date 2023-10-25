@@ -143,15 +143,16 @@ func UserLogin(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "User Logged In successfully", "user": c.Locals("UserModel"), "token": token})
 }
 
-func GetDishPagewise(c *fiber.Ctx) error {
+func GetDishes(c *fiber.Ctx) error {
 	dishList := []models.Dish{}
-	page, err := strconv.ParseInt(c.Params("page"), 10, 32)
+	page, err := strconv.ParseInt(c.Query("page"), 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Error occured while parsing URL params", "error": err.Error})
 	}
-	offset := (page - 1) * 10
+	limit := 5
+	offset := (page - 1) * int64(limit)
 
-	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE deleted_at IS NULL LIMIT 10 OFFSET ?`, offset).Scan(&dishList)
+	result := initializers.DB.Raw(`SELECT * FROM dishes WHERE deleted_at IS NULL LIMIT ? OFFSET ?`, limit, offset).Scan(&dishList)
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
