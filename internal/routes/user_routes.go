@@ -8,9 +8,9 @@ import (
 
 func UserRoutes(f *fiber.App) {
 	f.Post("/signup", handlers.UserSignUp)
-	f.Post("/signup/verifyOtp", handlers.VerifyOtp)
 	f.Post("/login", handlers.UserLogin)
+	f.Post("/verifyOtp", middlewares.AuthorizeUser, handlers.VerifyOtp)
 
-	user := f.Group("/", middlewares.AuthorizeUser)
+	user := f.Group("/", middlewares.AuthorizeUser, middlewares.VerifyUser)
 	user.Get("/dishes/p/:page", handlers.GetDishPagewise)
 }

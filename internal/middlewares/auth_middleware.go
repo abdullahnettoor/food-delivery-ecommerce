@@ -67,14 +67,5 @@ func AuthorizeUser(c *fiber.Ctx) error {
 
 	c.Locals("UserModel", user)
 
-	u := c.Locals("UserModel").(map[string]interface{})
-
-	if u["status"] == "Blocked" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status":  "failed! ",
-			"message": "Unauthorized access. You have been blocked!",
-		})
-	}
-
 	return c.Next()
 }

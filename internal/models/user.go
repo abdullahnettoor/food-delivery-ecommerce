@@ -8,9 +8,10 @@ import (
 type UserStatus string
 
 const (
-	Active  UserStatus = "Active"
-	Blocked UserStatus = "Blocked"
-	Deleted UserStatus = "Deleted"
+	NotVerified UserStatus = "Pending"
+	Active      UserStatus = "Active"
+	Blocked     UserStatus = "Blocked"
+	Deleted     UserStatus = "Deleted"
 )
 
 type User struct {
@@ -21,7 +22,7 @@ type User struct {
 	Email      string     `json:"email" gorm:"notNull"`
 	Phone      string     `json:"phone" gorm:"notNull"`
 	Password   string     `json:"-" gorm:"notNull"`
-	Status     UserStatus `json:"status" gorm:"default: Active"`
+	Status     UserStatus `json:"status" gorm:"default:Pending"`
 }
 
 type Address struct {

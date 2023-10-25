@@ -41,28 +41,6 @@ func UserSignUp(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "OTP Error", "error": err})
 	}
 
-	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": "success", "message": "verify otp at /signup/verifyOtp"})
-}
-
-func VerifyOtp(c *fiber.Ctx) error {
-	user := struct {
-		FirstName string `json:"firstName"`
-		LastName  string `json:"lastName"`
-		Email     string `json:"email"`
-		Password  string `json:"password"`
-		Phone     string `json:"phone"`
-		OTP       string `json:"otp"`
-	}{}
-	c.BodyParser(&user)
-
-	status, err := helpers.VerifyOtp(user.Phone, user.OTP)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "OTP Error", "error": err})
-	}
-	if status != "approved" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "OTP is invalid"})
-	}
-
 	hashedPassword, err := helpers.HashPassword(user.Password)
 	if err != nil {
 		fmt.Println("Error Occured while fetching Restaurant", err)
@@ -87,7 +65,41 @@ func VerifyOtp(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "JWT Error", "error": err})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "user": c.Locals("UserModel"), "token": token})
+	c.Cookie(&fiber.Cookie{Name: "Authorize User", Value: token})
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "message": "verify otp @ /verifyOtp", "user": c.Locals("UserModel"), "token": token})
+}
+
+func VerifyOtp(c *fiber.Ctx) error {
+	body := struct {
+		OTP string `json:"otp"`
+	}{}
+	c.BodyParser(&body)
+
+	u := c.Locals("UserModel").(map[string]interface{})
+
+	status, err := helpers.VerifyOtp(fmt.Sprintf("%v", u["phone"]), body.OTP)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "OTP Error", "error": err})
+	}
+	if status != "approved" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "OTP is invalid"})
+	}
+
+	result := initializers.DB.Exec(`UPDATE users SET status = 'Active' WHERE id = ?`, u["userId"])
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
+	}
+
+	var user models.User
+	result = initializers.DB.Raw(`SELECT * FROM users WHERE id = ?`, u["userId"]).Scan(&user)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
+	}
+
+	c.Locals("UserModel", user)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "user": c.Locals("UserModel"), "message": "User verified successfully"})
 }
 
 func UserLogin(c *fiber.Ctx) error {
