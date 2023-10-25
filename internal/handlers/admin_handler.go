@@ -7,6 +7,7 @@ import (
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/helpers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/initializers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/models"
+	"gorm.io/gorm"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -85,13 +86,33 @@ func AdminDashboard(c *fiber.Ctx) error {
 	})
 }
 
-func GetAllRestaurants(c *fiber.Ctx) error {
+func GetRestaurants(c *fiber.Ctx) error {
+	query := c.Query("status")
+
 	restaurantList := []models.Restaurant{}
-	result := initializers.DB.Raw(`SELECT * FROM restaurants`).Scan(&restaurantList)
-	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	var result *gorm.DB
+
+	if query == "Pending" || query == "Verified" || query == "Blocked" || query != "Rejected" {
+		result = initializers.DB.Raw(`SELECT * FROM restaurants WHERE status ILIKE ?`, query).Scan(&restaurantList)
+		if result.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{})
+		}
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "admin": c.Locals("AdminModel"), "restaurantCount": result.RowsAffected, "restaurantList": restaurantList})
+
+	if query == "" {
+		result = initializers.DB.Raw(`SELECT * FROM restaurants`).Scan(&restaurantList)
+		if result.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":          "success",
+		"message":         "Request Successful",
+		"admin":           c.Locals("AdminModel"),
+		"restaurantList":  restaurantList,
+		"restaurantCount": result.RowsAffected,
+	})
 }
 
 func GetRestaurant(c *fiber.Ctx) error {

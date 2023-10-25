@@ -15,7 +15,7 @@ func AdminRoutes(f *fiber.App) {
 
 	admin.Get("/dashboard", handlers.AdminDashboard)
 
-	admin.Get("/restaurants", handlers.GetAllRestaurants)
+	admin.Get("/restaurants", handlers.GetRestaurants)
 	admin.Get("/restaurants/restaurant/:id", handlers.GetRestaurant)
 	admin.Patch("/restaurants/verify/restaurant/:id", handlers.VerifyRestaurant)
 	admin.Patch("/restaurants/block/restaurant/:id", handlers.BlockRestaurant)
