@@ -97,7 +97,12 @@ func VerifyOtp(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 
+	token, err := helpers.CreateToken(c, "User", time.Hour*24, user)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "JWT Error", "error": err})
+	}
 	c.Locals("UserModel", user)
+	c.Cookie(&fiber.Cookie{Name: "Authorize User", Value: token})
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "user": c.Locals("UserModel"), "message": "User verified successfully"})
 }

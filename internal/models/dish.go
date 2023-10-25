@@ -15,5 +15,5 @@ type Dish struct {
 	Quantity     uint      `json:"dishQuantity" gorm:"notNull"`
 	Category     uint      `json:"category" gorm:"type:bigInt;foreignKey:category.id;notNull"`
 	IsVeg        bool      `json:"isVeg" gorm:"default:false"`
-	Availability bool      `json:"isAvailable" gorm:"default:true"`
+	Availability bool      `json:"isAvailable" gorm:"type:boolean;default:true"`
 }

@@ -105,10 +105,6 @@ func RestaurantLogin(c *fiber.Ctx) error {
 
 	fmt.Println("From DB", RestaurantDetails)
 
-	if Body.Email != RestaurantDetails.Email || Body.Password != RestaurantDetails.Password {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Invalid Email or Password"})
-	}
-
 	if ok, err := helpers.CompareHashedPassword(RestaurantDetails.Password, Body.Password); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed!", "message": "Bcrypt Error", "error": err})
 	} else if !ok {
