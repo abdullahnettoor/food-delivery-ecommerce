@@ -9,6 +9,7 @@ import (
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/initializers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/models"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func UserSignUp(c *fiber.Ctx) error {
@@ -121,7 +122,7 @@ func UserLogin(c *fiber.Ctx) error {
 	dbUser := models.User{}
 	result := initializers.DB.Raw(`SELECT * FROM users WHERE email = ?`, user.Email).Scan(&dbUser)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed! DB Error", "error": result.Error})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
 	if result.RowsAffected == 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "No user registered with this email"})
@@ -158,4 +159,71 @@ func GetDishes(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "dishList": dishList, "user": c.Locals("UserModel")})
+}
+
+func AddToCart(c *fiber.Ctx) error {
+	dishId := c.Params("id")
+	dish := models.Dish{}
+	dbCartItem := models.CartItem{}
+	user := c.Locals("UserModel").(map[string]any)
+
+	result := initializers.DB.Raw(`
+	SELECT 
+	*
+	FROM dishes
+	WHERE id = ? AND
+	deleted_at IS NULL AND
+	quantity > 0 AND
+	availability = true`, dishId).Scan(&dish)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
+	}
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "Selected dish is not available",
+		})
+	}
+
+	userId, err := uuid.Parse(user["userId"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "UUID Error", "error": err})
+	}
+
+	result = initializers.DB.Raw(`SELECT * FROM cart_items WHERE id = ? AND dish_id = ?`, userId, dishId).Scan(&dbCartItem)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
+	}
+	if dish.RestaurantID != dbCartItem.RestaurantID {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "You can't order from multiple restaurants at the same time."})
+	}
+	if result.RowsAffected != 0 {
+		dbCartItem.Quantity = dbCartItem.Quantity + 1
+		initializers.DB.Save(&dbCartItem)
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status":   "success",
+			"message":  "Dish added to cart",
+			"cartItem": dbCartItem,
+			"user":     c.Locals("UserModel"),
+		})
+	}
+
+	cartItem := models.CartItem{
+		ID:           userId,
+		RestaurantID: dish.RestaurantID,
+		DishID:       dish.ID,
+		Quantity:     1,
+	}
+
+	result = initializers.DB.Create(&cartItem)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":   "success",
+		"message":  "Dish added to cart",
+		"cartItem": cartItem,
+		"user":     c.Locals("UserModel"),
+	})
 }

@@ -2,15 +2,18 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"github.com/jinzhu/gorm/dialects/postgres"
-	"gorm.io/gorm"
 )
 
 type Cart struct {
-	gorm.Model   `json:"-"`
-	ID           uuid.UUID       `json:"cartId" gorm:"type:uuid;primaryKey"`
-	RestaurantID uuid.UUID       `json:"restaurantId" gorm:"foreignKey:restaurants.id;notNull"`
-	Dishes       postgres.Hstore `json:"dishes" gorm:"type:hstore"`
-	ItemCount    uint            `json:"itemCount"`
-	TotalPrice   uint            `json:"totalPrice"`
+	ID           uuid.UUID          `json:"cartId"`
+	RestaurantID uuid.UUID          `json:"restaurantId"`
+	Dishes       map[uuid.UUID]uint `json:"dishes"`
+	TotalPrice   float64            `json:"totalPrice"`
+}
+
+type CartItem struct {
+	ID           uuid.UUID `gorm:"type:uuid;notNull"`
+	RestaurantID uuid.UUID `gorm:"type:uuid"`
+	DishID       uuid.UUID `gorm:"type:uuid;unique"`
+	Quantity     uint      `gorm:"type:uint"`
 }

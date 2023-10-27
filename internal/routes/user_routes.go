@@ -13,4 +13,6 @@ func UserRoutes(f *fiber.App) {
 
 	user := f.Group("/", middlewares.AuthorizeUser, middlewares.VerifyUser)
 	user.Get("/dishes", handlers.GetDishes)
+
+	user.Post("/addToCart/:id", handlers.AddToCart)
 }
