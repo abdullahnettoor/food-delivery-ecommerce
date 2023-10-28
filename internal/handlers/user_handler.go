@@ -194,10 +194,11 @@ func AddToCart(c *fiber.Ctx) error {
 	if result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": result.Error})
 	}
-	if dish.RestaurantID != dbCartItem.RestaurantID {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "You can't order from multiple restaurants at the same time."})
-	}
+
 	if result.RowsAffected != 0 {
+		if dish.RestaurantID != dbCartItem.RestaurantID {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "You can't order from multiple restaurants at the same time."})
+		}
 		dbCartItem.Quantity = dbCartItem.Quantity + 1
 		initializers.DB.Save(&dbCartItem)
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -270,4 +271,16 @@ func ViewCart(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "cart": cart, "user": c.Locals("UserModel")})
+}
+
+func DeleteCartItem(c *fiber.Ctx) error {
+	dishId := c.Params("id")
+	user := c.Locals("UserModel").(map[string]any)
+
+	result := initializers.DB.Exec(`DELETE FROM cart_items WHERE id = ? and dish_id = ?`, user["userId"], dishId)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed", "message": "DB Error", "error": result.Error})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Dish deleted from cart successfully.", "user": user})
 }
