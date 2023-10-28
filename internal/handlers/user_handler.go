@@ -249,10 +249,12 @@ func ViewCart(c *fiber.Ctx) error {
 	WHERE c.id = ?
 	`, userId).Scan(&cartDishes)
 
-	fmt.Println("Dishes ---------------->", cartDishes)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		return c.SendStatus(fiber.StatusBadRequest)
+	}
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "cart": "Cart is Empty"})
 	}
 
 	var totalPrice float64
