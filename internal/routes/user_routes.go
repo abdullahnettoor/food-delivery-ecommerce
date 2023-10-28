@@ -15,4 +15,5 @@ func UserRoutes(f *fiber.App) {
 	user.Get("/dishes", handlers.GetDishes)
 
 	user.Post("/addToCart/:id", handlers.AddToCart)
+	user.Get("/cart", handlers.ViewCart)
 }

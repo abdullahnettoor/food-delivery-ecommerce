@@ -227,3 +227,45 @@ func AddToCart(c *fiber.Ctx) error {
 		"user":     c.Locals("UserModel"),
 	})
 }
+
+func ViewCart(c *fiber.Ctx) error {
+	cartDishes := []struct {
+		models.Dish
+		Quantity uint `json:"dishQuantity" gorm:"notNull"`
+	}{}
+	user := c.Locals("UserModel").(map[string]any)
+	userId, err := uuid.Parse(user["userId"].(string))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "UUID Error", "error": err})
+	}
+
+	result := initializers.DB.Raw(`
+	SELECT 
+	d.*,
+	c.quantity
+	FROM cart_items c 
+	INNER JOIN dishes d 
+	ON d.id = c.dish_Id 
+	WHERE c.id = ?
+	`, userId).Scan(&cartDishes)
+
+	fmt.Println("Dishes ---------------->", cartDishes)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	var totalPrice float64
+	for _, dish := range cartDishes {
+		totalPrice += (float64(dish.Price) * float64(dish.Quantity))
+	}
+
+	cart := models.Cart{
+		ID:           userId,
+		RestaurantID: cartDishes[0].RestaurantID,
+		Dishes:       cartDishes,
+		TotalPrice:   totalPrice,
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "cart": cart, "user": c.Locals("UserModel")})
+}

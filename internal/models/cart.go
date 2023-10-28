@@ -5,10 +5,10 @@ import (
 )
 
 type Cart struct {
-	ID           uuid.UUID          `json:"cartId"`
-	RestaurantID uuid.UUID          `json:"restaurantId"`
-	Dishes       map[uuid.UUID]uint `json:"dishes"`
-	TotalPrice   float64            `json:"totalPrice"`
+	ID           uuid.UUID `json:"cartId"`
+	RestaurantID uuid.UUID `json:"restaurantId"`
+	Dishes       any       `json:"dishes"`
+	TotalPrice   float64   `json:"totalPrice"`
 }
 
 type CartItem struct {
