@@ -5,7 +5,7 @@ import (
 )
 
 type Order struct {
-	ID             uuid.UUID `json:"cartId" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	ID             uuid.UUID `json:"orderId" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	UserID         uuid.UUID `json:"userId" gorm:"type:uuid;foreignKey:users.id;notNull"`
 	AddressID      uuid.UUID `json:"addressId" gorm:"type:uuid;foreignKey:addresses.id;notNull"`
 	RestaurantID   uuid.UUID `json:"restaurantId" gorm:"foreignKey:restaurants.id;notNull"`

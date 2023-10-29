@@ -153,3 +153,29 @@ func PlaceOrder(c *fiber.Ctx) error {
 		"orderItems": orderItems,
 	})
 }
+
+func ViewOrders(c *fiber.Ctx) error {
+	orders := []models.Order{}
+	user := c.Locals("UserModel").(map[string]any)
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM orders
+	WHERE user_id = ?`,
+		user["userId"]).Scan(&orders).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Orders fetched successfully",
+		"orders":  orders,
+		"user":    user,
+	})
+}
