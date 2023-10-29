@@ -20,4 +20,5 @@ func UserRoutes(f *fiber.App) {
 	user.Patch("/cart/decrement/:id", handlers.DecrementCartItem)
 
 	user.Post("/profile/addAddress", handlers.AddAddress)
+	user.Post("/cart/checkout", handlers.PlaceOrder)
 }
