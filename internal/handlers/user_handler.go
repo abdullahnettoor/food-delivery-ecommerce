@@ -9,6 +9,7 @@ import (
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/initializers"
 	"github.com/abdullahnettoor/food-delivery-ecommerce/internal/models"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func UserSignUp(c *fiber.Ctx) error {
@@ -143,7 +144,7 @@ func VerifyOtp(c *fiber.Ctx) error {
 	token, err := helpers.CreateToken(c, "User", time.Hour*24, user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  "failed!",
+			"status":  "Efailed!",
 			"message": "JWT Error",
 			"error":   err,
 		})
@@ -220,6 +221,49 @@ func UserLogin(c *fiber.Ctx) error {
 	})
 }
 
+func AddAddress(c *fiber.Ctx) error {
+	address := struct {
+		UserId   uuid.UUID
+		Street   string `json:"street"`
+		District string `json:"district"`
+		State    string `json:"state"`
+		PinCode  string `json:"pinCode"`
+	}{}
+	c.BodyParser(&address)
+
+	fmt.Println("Address from body is ", address)
+
+	user := c.Locals("UserModel").(map[string]any)
+
+	userId, _ := uuid.Parse(user["userId"].(string))
+	address.UserId = userId
+
+	if address.State == "" || address.District == "" || address.Street == "" || address.PinCode == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "Values should not be empty",
+		})
+	}
+	addressModel := models.Address{
+		UserID: userId, Street: address.Street, District: address.District, State: address.State, PinCode: address.PinCode,
+	}
+	var dbAddress models.Address
+	result := initializers.DB.Create(&addressModel).Scan(&dbAddress)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   result.Error,
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  "success",
+		"address": dbAddress,
+		"user":    user,
+	})
+}
+
 func GetDishes(c *fiber.Ctx) error {
 	dishList := []models.Dish{}
 	page, err := strconv.ParseInt(c.Query("page"), 10, 32)
@@ -253,4 +297,5 @@ func GetDishes(c *fiber.Ctx) error {
 		"dishList": dishList,
 		"user":     c.Locals("UserModel"),
 	})
+
 }

@@ -28,8 +28,8 @@ type User struct {
 type Address struct {
 	gorm.Model `json:"-"`
 	ID         uuid.UUID `json:"addressId" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	UserID     uuid.UUID `json:"userId" gorm:"type:uuid;foreignKey:user.id;notNull"`
-	City       string    `json:"street" gorm:"notNull"`
+	UserID     uuid.UUID `json:"userId" gorm:"type:uuid;foreignKey:users.id;notNull"`
+	Street     string    `json:"street" gorm:"notNull"`
 	District   string    `json:"district" gorm:"notNull"`
 	State      string    `json:"state" gorm:"notNull"`
 	PinCode    string    `json:"pinCode" gorm:"notNull"`
