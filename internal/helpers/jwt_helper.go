@@ -43,7 +43,6 @@ func CreateToken(c *fiber.Ctx, role string, expireAfter time.Duration, userModel
 	c.Locals(role+"Model", claims.Model)
 	c.Locals("role", claims.Role)
 
-	fmt.Println(role, "Model is : ", c.Locals(role+"Model"))
 	return tokenString, nil
 }
 
