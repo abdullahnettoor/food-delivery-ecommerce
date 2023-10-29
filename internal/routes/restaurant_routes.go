@@ -19,4 +19,9 @@ func RestaurantRoutes(f *fiber.App) {
 	restaurant.Get("/dishes/dish/:id", handlers.GetDish)
 	restaurant.Put("/dishes/edit/dish/:id", handlers.EditDish)
 	restaurant.Delete("/dishes/delete/dish/:id", handlers.DeleteDish)
+
+	restaurant.Get("/orders", handlers.ViewRestaurantOrders)
+	restaurant.Get("/orders/:id", handlers.ViewRestaurantOrderDetails)
+	restaurant.Patch("/orders/:id", handlers.UpdateOrderStatus)
+
 }

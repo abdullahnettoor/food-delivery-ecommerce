@@ -232,3 +232,96 @@ func DeleteDish(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Dish deleted"})
 }
+
+func ViewRestaurantOrders(c *fiber.Ctx) error {
+	r := c.Locals("RestaurantModel").(map[string]any)
+	orders := []models.Order{}
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM orders
+	WHERE restaurant_id = ?`,
+		r["restaurantId"]).Scan(&orders).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "failed!", "message": "DB Error", "error": err})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Orders fetched Successfully", "orders": orders})
+}
+
+func ViewRestaurantOrderDetails(c *fiber.Ctx) error {
+	orderId := c.Params("id")
+	order := models.Order{}
+	orderItems := []models.OrderItem{}
+	user := c.Locals("RestaurantModel").(map[string]any)
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM orders
+	WHERE id = ? 
+	AND restaurant_id = ?`,
+		orderId, user["restaurantId"]).Scan(&order).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+
+	err = initializers.DB.Raw(`
+	SELECT *
+	FROM order_items
+	WHERE order_id = ?`,
+		orderId).Scan(&orderItems).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Order Details fetched Successfully", "order": order, "orderItems": orderItems})
+}
+
+func UpdateOrderStatus(c *fiber.Ctx) error {
+	order := models.Order{}
+	orderId := c.Params("id")
+	body := struct {
+		Status string `json:"orderStatus"`
+	}{}
+
+	c.BodyParser(&body)
+
+	err := initializers.DB.Exec(`
+	UPDATE orders 
+	SET status = ?
+	WHERE id = ?`,
+		body.Status, orderId).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to Update order",
+			"error":   err,
+		})
+	}
+
+	err = initializers.DB.Raw(`
+	SELECT * 
+	FROM orders
+	WHERE id = ?`,
+		orderId).Scan(&order).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to Fetch updated order",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Order Status updated successfully", "order": order})
+}
