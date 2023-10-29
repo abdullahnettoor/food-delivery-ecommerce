@@ -154,7 +154,7 @@ func PlaceOrder(c *fiber.Ctx) error {
 	})
 }
 
-func ViewOrders(c *fiber.Ctx) error {
+func ViewUserOrders(c *fiber.Ctx) error {
 	orders := []models.Order{}
 	user := c.Locals("UserModel").(map[string]any)
 
@@ -176,6 +176,130 @@ func ViewOrders(c *fiber.Ctx) error {
 		"status":  "success",
 		"message": "Orders fetched successfully",
 		"orders":  orders,
+		"user":    user,
+	})
+}
+
+func ViewUserOrder(c *fiber.Ctx) error {
+	orderId := c.Params("id")
+	order := models.Order{}
+	orderItems := []models.OrderItem{}
+	user := c.Locals("UserModel").(map[string]any)
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM orders
+	WHERE id = ? 
+	AND user_id = ?`,
+		orderId, user["userId"]).Scan(&order).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+
+	err = initializers.DB.Raw(`
+	SELECT *
+	FROM order_items
+	WHERE order_id = ?`,
+		orderId).Scan(&orderItems).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":     "success",
+		"message":    "Order fetched successfully",
+		"order":      order,
+		"orderItems": orderItems,
+		"user":       user,
+	})
+}
+
+func CancelUserOrder(c *fiber.Ctx) error {
+	orderId := c.Params("id")
+	order := models.Order{}
+	orderItems := []models.OrderItem{}
+	user := c.Locals("UserModel").(map[string]any)
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM orders
+	WHERE id = ?`,
+		orderId).Scan(&order)
+
+	if err.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error! Failed to Cancel",
+			"error":   err.Error,
+		})
+	}
+
+	if order.Status == "Cancelled" {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "Order Already Cancelled",
+		})
+	}
+
+	err = initializers.DB.Exec(`
+	UPDATE orders
+	SET status = 'Cancelled'
+	WHERE id = ? 
+	AND user_id = ?`,
+		orderId, user["userId"])
+
+	if err.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error! Failed to Cancel",
+			"error":   err.Error,
+		})
+	}
+
+	err = initializers.DB.Raw(`
+	SELECT *
+	FROM order_items
+	WHERE order_id = ?`,
+		orderId).Scan(&orderItems)
+
+	if err.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to fetch order items",
+			"error":   err.Error,
+		})
+	}
+
+	for _, item := range orderItems {
+		err := initializers.DB.Exec(`
+			UPDATE dishes
+			SET quantity = quantity + ?
+			WHERE id = ?`,
+			item.Quantity, item.DishID)
+
+		if err.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"status":  "failed!",
+				"message": "DB Error",
+				"error":   err.Error,
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Order cancelled successfully",
+		"order":   order,
 		"user":    user,
 	})
 }

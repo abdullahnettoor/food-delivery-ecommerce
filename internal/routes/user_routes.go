@@ -21,5 +21,7 @@ func UserRoutes(f *fiber.App) {
 
 	user.Post("/profile/addAddress", handlers.AddAddress)
 	user.Post("/cart/checkout", handlers.PlaceOrder)
-	user.Get("/profile/orders", handlers.ViewOrders)
+	user.Get("/profile/orders", handlers.ViewUserOrders)
+	user.Get("/profile/orders/:id", handlers.ViewUserOrder)
+	user.Patch("/profile/orders/cancel/:id", handlers.CancelUserOrder)
 }
