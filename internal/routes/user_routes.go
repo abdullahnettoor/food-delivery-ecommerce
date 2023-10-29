@@ -17,4 +17,5 @@ func UserRoutes(f *fiber.App) {
 	user.Post("/addToCart/:id", handlers.AddToCart)
 	user.Get("/cart", handlers.ViewCart)
 	user.Delete("/cart/delete/:id", handlers.DeleteCartItem)
+	user.Patch("/cart/decrement/:id", handlers.DecrementCartItem)
 }

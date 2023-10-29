@@ -5,15 +5,13 @@ import (
 )
 
 type Cart struct {
-	ID           uuid.UUID `json:"cartId"`
-	RestaurantID uuid.UUID `json:"restaurantId"`
-	Dishes       any       `json:"dishes"`
-	TotalPrice   float64   `json:"totalPrice"`
+	ID           uuid.UUID `json:"cartId" gorm:"type:uuid;primaryKey"`
+	RestaurantID uuid.UUID `json:"restaurantId" gorm:"type:uuid"`
 }
 
 type CartItem struct {
-	ID           uuid.UUID `gorm:"type:uuid;notNull"`
-	RestaurantID uuid.UUID `gorm:"type:uuid"`
-	DishID       uuid.UUID `gorm:"type:uuid;unique"`
-	Quantity     uint      `gorm:"type:uint"`
+	ID       uint      `json:"-" gorm:"type:bigInt;primaryKey;autoIncrement"`
+	CartID   uuid.UUID `json:"cartId" gorm:"type:uuid;notNull"`
+	DishID   uuid.UUID `json:"dishId" gorm:"type:uuid;unique"`
+	Quantity uint      `json:"dishQuantity" gorm:"type:uint"`
 }
