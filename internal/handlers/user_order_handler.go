@@ -114,8 +114,34 @@ func PlaceOrder(c *fiber.Ctx) error {
 	// Discount is not applied yet, It'll be added soon
 	order.TotalPrice = totalPrice
 
-	initializers.DB.Create(&order)
-	initializers.DB.Create(&orderItems)
+	err := initializers.DB.Create(&order).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+	err = initializers.DB.Create(&orderItems).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
+
+	err = initializers.DB.Exec(`
+	DELETE FROM carts
+	WHERE id = ?`,
+		userId).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error",
+			"error":   err,
+		})
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status":     "success",
