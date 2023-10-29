@@ -9,7 +9,7 @@ import (
 
 // Authourize admin
 func AuthorizeAdmin(c *fiber.Ctx) error {
-	fmt.Println("MW: Authorize Admin")
+	fmt.Println("MW: Authorizing Admin")
 
 	tokenString := c.Cookies("Authorize Admin")
 
@@ -25,12 +25,13 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 
 	c.Locals("AdminModel", admin)
 
+	fmt.Println("MW: Admin Authorised")
 	return c.Next()
 }
 
 // Authorize restaurant
 func AuthorizeRestaurant(c *fiber.Ctx) error {
-	fmt.Println("MW: Authorize Restaurant")
+	fmt.Println("MW: Authorizing Restaurant")
 
 	tokenString := c.Cookies("Authorize Restaurant")
 
@@ -46,12 +47,13 @@ func AuthorizeRestaurant(c *fiber.Ctx) error {
 
 	c.Locals("RestaurantModel", restaurant)
 
+	fmt.Println("MW: Restaurant Authorised")
 	return c.Next()
 }
 
 // Authorize user
 func AuthorizeUser(c *fiber.Ctx) error {
-	fmt.Println("MW: Authorize User")
+	fmt.Println("MW: Authorizing User")
 
 	tokenString := c.Cookies("Authorize User")
 
@@ -67,5 +69,6 @@ func AuthorizeUser(c *fiber.Ctx) error {
 
 	c.Locals("UserModel", user)
 
+	fmt.Println("MW: User Authorised")
 	return c.Next()
 }
