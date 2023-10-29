@@ -11,7 +11,8 @@ import (
 
 func PlaceOrder(c *fiber.Ctx) error {
 	body := struct {
-		PayementMethod string `json:"paymentMethod"`
+		PayementMethod string    `json:"paymentMethod"`
+		AddressID      uuid.UUID `json:"adddressId"`
 	}{}
 
 	c.BodyParser(&body)
@@ -77,6 +78,7 @@ func PlaceOrder(c *fiber.Ctx) error {
 	order := models.Order{
 		ID:             orderId,
 		RestaurantID:   cartItems[0].RestaurantID,
+		AddressID:      body.AddressID,
 		PaymentMethod:  body.PayementMethod,
 		UserID:         userId,
 		ItemCount:      uint(len(cartItems)),
