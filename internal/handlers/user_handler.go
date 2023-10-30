@@ -264,6 +264,40 @@ func AddAddress(c *fiber.Ctx) error {
 	})
 }
 
+func ViewUserAddresses(c *fiber.Ctx) error {
+
+	addressList := []models.Address{}
+	user := c.Locals("UserModel").(map[string]any)
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM addresses
+	WHERE user_id = ?`,
+		user["userId"]).Scan(&addressList).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to get address list from DB",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":    "success",
+		"message":   "Addresses loaded successfully",
+		"addresses": addressList,
+		"user":      user,
+	})
+}
+
+func UserProfile(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Profile details loaded successfully",
+		"user":    c.Locals("UserModel"),
+	})
+}
+
 func EditUserDetails(c *fiber.Ctx) error {
 	body := struct {
 		FirstName string `json:"firstName" gorm:"notNull"`

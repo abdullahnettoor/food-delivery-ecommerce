@@ -19,7 +19,10 @@ func UserRoutes(f *fiber.App) {
 	user.Delete("/cart/delete/:id", handlers.DeleteCartItem)
 	user.Patch("/cart/decrement/:id", handlers.DecrementCartItem)
 
+	user.Get("/profile", handlers.UserProfile)
 	user.Post("/profile/addAddress", handlers.AddAddress)
+	user.Get("/profile/address", handlers.ViewUserAddresses)
+
 	user.Post("/cart/checkout", handlers.PlaceOrder)
 	user.Get("/profile/orders", handlers.ViewUserOrders)
 	user.Get("/profile/orders/:id", handlers.ViewUserOrder)
