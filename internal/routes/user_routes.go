@@ -24,4 +24,6 @@ func UserRoutes(f *fiber.App) {
 	user.Get("/profile/orders", handlers.ViewUserOrders)
 	user.Get("/profile/orders/:id", handlers.ViewUserOrder)
 	user.Patch("/profile/orders/cancel/:id", handlers.CancelUserOrder)
+
+	user.Patch("/profile/changePassword", handlers.ChangeUserPassword)
 }

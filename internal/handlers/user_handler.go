@@ -264,6 +264,74 @@ func AddAddress(c *fiber.Ctx) error {
 	})
 }
 
+func ChangeUserPassword(c *fiber.Ctx) error {
+	body := struct {
+		Password    string `json:"password"`
+		NewPassword string `json:"newPassword"`
+	}{}
+
+	c.BodyParser(&body)
+
+	if body.NewPassword == "" || body.Password == "" {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "Fields shouldn't be empty",
+		})
+	}
+
+	user := c.Locals("UserModel").(map[string]any)
+	var dbUser models.User
+
+	err := initializers.DB.Raw(`
+	SELECT *
+	FROM users
+	WHERE id = ?`,
+		user["userId"]).Scan(&dbUser).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to get user details from DB",
+			"error":   err,
+		})
+	}
+
+	if ok, err := helpers.CompareHashedPassword(dbUser.Password, body.Password); err != nil || !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "Bcrypt Error. Failed to Compare password from db",
+			"error":   fmt.Sprint(err),
+		})
+	}
+
+	dbUser.Password, err = helpers.HashPassword(body.NewPassword)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "Bcrypt Error. Failed to hash new password",
+			"error":   fmt.Sprint(err),
+		})
+	}
+
+	err = initializers.DB.Exec(`
+		UPDATE users
+		SET password = ?
+		WHERE id = ?`,
+		dbUser.Password, user["userId"]).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to update password",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Changed password successfully",
+	})
+}
+
 func GetDishes(c *fiber.Ctx) error {
 	dishList := []models.Dish{}
 	page, err := strconv.ParseInt(c.Query("page"), 10, 32)
