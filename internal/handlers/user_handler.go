@@ -264,6 +264,56 @@ func AddAddress(c *fiber.Ctx) error {
 	})
 }
 
+func EditUserDetails(c *fiber.Ctx) error {
+	body := struct {
+		FirstName string `json:"firstName" gorm:"notNull"`
+		LastName  string `json:"lastName"`
+	}{}
+	user := c.Locals("UserModel").(map[string]any)
+
+	c.BodyParser(&body)
+
+	if body.FirstName == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "first name should not be empty",
+		})
+	}
+
+	var dbUser models.User
+
+	err := initializers.DB.Raw(`
+	SELECT * 
+	FROM users
+	WHERE id = ?`,
+		user["userId"]).Scan(&dbUser).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to get user details",
+			"error":   err,
+		})
+	}
+
+	dbUser.FirstName = body.FirstName
+	dbUser.LastName = body.LastName
+
+	err = initializers.DB.Save(&dbUser).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "failed!",
+			"message": "DB Error. Failed to Update user details",
+			"error":   err,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Updated user details successfully",
+		"user":    dbUser,
+	})
+}
+
 func ChangeUserPassword(c *fiber.Ctx) error {
 	body := struct {
 		Password    string `json:"password"`
