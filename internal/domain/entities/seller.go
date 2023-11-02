@@ -1,9 +1,9 @@
 package entities
 
-type Restaurant struct {
+type Seller struct {
 	ID          uint   `json:"restaurantId"`
-	Name        string `json:"restaurantName"`
-	Description string `json:"restaurantDescription"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 	Email       string `json:"email"`
 	Password    string `json:"-"`
 	Status      string `json:"status"`
