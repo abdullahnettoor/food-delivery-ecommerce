@@ -14,3 +14,11 @@ type Order struct {
 	Status         string  `json:"orderStatus"`
 	PayementStatus string  `json:"paymentStatus"`
 }
+
+type OrderItem struct {
+	ID       uint    `json:"-"`
+	OrderID  uint    `json:"orderId"`
+	DishID   uint    `json:"dishId"`
+	Quantity uint    `json:"quantity"`
+	Price    float64 `json:"price"`
+}
