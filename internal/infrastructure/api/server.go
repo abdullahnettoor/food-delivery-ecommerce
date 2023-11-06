@@ -10,14 +10,15 @@ type ServerHttp struct {
 	app *fiber.App
 }
 
-func NewServerHttp(handler *handlers.AdminHandler) *ServerHttp {
+func NewServerHttp(adminHandler *handlers.AdminHandler, sellerHandler *handlers.SellerHandler) *ServerHttp {
 	app := fiber.New()
 
 	app.Get("healthcheck", func(c *fiber.Ctx) error {
 		return c.SendString("OK")
 	})
 
-	routes.AdminRoutes(app, handler)
+	routes.AdminRoutes(app, adminHandler)
+	routes.SellerRoutes(app, sellerHandler)
 
 	return &ServerHttp{app}
 }

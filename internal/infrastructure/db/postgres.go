@@ -31,6 +31,7 @@ func ConnectPostgres(c *config.DbConfig) (*gorm.DB, error) {
 func syncDatabase(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&entities.Admin{},
+		&entities.Seller{},
 	// &models.Admin{},
 	// &models.User{},
 	// &models.Address{},
