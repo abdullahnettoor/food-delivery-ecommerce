@@ -55,11 +55,19 @@ func (repo *DishRepository) Create(dish *entities.Dish) error {
 func (repo *DishRepository) Update(id string, dish *entities.Dish) (*entities.Dish, error) {
 	var updatedDish entities.Dish
 
-	query := fmt.Sprintf("UPDATE dishes SET (name, description, price, quantity, category, is_veg, availability) = (%v,%v,%v,%v,%v,%v,%v) WHERE id = %v",
-		dish.Name, dish.Description, dish.Price, dish.Quantity, dish.Category, dish.IsVeg, dish.Availability, id)
+	query := fmt.Sprintf("UPDATE dishes SET name='%v', description = '%v', price = '%v', quantity = '%v', category_id = '%v', is_veg = '%v' , availability = '%v' WHERE id = '%v'",
+		dish.Name, dish.Description, dish.Price, dish.Quantity, dish.CategoryID, dish.IsVeg, dish.Availability, id)
 
-	err := repo.DB.Exec(query).Scan(&updatedDish).Error
+	err := repo.DB.Exec(query).Error
 	if err != nil {
+		return nil, err
+	}
+
+	if err := repo.DB.Raw(`
+	SELECT * 
+	FROM dishes 
+	WHERE id = ?`, id).
+		Scan(&updatedDish).Error; err != nil {
 		return nil, err
 	}
 	return &updatedDish, nil

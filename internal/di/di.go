@@ -17,9 +17,10 @@ func InitializeAPI(c *config.DbConfig) (*api.ServerHttp, error) {
 	}
 
 	categoryRepo := repository.NewCategoryRepository(gormDB)
+	dishRepo := repository.NewDishRepository(gormDB)
 
 	sellerRepo := repository.NewSellerRepository(gormDB)
-	sellerUcase := usecases.NewSellerUsecase(sellerRepo)
+	sellerUcase := usecases.NewSellerUsecase(sellerRepo, dishRepo)
 	sellerHandler := handlers.NewSellerHandler(sellerUcase)
 
 	userRepo := repository.NewUserRepository(gormDB)

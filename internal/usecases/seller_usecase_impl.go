@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -14,16 +15,17 @@ import (
 )
 
 type sellerUsecase struct {
-	repo interfaces.ISellerRepository
+	sellerRepo interfaces.ISellerRepository
+	dishRepo   interfaces.IDishRepository
 }
 
-func NewSellerUsecase(repo interfaces.ISellerRepository) *sellerUsecase {
-	return &sellerUsecase{repo}
+func NewSellerUsecase(sellerRepo interfaces.ISellerRepository, dishRepo interfaces.IDishRepository) *sellerUsecase {
+	return &sellerUsecase{sellerRepo, dishRepo}
 }
 
 func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 
-	seller, err := uc.repo.FindByEmail(req.Email)
+	seller, err := uc.sellerRepo.FindByEmail(req.Email)
 	if err != nil {
 		fmt.Println("DB Error", err.Error())
 		return "", err
@@ -45,7 +47,7 @@ func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 
 func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 
-	_, err := uc.repo.FindByEmail(req.Email)
+	_, err := uc.sellerRepo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
 		fmt.Println("UC Seller #1:", err.Error())
 		return "", err
@@ -61,7 +63,7 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 		PinCode:     req.PinCode,
 	}
 
-	if err := uc.repo.Create(&seller); err != nil {
+	if err := uc.sellerRepo.Create(&seller); err != nil {
 		fmt.Println("UC Seller #2:", err.Error())
 		return "", err
 	}
@@ -74,4 +76,44 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (uc *sellerUsecase) AddDish(restaurantId string, req *req.CreateDishReq) error {
+
+	id, err := strconv.ParseInt(restaurantId, 10, 32)
+	if err != nil {
+		return err
+	}
+
+	newDish := entities.Dish{
+		SellerID:     uint(id),
+		Name:         req.Name,
+		Description:  req.Description,
+		Price:        req.Price,
+		Quantity:     req.Quantity,
+		CategoryID:   req.CategoryID,
+		IsVeg:        req.IsVeg,
+		Availability: req.Availability,
+	}
+	return uc.dishRepo.Create(&newDish)
+}
+
+func (uc *sellerUsecase) UpdateDish(dishId, restaurantId string, req *req.UpdateDishReq) (*entities.Dish, error) {
+
+	id, err := strconv.ParseInt(restaurantId, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedDish := entities.Dish{
+		SellerID:     uint(id),
+		Name:         req.Name,
+		Description:  req.Description,
+		Price:        req.Price,
+		Quantity:     req.Quantity,
+		CategoryID:   req.CategoryID,
+		IsVeg:        req.IsVeg,
+		Availability: req.Availability,
+	}
+	return uc.dishRepo.Update(dishId, &updatedDish)
 }

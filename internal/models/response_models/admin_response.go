@@ -9,13 +9,6 @@ type AdminLoginRes struct {
 	Message string `json:"message,omitempty"`
 }
 
-type AdminCommonRes struct {
-	Status  string `json:"status,omitempty"`
-	Error   string `json:"error,omitempty"`
-	Message string `json:"message,omitempty"`
-	Result  any    `json:"result,omitempty"`
-}
-
 type SellerListRes struct {
 	Status     string            `json:"status,omitempty"`
 	SellerList []entities.Seller `json:"sellerList,omitempty"`

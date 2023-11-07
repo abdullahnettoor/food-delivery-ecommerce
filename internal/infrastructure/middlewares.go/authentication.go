@@ -33,25 +33,27 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-// Authorize restaurant
-func AuthorizeRestaurant(c *fiber.Ctx) error {
-	fmt.Println("MW: Authorizing Restaurant")
+// Authorize seller
+func AuthorizeSeller(c *fiber.Ctx) error {
+	fmt.Println("MW: Authorizing Seller")
 
 	tokenString := StripToken(c.Get("Authorization"))
 
 	var secretKey = viper.GetString("KEY")
 
-	// Check if it is restaurant
+	// Check if it is seller
 	isValid, claims := jwttoken.IsValidToken(secretKey, tokenString)
 	if !isValid {
 		return c.Status(fiber.StatusUnauthorized).
 			JSON(res.UnauthorizedAccess)
 	}
-	restaurant := claims.(*jwttoken.CustomClaims).Model
+	seller := claims.(*jwttoken.CustomClaims).Model
 
-	c.Locals("RestaurantModel", restaurant)
+	fmt.Println("Seller is", seller)
 
-	fmt.Println("MW: Restaurant Authorised")
+	c.Locals("SellerModel", seller)
+
+	fmt.Println("MW: Seller Authorised")
 	return c.Next()
 }
 

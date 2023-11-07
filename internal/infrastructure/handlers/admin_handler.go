@@ -74,7 +74,7 @@ func (h *AdminHandler) VerifySeller(c *fiber.Ctx) error {
 
 	if err := h.usecase.VerifySeller(sellerId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to verify seller",
 				Error:   err.Error(),
@@ -82,7 +82,7 @@ func (h *AdminHandler) VerifySeller(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully verified seller",
 		})
@@ -93,7 +93,7 @@ func (h *AdminHandler) BlockSeller(c *fiber.Ctx) error {
 
 	if err := h.usecase.BlockSeller(sellerId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to block seller",
 				Error:   err.Error(),
@@ -101,7 +101,7 @@ func (h *AdminHandler) BlockSeller(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully blocked seller",
 		})
@@ -113,7 +113,7 @@ func (h *AdminHandler) UnblockSeller(c *fiber.Ctx) error {
 
 	if err := h.usecase.UnblockSeller(sellerId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to unblock seller",
 				Error:   err.Error(),
@@ -121,7 +121,7 @@ func (h *AdminHandler) UnblockSeller(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully unblocked seller",
 		})
@@ -153,7 +153,7 @@ func (h *AdminHandler) BlockUser(c *fiber.Ctx) error {
 
 	if err := h.usecase.BlockUser(userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to block user",
 				Error:   err.Error(),
@@ -161,7 +161,7 @@ func (h *AdminHandler) BlockUser(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully blocked user",
 		})
@@ -173,7 +173,7 @@ func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
 
 	if err := h.usecase.UnblockUser(userId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to unblock user",
 				Error:   err.Error(),
@@ -181,7 +181,7 @@ func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully unblocked user",
 		})
@@ -193,7 +193,7 @@ func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to parse request",
 				Error:   err.Error(),
@@ -202,7 +202,7 @@ func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 
 	if err := requestvalidation.ValidateRequest(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to parse request",
 				Error:   fmt.Sprint(err),
@@ -211,7 +211,7 @@ func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 
 	if err := h.usecase.CreateCategory(&req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to create category",
 				Error:   err.Error(),
@@ -219,7 +219,7 @@ func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully created category",
 		})
@@ -231,7 +231,7 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to parse request",
 				Error:   err.Error(),
@@ -240,7 +240,7 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 
 	if err := requestvalidation.ValidateRequest(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to parse request",
 				Error:   fmt.Sprint(err),
@@ -249,7 +249,7 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 
 	if err := h.usecase.UpdateCategory(categoryId, &req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.AdminCommonRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to update category",
 				Error:   err.Error(),
@@ -257,7 +257,7 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.AdminCommonRes{
+		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully updated category",
 		})
