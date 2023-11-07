@@ -6,7 +6,6 @@ import (
 	"time"
 
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
-	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	jwttoken "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/jwt_token"
 	"github.com/spf13/viper"
@@ -14,11 +13,6 @@ import (
 
 type adminUcase struct {
 	adminRepo interfaces.IAdminRepository
-}
-
-type AdminUserInteractor struct {
-	AdminRepo repository.AdminRepository
-	UserRepo  repository.UserRepository
 }
 
 func NewAdminUsecase(repo interfaces.IAdminRepository) *adminUcase {
@@ -43,8 +37,6 @@ func (a *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	// context.WithValue("Admin", claims)
 
 	return token, nil
 }

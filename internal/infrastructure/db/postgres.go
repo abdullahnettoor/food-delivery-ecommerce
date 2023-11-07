@@ -32,6 +32,7 @@ func syncDatabase(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&entities.Admin{},
 		&entities.Seller{},
+		&entities.User{},
 	// &models.Admin{},
 	// &models.User{},
 	// &models.Address{},

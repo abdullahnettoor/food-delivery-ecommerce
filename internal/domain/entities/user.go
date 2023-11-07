@@ -1,14 +1,13 @@
 package entities
 
 type User struct {
-	ID        uint   `json:"userId"`
-	FirstName string `json:"firstName"`
+	ID        uint   `json:"userId" gorm:"primaryKey"`
+	FirstName string `json:"firstName" gorm:"notNull"`
 	LastName  string `json:"lastName"`
-	UserName  string `json:"userName"`
-	Email     string `json:"email"`
-	Phone     string `json:"phone"`
+	Email     string `json:"email" gorm:"unique;notNull"`
+	Phone     string `json:"phone" gorm:"notNull"`
 	Password  string `json:"-"`
-	Status    string `json:"status"`
+	Status    string `json:"status" gorm:"default:Pending"`
 }
 
 type Address struct {

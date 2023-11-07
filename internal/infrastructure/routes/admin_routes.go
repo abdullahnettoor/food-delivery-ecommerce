@@ -9,4 +9,8 @@ func AdminRoutes(f *fiber.App, admin *handlers.AdminHandler) {
 
 	f.Post("/admin/login", admin.Login)
 
+	// r := f.Group("/admin", middlewares.AuthorizeAdmin)
+
+	// r.Get("/sellers")
+
 }

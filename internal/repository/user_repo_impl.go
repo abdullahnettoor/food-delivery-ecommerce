@@ -1,9 +1,10 @@
 package repository
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	"gorm.io/gorm"
 )
@@ -38,7 +39,7 @@ func (repo *UserRepository) FindByEmail(email string) (*entities.User, error) {
 		email).Scan(&userDetails)
 
 	if query.RowsAffected == 0 {
-		return nil, errors.New("user not found")
+		return nil, e.ErrNotFound
 	}
 
 	if query.Error != nil {
@@ -57,7 +58,7 @@ func (repo *UserRepository) FindByID(id string) (*entities.User, error) {
 		id).Scan(&userDetails)
 
 	if query.RowsAffected == 0 {
-		return nil, errors.New("user not found")
+		return nil, e.ErrNotFound
 	}
 
 	if query.Error != nil {
@@ -77,6 +78,10 @@ func (repo *UserRepository) Create(user *entities.User) (*entities.User, error) 
 
 	if query.Error != nil {
 		return nil, query.Error
+	}
+
+	if query.RowsAffected != 0 {
+		return nil, e.ErrConflict
 	}
 
 	if err := repo.DB.Create(&user).Scan(&newUser).Error; err != nil {
@@ -104,4 +109,55 @@ func (repo *UserRepository) Update(id string, user *entities.User) (*entities.Us
 	}
 
 	return &newUser, nil
+}
+
+func (repo *UserRepository) Verify(phone string) error {
+	fmt.Println("Phone is", phone)
+	err := repo.DB.Exec(`
+	UPDATE users
+	SET status = 'Active'
+	WHERE phone = ?`, phone).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (repo *UserRepository) Block(id string) error {
+	err := repo.DB.Exec(`
+	UPDATE users
+	SET status = 'Blocked'
+	WHERE id = ?`, id).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *UserRepository) Unblock(id string) error {
+	err := repo.DB.Exec(`
+	UPDATE users
+	SET status = 'Active'
+	WHERE id = ?`, id).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *UserRepository) DeleteByPhone(phone string) error {
+	err := repo.DB.Exec(`
+	DELETE FROM users
+	WHERE phone = ?`, phone).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

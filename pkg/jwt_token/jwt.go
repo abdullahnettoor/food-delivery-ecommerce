@@ -40,12 +40,12 @@ func IsValidToken(secretKey, tokenString string) (bool, interface{}) {
 
 	// Parse jwt token with custom claims
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return []byte(secretKey), nil
 	})
 
 	// Check if token is valid
 	if err != nil || !token.Valid {
-		fmt.Println("Error occured whilr fetching token")
+		fmt.Println("Error occured while parsing token:", err)
 		return false, nil
 	}
 
@@ -61,7 +61,7 @@ func IsValidToken(secretKey, tokenString string) (bool, interface{}) {
 		return true, claims
 
 	} else {
-		fmt.Println("Error occured while parsing token:", err)
+		fmt.Println("Error occured while decoding token:", err)
 		return false, nil
 	}
 }

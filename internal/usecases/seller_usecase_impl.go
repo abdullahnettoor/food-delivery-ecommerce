@@ -40,8 +40,6 @@ func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 		return "", err
 	}
 
-	// context.WithValue("Admin", claims)
-
 	return token, nil
 }
 
