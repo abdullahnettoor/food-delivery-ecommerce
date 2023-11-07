@@ -85,3 +85,42 @@ func (repo *SellerRepository) Create(seller *entities.Seller) error {
 	}
 	return nil
 }
+
+func (repo *SellerRepository) Verify(id string) error {
+	err := repo.DB.Exec(`
+	UPDATE sellers
+	SET status = 'Verified'
+	WHERE id = ?`, id).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *SellerRepository) Block(id string) error {
+	err := repo.DB.Exec(`
+	UPDATE sellers
+	SET status = 'Blocked'
+	WHERE id = ?`, id).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *SellerRepository) Unblock(id string) error {
+	err := repo.DB.Exec(`
+	UPDATE sellers
+	SET status = 'Verified'
+	WHERE id = ?`, id).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

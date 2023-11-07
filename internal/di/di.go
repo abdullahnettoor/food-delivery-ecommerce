@@ -16,10 +16,6 @@ func InitializeAPI(c *config.DbConfig) (*api.ServerHttp, error) {
 		return nil, err
 	}
 
-	adminRepo := repository.NewAdminRepository(gormDB)
-	adminUcase := usecases.NewAdminUsecase(adminRepo)
-	adminHandler := handlers.NewAdminHandler(adminUcase)
-
 	sellerRepo := repository.NewSellerRepository(gormDB)
 	sellerUcase := usecases.NewSellerUsecase(sellerRepo)
 	sellerHandler := handlers.NewSellerHandler(sellerUcase)
@@ -27,6 +23,10 @@ func InitializeAPI(c *config.DbConfig) (*api.ServerHttp, error) {
 	userRepo := repository.NewUserRepository(gormDB)
 	userUcase := usecases.NewUserUsecase(userRepo)
 	userHandler := handlers.NewUserHandler(userUcase)
+
+	adminRepo := repository.NewAdminRepository(gormDB)
+	adminUcase := usecases.NewAdminUsecase(adminRepo, userRepo, sellerRepo)
+	adminHandler := handlers.NewAdminHandler(adminUcase)
 
 	serverHttp := api.NewServerHttp(adminHandler, sellerHandler, userHandler)
 

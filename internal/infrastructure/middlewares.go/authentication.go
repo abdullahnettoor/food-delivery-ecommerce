@@ -14,7 +14,7 @@ import (
 func AuthorizeAdmin(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing Admin")
 
-	tokenString := c.Get("Authorization")
+	tokenString := StripToken(c.Get("Authorization"))
 
 	var secretKey = viper.GetString("KEY")
 
@@ -37,7 +37,7 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 func AuthorizeRestaurant(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing Restaurant")
 
-	tokenString := c.Get("Authorization")
+	tokenString := StripToken(c.Get("Authorization"))
 
 	var secretKey = viper.GetString("KEY")
 
@@ -59,14 +59,9 @@ func AuthorizeRestaurant(c *fiber.Ctx) error {
 func AuthorizeUser(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing User")
 
-	parts := strings.Split(c.Get("Authorization"), " ")
-
-	tokenString := parts[1]
-	fmt.Println("tttt", tokenString)
+	tokenString := StripToken(c.Get("Authorization"))
 
 	var secretKey = viper.GetString("KEY")
-
-	fmt.Println("SECRET", secretKey)
 
 	// Check if it is user
 	isValid, claims := jwttoken.IsValidToken(secretKey, tokenString)
@@ -81,4 +76,16 @@ func AuthorizeUser(c *fiber.Ctx) error {
 	fmt.Println(c.Locals("UserModel"))
 	fmt.Println("MW: User Authorised")
 	return c.Next()
+}
+
+func StripToken(tokenHeader string) string {
+	if tokenHeader == "" {
+		return ""
+	}
+	token := strings.Split(tokenHeader, " ")
+	if len(token) != 2 {
+		return ""
+	}
+	fmt.Println("Token is", token)
+	return token[1]
 }

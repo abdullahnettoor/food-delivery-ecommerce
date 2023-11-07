@@ -11,6 +11,8 @@ type ValidationErrorResponse struct {
 	FailedField string      `json:"field"`
 	Tag         string      `json:"tag"`
 	Value       interface{} `json:"value"`
+	EmailErr    string      `json:"email,omitempty"`
+	LenErr      string      `json:"len,omitempty"`
 }
 
 var validate = validator.New()
