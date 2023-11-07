@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	res "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/response_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
@@ -182,6 +184,82 @@ func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
 		JSON(res.AdminCommonRes{
 			Status:  "success",
 			Message: "successfully unblocked user",
+		})
+
+}
+
+func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
+	var req req.CreateCategoryReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to parse request",
+				Error:   err.Error(),
+			})
+	}
+
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to parse request",
+				Error:   fmt.Sprint(err),
+			})
+	}
+
+	if err := h.usecase.CreateCategory(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to create category",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.AdminCommonRes{
+			Status:  "success",
+			Message: "successfully created category",
+		})
+}
+
+func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
+	categoryId := c.Params("id")
+	var req req.UpdateCategoryReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to parse request",
+				Error:   err.Error(),
+			})
+	}
+
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to parse request",
+				Error:   fmt.Sprint(err),
+			})
+	}
+
+	if err := h.usecase.UpdateCategory(categoryId, &req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to update category",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.AdminCommonRes{
+			Status:  "success",
+			Message: "successfully updated category",
 		})
 
 }

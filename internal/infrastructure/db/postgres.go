@@ -33,6 +33,8 @@ func syncDatabase(db *gorm.DB) error {
 		&entities.Admin{},
 		&entities.Seller{},
 		&entities.User{},
+		&entities.Category{},
+		&entities.Dish{},
 	// &models.Admin{},
 	// &models.User{},
 	// &models.Address{},

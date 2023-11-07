@@ -16,4 +16,9 @@ type IAdminUseCase interface {
 	GetAllUsers() (*[]entities.User, error)
 	BlockUser(id string) error
 	UnblockUser(id string) error
+
+	CreateCategory(req *req.CreateCategoryReq) error
+	UpdateCategory(id string, req *req.UpdateCategoryReq) error
+	GetCategory(id string) (*entities.Category, error)
+	GetAllCategory() (*[]entities.Category, error)
 }

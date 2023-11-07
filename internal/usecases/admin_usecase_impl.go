@@ -1,11 +1,11 @@
 package usecases
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	jwttoken "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/jwt_token"
@@ -13,18 +13,23 @@ import (
 )
 
 type adminUcase struct {
-	AdminRepo  interfaces.IAdminRepository
-	UserRepo   interfaces.IUserRepository
-	SellerRepo interfaces.ISellerRepository
+	AdminRepo    interfaces.IAdminRepository
+	UserRepo     interfaces.IUserRepository
+	SellerRepo   interfaces.ISellerRepository
+	CategoryRepo interfaces.ICategoryRepository
 }
 
-func NewAdminUsecase(AdminRepo interfaces.IAdminRepository, UserRepo interfaces.IUserRepository, SellerRepo interfaces.ISellerRepository) *adminUcase {
-	return &adminUcase{AdminRepo, UserRepo, SellerRepo}
+func NewAdminUsecase(
+	AdminRepo interfaces.IAdminRepository,
+	UserRepo interfaces.IUserRepository,
+	SellerRepo interfaces.ISellerRepository,
+	CategoryRepo interfaces.ICategoryRepository) *adminUcase {
+	return &adminUcase{AdminRepo, UserRepo, SellerRepo, CategoryRepo}
 }
 
-func (repo *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
+func (uc *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
 
-	admin, err := repo.AdminRepo.FindByEmail(loginReq.Email)
+	admin, err := uc.AdminRepo.FindByEmail(loginReq.Email)
 	if err != nil {
 		fmt.Println("DB Error", err.Error())
 		return "", err
@@ -32,7 +37,7 @@ func (repo *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
 
 	if admin.Password != loginReq.Password {
 		fmt.Println("Error is Invalid Password")
-		return "", errors.New("invalid password")
+		return "", e.ErrInvalidPassword
 	}
 
 	secret := viper.GetString("KEY")
@@ -44,35 +49,55 @@ func (repo *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
 	return token, nil
 }
 
-func (repo *adminUcase) GetAllSellers() (*[]entities.Seller, error) {
-	return repo.SellerRepo.FindAll()
+func (uc *adminUcase) GetAllSellers() (*[]entities.Seller, error) {
+	return uc.SellerRepo.FindAll()
 }
 
-func (repo *adminUcase) VerifySeller(id string) error {
-	return repo.SellerRepo.Verify(id)
+func (uc *adminUcase) VerifySeller(id string) error {
+	return uc.SellerRepo.Verify(id)
 }
 
-func (repo *adminUcase) BlockSeller(id string) error {
-	return repo.SellerRepo.Block(id)
+func (uc *adminUcase) BlockSeller(id string) error {
+	return uc.SellerRepo.Block(id)
 }
 
-func (repo *adminUcase) UnblockSeller(id string) error {
-	return repo.SellerRepo.Unblock(id)
+func (uc *adminUcase) UnblockSeller(id string) error {
+	return uc.SellerRepo.Unblock(id)
 }
 
-func (repo *adminUcase) GetAllUsers() (*[]entities.User, error) {
-	return repo.UserRepo.FindAll()
+func (uc *adminUcase) GetAllUsers() (*[]entities.User, error) {
+	return uc.UserRepo.FindAll()
 }
 
-func (repo *adminUcase) BlockUser(id string) error {
+func (uc *adminUcase) BlockUser(id string) error {
 
-	if err := repo.UserRepo.Block(id); err != nil {
+	if err := uc.UserRepo.Block(id); err != nil {
 		return err
 	}
 	return nil
 
 }
 
-func (repo *adminUcase) UnblockUser(id string) error {
-	return repo.UserRepo.Unblock(id)
+func (uc *adminUcase) UnblockUser(id string) error {
+	return uc.UserRepo.Unblock(id)
+}
+
+func (uc *adminUcase) CreateCategory(req *req.CreateCategoryReq) error {
+	category := entities.Category{
+		Name: req.Name,
+	}
+
+	return uc.CategoryRepo.Create(&category)
+}
+
+func (uc *adminUcase) UpdateCategory(id string, req *req.UpdateCategoryReq) error {
+	return uc.CategoryRepo.Update(id, req.Name)
+}
+
+func (uc *adminUcase) GetCategory(id string) (*entities.Category, error) {
+	return uc.CategoryRepo.FindByID(id)
+}
+
+func (uc *adminUcase) GetAllCategory() (*[]entities.Category, error) {
+	return uc.CategoryRepo.FindAll()
 }
