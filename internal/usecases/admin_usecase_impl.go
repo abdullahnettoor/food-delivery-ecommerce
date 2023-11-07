@@ -44,19 +44,6 @@ func (repo *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
 	return token, nil
 }
 
-func (repo *adminUcase) BlockUser(id string) error {
-
-	if err := repo.UserRepo.Block(id); err != nil {
-		return err
-	}
-	return nil
-
-}
-
-func (repo *adminUcase) UnblockUser(id string) error {
-	return repo.UserRepo.Unblock(id)
-}
-
 func (repo *adminUcase) GetAllSellers() (*[]entities.Seller, error) {
 	return repo.SellerRepo.FindAll()
 }
@@ -71,4 +58,21 @@ func (repo *adminUcase) BlockSeller(id string) error {
 
 func (repo *adminUcase) UnblockSeller(id string) error {
 	return repo.SellerRepo.Unblock(id)
+}
+
+func (repo *adminUcase) GetAllUsers() (*[]entities.User, error) {
+	return repo.UserRepo.FindAll()
+}
+
+func (repo *adminUcase) BlockUser(id string) error {
+
+	if err := repo.UserRepo.Block(id); err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (repo *adminUcase) UnblockUser(id string) error {
+	return repo.UserRepo.Unblock(id)
 }

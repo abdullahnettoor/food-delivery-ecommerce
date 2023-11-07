@@ -125,3 +125,63 @@ func (h *AdminHandler) UnblockSeller(c *fiber.Ctx) error {
 		})
 
 }
+
+func (h *AdminHandler) GetAllUsers(c *fiber.Ctx) error {
+
+	userList, err := h.usecase.GetAllUsers()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.UserListRes{
+				Status:  "failed",
+				Message: "failed to fetch users list",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.UserListRes{
+			Status:   "success",
+			Message:  "successfully fetched users' list",
+			UserList: *userList,
+		})
+}
+
+func (h *AdminHandler) BlockUser(c *fiber.Ctx) error {
+	userId := c.Params("id")
+
+	if err := h.usecase.BlockUser(userId); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to block user",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.AdminCommonRes{
+			Status:  "success",
+			Message: "successfully blocked user",
+		})
+
+}
+
+func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
+	userId := c.Params("id")
+
+	if err := h.usecase.UnblockUser(userId); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.AdminCommonRes{
+				Status:  "failed",
+				Message: "failed to unblock user",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.AdminCommonRes{
+			Status:  "success",
+			Message: "successfully unblocked user",
+		})
+
+}

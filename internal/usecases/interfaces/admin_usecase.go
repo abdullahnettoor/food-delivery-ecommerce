@@ -7,10 +7,13 @@ import (
 
 type IAdminUseCase interface {
 	Login(admin *req.AdminLoginReq) (string, error)
+
 	GetAllSellers() (*[]entities.Seller, error)
 	VerifySeller(id string) error
 	BlockSeller(id string) error
 	UnblockSeller(id string) error
+
+	GetAllUsers() (*[]entities.User, error)
 	BlockUser(id string) error
 	UnblockUser(id string) error
 }
