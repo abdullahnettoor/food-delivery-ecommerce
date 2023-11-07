@@ -9,5 +9,6 @@ type Dish struct {
 	Quantity     uint    `json:"quantity"`
 	Category     uint    `json:"category"`
 	IsVeg        bool    `json:"isVeg"`
-	Availability bool    `json:"isAvailable"`
+	Availability bool    `json:"isAvailable" grom:"type:boolean;default:true"`
+	Deleted      bool    `json:"-" gorm:"type:boolean;default:false"`
 }
