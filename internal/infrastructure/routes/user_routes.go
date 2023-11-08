@@ -18,4 +18,8 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler) {
 	u.Get("/dishes/:id", user.GetDish)
 	u.Get("/search", user.SearchDish)
 
+	u.Get("/sellers", user.GetSellersPage)
+	u.Get("/sellers/search", user.SearchSeller)
+	u.Get("/sellers/:id", user.GetSeller)
+
 }

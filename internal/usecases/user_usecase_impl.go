@@ -14,12 +14,13 @@ import (
 )
 
 type userUcase struct {
-	userRepo interfaces.IUserRepository
-	dishRepo interfaces.IDishRepository
+	userRepo   interfaces.IUserRepository
+	dishRepo   interfaces.IDishRepository
+	sellerRepo interfaces.ISellerRepository
 }
 
-func NewUserUsecase(userRepo interfaces.IUserRepository, dishRepo interfaces.IDishRepository) *userUcase {
-	return &userUcase{userRepo, dishRepo}
+func NewUserUsecase(userRepo interfaces.IUserRepository, dishRepo interfaces.IDishRepository, sellerRepo interfaces.ISellerRepository) *userUcase {
+	return &userUcase{userRepo, dishRepo, sellerRepo}
 }
 
 func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {
@@ -110,4 +111,25 @@ func (uc *userUcase) GetDishesPage(page, limit string) (*[]entities.Dish, error)
 
 func (uc *userUcase) GetDish(id string) (*entities.Dish, error) {
 	return uc.dishRepo.FindByID(id)
+}
+
+func (uc *userUcase) SearchSeller(search string) (*[]entities.Seller, error) {
+	return uc.sellerRepo.SearchVerified(search)
+}
+
+func (uc *userUcase) GetSellersPage(page, limit string) (*[]entities.Seller, error) {
+	p, err := strconv.ParseUint(page, 10, 0)
+	if err != nil {
+		return nil, err
+	}
+	l, err := strconv.ParseUint(limit, 10, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.sellerRepo.FindPageWise(uint(p), uint(l))
+}
+
+func (uc *userUcase) GetSeller(id string) (*entities.Seller, error) {
+	return uc.sellerRepo.FindVerifiedByID(id)
 }

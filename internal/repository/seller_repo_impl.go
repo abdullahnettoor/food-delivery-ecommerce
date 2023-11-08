@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
@@ -123,4 +125,64 @@ func (repo *SellerRepository) Unblock(id string) error {
 	}
 
 	return nil
+}
+
+func (repo *SellerRepository) SearchVerified(search string) (*[]entities.Seller, error) {
+	var sellersList []entities.Seller
+
+	query := fmt.Sprintf("SELECT * FROM sellers WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND status ILIKE 'verified'", search, search)
+
+	res := repo.DB.Raw(query).Scan(&sellersList)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
+	}
+
+	return &sellersList, nil
+}
+
+func (repo *SellerRepository) FindPageWise(page, limit uint) (*[]entities.Seller, error) {
+	var sellersList []entities.Seller
+
+	offset := (page - 1) * uint(limit)
+
+	query := `
+	SELECT *
+	FROM sellers
+	WHERE status ILIKE 'verified'
+	OFFSET ? LIMIT ?`
+
+	res := repo.DB.Raw(query, offset, limit).Scan(&sellersList)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
+	}
+
+	return &sellersList, nil
+}
+
+func (repo *SellerRepository) FindVerifiedByID(id string) (*entities.Seller, error) {
+	var seller entities.Seller
+
+	res := repo.DB.Raw(`
+	SELECT *
+	FROM sellers
+	WHERE id = ?
+	AND status ILIKE 'verified'`, id).
+		Scan(&seller)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
+	}
+
+	return &seller, nil
 }

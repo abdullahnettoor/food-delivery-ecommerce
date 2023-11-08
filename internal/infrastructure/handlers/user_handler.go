@@ -219,3 +219,68 @@ func (h *UserHandler) SearchDish(c *fiber.Ctx) error {
 			DishList: *dishList,
 		})
 }
+
+func (h *UserHandler) GetSellersPage(c *fiber.Ctx) error {
+	page := c.Query("p", "1")
+	limit := c.Query("l", "5")
+
+	sellerList, err := h.usecase.GetSellersPage(page, limit)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch sellers",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SellerListRes{
+			Status:     "success",
+			Message:    "successfully fetched seller",
+			SellerList: *sellerList,
+		})
+
+}
+
+func (h *UserHandler) GetSeller(c *fiber.Ctx) error {
+	sellerId := c.Params("id")
+
+	seller, err := h.usecase.GetSeller(sellerId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch seller",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SingleSellerRes{
+			Status:  "success",
+			Message: "successfully fetched seller",
+			Seller:  *seller,
+		})
+}
+
+func (h *UserHandler) SearchSeller(c *fiber.Ctx) error {
+	searchQuery := c.Query("q")
+
+	sellersList, err := h.usecase.SearchSeller(searchQuery)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch sellers",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SellerListRes{
+			Status:     "success",
+			Message:    "successfully fetched sellers",
+			SellerList: *sellersList,
+		})
+}

@@ -15,8 +15,7 @@ type IUserUseCase interface {
 	GetDishesPage(page, limit string) (*[]entities.Dish, error)
 	GetDish(id string) (*entities.Dish, error)
 
-	// TODO: SearchSeller(search string)(*[]entities.Seller, error)
-	// TODO: GetSellersPage(page string)(*[]entities.Seller, error)
-	// TODO: GetSeller(id string)(*[]entities.Seller, error)
-
+	SearchSeller(search string) (*[]entities.Seller, error)
+	GetSellersPage(page, limit string) (*[]entities.Seller, error)
+	GetSeller(id string) (*entities.Seller, error)
 }

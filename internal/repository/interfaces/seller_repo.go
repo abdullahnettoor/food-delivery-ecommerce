@@ -12,6 +12,10 @@ type ISellerRepository interface {
 	Verify(id string) error
 	Block(id string) error
 	Unblock(id string) error
+
+	SearchVerified(search string) (*[]entities.Seller, error)
+	FindPageWise(page, limit uint) (*[]entities.Seller, error)
+	FindVerifiedByID(id string) (*entities.Seller, error)
 	// TODO: FindByQuery(query string) ([]*entities.Seller, error)
 	// TODO: UpdateByID(id string, seller *entities.Seller) (*entities.Seller, error)
 	// TODO: Delete(seller *entities.Seller) error
