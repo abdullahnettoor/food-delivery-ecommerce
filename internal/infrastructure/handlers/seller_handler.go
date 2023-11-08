@@ -156,3 +156,67 @@ func (h *SellerHandler) UpdateDish(c *fiber.Ctx) error {
 			Result:  dish,
 		})
 }
+
+func (h *SellerHandler) GetDish(c *fiber.Ctx) error {
+	dishId := c.Params("id")
+	seller := c.Locals("SellerModel").(map[string]any)
+
+	dish, err := h.usecase.GetDish(dishId, fmt.Sprint(seller["sellerId"]))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch dish",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully fetched dish",
+			Result:  *dish,
+		})
+}
+
+func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
+	seller := c.Locals("SellerModel").(map[string]any)
+
+	dishList, err := h.usecase.GetAllDishes(fmt.Sprint(seller["sellerId"]))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch dish",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SellerDishListRes{
+			Status:   "success",
+			Message:  "successfully fetched dish",
+			DishList: *dishList,
+		})
+}
+
+func (h *SellerHandler) DeleteDish(c *fiber.Ctx) error {
+	dishId := c.Params("id")
+	seller := c.Locals("SellerModel").(map[string]any)
+
+	err := h.usecase.DeleteDish(dishId, fmt.Sprint(seller["sellerId"]))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to delete dish",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully deleted dish",
+		})
+}

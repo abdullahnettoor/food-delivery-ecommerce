@@ -7,7 +7,9 @@ import (
 type IDishRepository interface {
 	FindPageWise(page int) (*[]entities.Dish, error)
 	FindByID(id string) (*entities.Dish, error)
+	FindBySeller(sellerId string) (*[]entities.Dish, error)
+	FindBySellerAndID(id, sellerId string) (*entities.Dish, error)
 	Create(dish *entities.Dish) error
 	Update(id string, dish *entities.Dish) (*entities.Dish, error)
-	Delete(id string) error
+	Delete(id, sellerId string) error
 }

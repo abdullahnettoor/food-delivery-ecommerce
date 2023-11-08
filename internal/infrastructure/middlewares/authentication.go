@@ -11,7 +11,7 @@ import (
 )
 
 // Authourize admin
-func AuthorizeAdmin(c *fiber.Ctx) error {
+func AuthenticateAdmin(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing Admin")
 
 	tokenString := StripToken(c.Get("Authorization"))
@@ -33,8 +33,8 @@ func AuthorizeAdmin(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-// Authorize seller
-func AuthorizeSeller(c *fiber.Ctx) error {
+// Authenticate seller
+func AuthenticateSeller(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing Seller")
 
 	tokenString := StripToken(c.Get("Authorization"))
@@ -57,8 +57,8 @@ func AuthorizeSeller(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-// Authorize user
-func AuthorizeUser(c *fiber.Ctx) error {
+// Authenticate user
+func AuthenticateUser(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing User")
 
 	tokenString := StripToken(c.Get("Authorization"))

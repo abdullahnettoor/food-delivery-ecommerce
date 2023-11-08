@@ -78,9 +78,9 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 	return token, nil
 }
 
-func (uc *sellerUsecase) AddDish(restaurantId string, req *req.CreateDishReq) error {
+func (uc *sellerUsecase) AddDish(sellerId string, req *req.CreateDishReq) error {
 
-	id, err := strconv.ParseInt(restaurantId, 10, 32)
+	id, err := strconv.ParseInt(sellerId, 10, 32)
 	if err != nil {
 		return err
 	}
@@ -98,9 +98,9 @@ func (uc *sellerUsecase) AddDish(restaurantId string, req *req.CreateDishReq) er
 	return uc.dishRepo.Create(&newDish)
 }
 
-func (uc *sellerUsecase) UpdateDish(dishId, restaurantId string, req *req.UpdateDishReq) (*entities.Dish, error) {
+func (uc *sellerUsecase) UpdateDish(dishId, sellerId string, req *req.UpdateDishReq) (*entities.Dish, error) {
 
-	id, err := strconv.ParseInt(restaurantId, 10, 32)
+	id, err := strconv.ParseInt(sellerId, 10, 32)
 	if err != nil {
 		return nil, err
 	}
@@ -116,4 +116,16 @@ func (uc *sellerUsecase) UpdateDish(dishId, restaurantId string, req *req.Update
 		Availability: req.Availability,
 	}
 	return uc.dishRepo.Update(dishId, &updatedDish)
+}
+
+func (uc *sellerUsecase) GetAllDishes(sellerId string) (*[]entities.Dish, error) {
+	return uc.dishRepo.FindBySeller(sellerId)
+}
+
+func (uc *sellerUsecase) GetDish(id, sellerId string) (*entities.Dish, error) {
+	return uc.dishRepo.FindBySellerAndID(id, sellerId)
+}
+
+func (uc *sellerUsecase) DeleteDish(id, sellerId string) error {
+	return uc.dishRepo.Delete(id, sellerId)
 }
