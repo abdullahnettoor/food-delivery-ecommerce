@@ -3,6 +3,7 @@ package usecases
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
@@ -13,16 +14,17 @@ import (
 )
 
 type userUcase struct {
-	repo interfaces.IUserRepository
+	userRepo interfaces.IUserRepository
+	dishRepo interfaces.IDishRepository
 }
 
-func NewUserUsecase(repo interfaces.IUserRepository) *userUcase {
-	return &userUcase{repo}
+func NewUserUsecase(userRepo interfaces.IUserRepository, dishRepo interfaces.IDishRepository) *userUcase {
+	return &userUcase{userRepo, dishRepo}
 }
 
 func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {
 
-	_, err := uc.repo.FindByEmail(req.Email)
+	_, err := uc.userRepo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
 		return nil, err
 	}
@@ -40,14 +42,14 @@ func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {
 		Password:  hashedPwd,
 	}
 
-	newUser, err := uc.repo.Create(&user)
+	newUser, err := uc.userRepo.Create(&user)
 	if err != nil {
 		return nil, err
 	}
 
 	err = otphelper.SendOtp(user.Phone)
 	if err != nil {
-		uc.repo.DeleteByPhone(user.Phone)
+		uc.userRepo.DeleteByPhone(user.Phone)
 		return nil, err
 	}
 
@@ -60,7 +62,7 @@ func (uc *userUcase) VerifyOtp(phone string, req *req.UserVerifyOtpReq) error {
 		fmt.Println("Inside otp helper")
 		return errors.New("invalid otp")
 	}
-	if err := uc.repo.Verify(phone); err != nil {
+	if err := uc.userRepo.Verify(phone); err != nil {
 		fmt.Println("Inside verify user")
 		return err
 	}
@@ -77,7 +79,7 @@ func (uc *userUcase) SendOtp(phone string) error {
 
 func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 
-	user, err := uc.repo.FindByEmail(req.Email)
+	user, err := uc.userRepo.FindByEmail(req.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -87,4 +89,25 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 	}
 
 	return user, nil
+}
+
+func (uc *userUcase) SearchDish(search string) (*[]entities.Dish, error) {
+	return uc.dishRepo.Search(search)
+}
+
+func (uc *userUcase) GetDishesPage(page, limit string) (*[]entities.Dish, error) {
+	p, err := strconv.ParseUint(page, 10, 0)
+	if err != nil {
+		return nil, err
+	}
+	l, err := strconv.ParseUint(limit, 10, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.dishRepo.FindPageWise(uint(p), uint(l))
+}
+
+func (uc *userUcase) GetDish(id string) (*entities.Dish, error) {
+	return uc.dishRepo.FindByID(id)
 }

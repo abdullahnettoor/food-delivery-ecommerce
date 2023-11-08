@@ -17,17 +17,24 @@ func NewDishRepository(db *gorm.DB) interfaces.IDishRepository {
 	return &DishRepository{db}
 }
 
-func (repo *DishRepository) FindPageWise(page int) (*[]entities.Dish, error) {
+func (repo *DishRepository) FindPageWise(page, limit uint) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
+
+	offset := (page - 1) * uint(limit)
 
 	query := `
 	SELECT *
 	FROM dishes
-	WHERE is_available = true
-	AND deleted = false`
+	WHERE availability = true
+	AND deleted = false
+	OFFSET ? LIMIT ?`
 
-	if err := repo.DB.Raw(query).Scan(&dishList).Error; err != nil {
-		return nil, err
+	res := repo.DB.Raw(query, offset, limit).Scan(&dishList)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
 	}
 
 	return &dishList, nil
@@ -42,8 +49,13 @@ func (repo *DishRepository) FindByID(id string) (*entities.Dish, error) {
 	WHERE deleted = false
 	AND id = ?`
 
-	if err := repo.DB.Raw(query, id).Scan(&dish).Error; err != nil {
-		return nil, err
+	res := repo.DB.Raw(query, id).Scan(&dish)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
 	}
 
 	return &dish, nil
@@ -58,9 +70,13 @@ func (repo *DishRepository) FindBySeller(sellerId string) (*[]entities.Dish, err
 	WHERE seller_id = ?
 	AND deleted = false`
 
-	err := repo.DB.Raw(query, sellerId).Scan(&dishList).Error
-	if err != nil {
-		return nil, err
+	res := repo.DB.Raw(query, sellerId).Scan(&dishList)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
 	}
 
 	return &dishList, nil
@@ -76,9 +92,13 @@ func (repo *DishRepository) FindBySellerAndID(id, sellerId string) (*entities.Di
 	AND seller_id = ?
 	AND deleted = false`
 
-	err := repo.DB.Raw(query, id, sellerId).Scan(&dish).Error
-	if err != nil {
-		return nil, err
+	res := repo.DB.Raw(query, id, sellerId).Scan(&dish)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
 	}
 
 	return &dish, nil
@@ -126,9 +146,12 @@ func (repo *DishRepository) Update(id string, dish *entities.Dish) (*entities.Di
 	query := fmt.Sprintf("UPDATE dishes SET name='%v', description = '%v', price = '%v', quantity = '%v', category_id = '%v', is_veg = '%v' , availability = '%v' WHERE id = '%v'",
 		dish.Name, dish.Description, dish.Price, dish.Quantity, dish.CategoryID, dish.IsVeg, dish.Availability, id)
 
-	err := repo.DB.Exec(query).Error
-	if err != nil {
-		return nil, err
+	res := repo.DB.Exec(query)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
 	}
 
 	if err := repo.DB.Raw(`
@@ -149,6 +172,33 @@ func (repo *DishRepository) Delete(id, sellerId string) error {
 	WHERE id = ?
 	AND seller_id = ?`
 
-	return repo.DB.Exec(query, id, sellerId).Error
+	res := repo.DB.Exec(query, id, sellerId)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return e.ErrNotFound
+	}
 
+	return nil
+
+}
+
+func (repo *DishRepository) Search(search string) (*[]entities.Dish, error) {
+	var dishList []entities.Dish
+
+	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND deleted = false", search, search)
+
+	fmt.Println("Query is", query)
+
+	res := repo.DB.Raw(query).Scan(&dishList)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
+	}
+
+	return &dishList, nil
 }

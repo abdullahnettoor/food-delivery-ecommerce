@@ -5,7 +5,8 @@ import (
 )
 
 type IDishRepository interface {
-	FindPageWise(page int) (*[]entities.Dish, error)
+	Search(search string) (*[]entities.Dish, error)
+	FindPageWise(page, limit uint) (*[]entities.Dish, error)
 	FindByID(id string) (*entities.Dish, error)
 	FindBySeller(sellerId string) (*[]entities.Dish, error)
 	FindBySellerAndID(id, sellerId string) (*entities.Dish, error)

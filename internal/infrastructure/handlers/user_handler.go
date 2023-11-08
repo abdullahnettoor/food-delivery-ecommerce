@@ -154,3 +154,68 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 			Token:  token,
 		})
 }
+
+func (h *UserHandler) GetDishesPage(c *fiber.Ctx) error {
+	page := c.Query("p", "1")
+	limit := c.Query("l", "5")
+
+	dishList, err := h.usecase.GetDishesPage(page, limit)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch dishes",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.DishListRes{
+			Status:   "success",
+			Message:  "successfully fetched dish",
+			DishList: *dishList,
+		})
+
+}
+
+func (h *UserHandler) GetDish(c *fiber.Ctx) error {
+	dishId := c.Params("id")
+
+	dish, err := h.usecase.GetDish(dishId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch dish",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SingleDishRes{
+			Status:  "success",
+			Message: "successfully fetched dish",
+			Dish:    *dish,
+		})
+}
+
+func (h *UserHandler) SearchDish(c *fiber.Ctx) error {
+	searchQuery := c.Query("q")
+
+	dishList, err := h.usecase.SearchDish(searchQuery)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch dish",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.DishListRes{
+			Status:   "success",
+			Message:  "successfully fetched dish",
+			DishList: *dishList,
+		})
+}

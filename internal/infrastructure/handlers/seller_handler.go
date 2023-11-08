@@ -172,10 +172,10 @@ func (h *SellerHandler) GetDish(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.CommonRes{
+		JSON(res.SingleDishRes{
 			Status:  "success",
 			Message: "successfully fetched dish",
-			Result:  *dish,
+			Dish:    *dish,
 		})
 }
 
@@ -193,9 +193,9 @@ func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(res.SellerDishListRes{
+		JSON(res.DishListRes{
 			Status:   "success",
-			Message:  "successfully fetched dish",
+			Message:  "successfully fetched dishes",
 			DishList: *dishList,
 		})
 }

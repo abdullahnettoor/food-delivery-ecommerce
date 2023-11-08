@@ -10,4 +10,13 @@ type IUserUseCase interface {
 	Login(req *req.UserLoginReq) (*entities.User, error)
 	SendOtp(phone string) error
 	VerifyOtp(phone string, req *req.UserVerifyOtpReq) error
+
+	SearchDish(search string) (*[]entities.Dish, error)
+	GetDishesPage(page, limit string) (*[]entities.Dish, error)
+	GetDish(id string) (*entities.Dish, error)
+
+	// TODO: SearchSeller(search string)(*[]entities.Seller, error)
+	// TODO: GetSellersPage(page string)(*[]entities.Seller, error)
+	// TODO: GetSeller(id string)(*[]entities.Seller, error)
+
 }
