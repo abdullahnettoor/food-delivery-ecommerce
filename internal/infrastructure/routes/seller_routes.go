@@ -11,7 +11,7 @@ func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler) {
 	f.Post("/seller/register", seller.SignUp)
 	f.Post("/seller/login", seller.Login)
 
-	s := f.Group("/seller", middlewares.AuthenticateSeller)
+	s := f.Group("/seller", middlewares.AuthenticateSeller, middlewares.AuthorizeSeller)
 
 	s.Post("/addDish", seller.CreateDish)
 	s.Get("/dishes", seller.GetAllDish)
