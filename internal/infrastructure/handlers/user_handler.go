@@ -26,22 +26,28 @@ func (h *UserHandler) SignUp(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&signUpReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
 			})
 	}
 	if err := requestvalidation.ValidateRequest(signUpReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
 			})
 	}
 
 	user, err := h.usecase.SignUp(&signUpReq)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to signup user",
+				Error:   err.Error(),
 			})
 	}
 
@@ -50,15 +56,18 @@ func (h *UserHandler) SignUp(c *fiber.Ctx) error {
 	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, *user)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to create token",
+				Error:   err.Error(),
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
 		JSON(res.UserLoginRes{
-			Status: "success",
-			Token:  token,
+			Status:  "success",
+			Message: "verify otp to see home",
+			Token:   token,
 		})
 }
 
@@ -68,15 +77,17 @@ func (h *UserHandler) SendOtp(c *fiber.Ctx) error {
 
 	if err := h.usecase.SendOtp(user["phone"].(string)); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to send otp",
+				Error:   err.Error(),
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(fiber.Map{
-			"status":  "success",
-			"message": "otp sent successfully",
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully sent otp",
 		})
 }
 
@@ -88,14 +99,18 @@ func (h *UserHandler) VerifyOtp(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
 			})
 	}
 	if err := requestvalidation.ValidateRequest(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
 			})
 	}
 
@@ -103,15 +118,17 @@ func (h *UserHandler) VerifyOtp(c *fiber.Ctx) error {
 	fmt.Println("Error is", err)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to verify otp",
+				Error:   err.Error(),
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(fiber.Map{
-			"status":  "success",
-			"message": "otp verified successfully",
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully verified ",
 		})
 }
 
@@ -120,22 +137,28 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&loginReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
 			})
 	}
 	if err := requestvalidation.ValidateRequest(loginReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
 			})
 	}
 
 	user, err := h.usecase.Login(&loginReq)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to login",
+				Error:   err.Error(),
 			})
 	}
 
@@ -143,15 +166,18 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, user)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to create token",
+				Error:   err.Error(),
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
 		JSON(res.UserLoginRes{
-			Status: "success",
-			Token:  token,
+			Status:  "success",
+			Message: "successfully logged in",
+			Token:   token,
 		})
 }
 

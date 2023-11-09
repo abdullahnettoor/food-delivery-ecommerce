@@ -18,46 +18,70 @@ func NewAdminHandler(uCase interfaces.IAdminUseCase) *AdminHandler {
 	return &AdminHandler{uCase}
 }
 
+//	@Summary	Admin login
+//	@Tags		Admin
+//	@Accept		json
+//	@Produce	json
+//	@Param		adminLoginReq	body		req.AdminLoginReq	true	"Admin Login Request"
+//	@Success	200				{object}	res.AdminLoginRes	"Successful login"
+//	@Failure	400				{object}	res.CommonRes		"Bad Request"
+//	@Failure	500				{object}	res.CommonRes		"Internal Server Error"
+//	@Router		/admin/login [post]
 func (h *AdminHandler) Login(c *fiber.Ctx) error {
 	var loginReq req.AdminLoginReq
 
 	if err := c.BodyParser(&loginReq); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to parse body",
+				Error:   err.Error(),
 			})
 	}
 	if err := requestvalidation.ValidateRequest(loginReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to validate body",
+				Error:   fmt.Sprint(err),
 			})
 	}
 
 	token, err := h.usecase.Login(&loginReq)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to login",
+				Error:   err.Error(),
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
-		JSON(fiber.Map{
-			"success": "Login Successful",
-			"token":   token,
+		JSON(res.AdminLoginRes{
+			Status:  "success",
+			Token:   token,
+			Message: "successfully logged in",
 		})
 }
 
+//	@Summary		Get all sellers
+//	@Description	Get a list of all sellers
+//	@Tags			Admins
+//	@Tags			Sellers
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.SellerListRes	"Successful operation"
+//	@Failure		500	{object}	res.CommonRes		"Internal Server Error"
+//	@Router			/admin/sellers [get]
 func (h *AdminHandler) GetAllSellers(c *fiber.Ctx) error {
 
 	sellerList, err := h.usecase.GetAllSellers()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.SellerListRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to fetch sellers list",
-				Error:   err.Error(),
 			})
 	}
 
@@ -69,6 +93,16 @@ func (h *AdminHandler) GetAllSellers(c *fiber.Ctx) error {
 		})
 }
 
+//	@Summary		Verify a seller
+//	@Description	Verify a specific seller by ID
+//	@Tags			Admins
+//	@Tags			Sellers
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string			true	"Seller ID"	Format(uuid)
+//	@Success		200	{object}	res.CommonRes	"Seller successfully verified"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/admin/sellers/{id}/verify [patch]
 func (h *AdminHandler) VerifySeller(c *fiber.Ctx) error {
 	sellerId := c.Params("id")
 
@@ -88,6 +122,17 @@ func (h *AdminHandler) VerifySeller(c *fiber.Ctx) error {
 		})
 
 }
+
+//	@Summary		Block a seller
+//	@Description	Verify a specific seller by ID
+//	@Tags			Admins
+//	@Tags			Sellers
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string			true	"Seller ID"	int
+//	@Success		200	{object}	res.CommonRes	"Seller successfully blocked"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/admin/sellers/{id}/block [patch]
 func (h *AdminHandler) BlockSeller(c *fiber.Ctx) error {
 	sellerId := c.Params("id")
 
@@ -108,6 +153,16 @@ func (h *AdminHandler) BlockSeller(c *fiber.Ctx) error {
 
 }
 
+//	@Summary		Unblock a seller
+//	@Description	Verify a specific seller by ID
+//	@Tags			Admins
+//	@Tags			Sellers
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string			true	"Seller ID"	int
+//	@Success		200	{object}	res.CommonRes	"Seller successfully unblocked"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/admin/sellers/{id}/block [patch]
 func (h *AdminHandler) UnblockSeller(c *fiber.Ctx) error {
 	sellerId := c.Params("id")
 
@@ -128,12 +183,21 @@ func (h *AdminHandler) UnblockSeller(c *fiber.Ctx) error {
 
 }
 
+//	@Summary		Get all users
+//	@Description	Get a list of all users
+//	@Tags			Admins
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.UserListRes	"Successful operation"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/admin/users [get]
 func (h *AdminHandler) GetAllUsers(c *fiber.Ctx) error {
 
 	userList, err := h.usecase.GetAllUsers()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.UserListRes{
+			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to fetch users list",
 				Error:   err.Error(),
@@ -148,6 +212,16 @@ func (h *AdminHandler) GetAllUsers(c *fiber.Ctx) error {
 		})
 }
 
+//	@Summary		Block a user
+//	@Description	Verify a specific user by ID
+//	@Tags			Admins
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string			true	"User ID"	int
+//	@Success		200	{object}	res.CommonRes	"User successfully blocked"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/admin/users/{id}/block [patch]
 func (h *AdminHandler) BlockUser(c *fiber.Ctx) error {
 	userId := c.Params("id")
 
@@ -168,6 +242,16 @@ func (h *AdminHandler) BlockUser(c *fiber.Ctx) error {
 
 }
 
+//	@Summary		Unblock a user
+//	@Description	Verify a specific user by ID
+//	@Tags			Admins
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string			true	"User ID"	int
+//	@Success		200	{object}	res.CommonRes	"User successfully unblocked"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/admin/users/{id}/block [patch]
 func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
 	userId := c.Params("id")
 

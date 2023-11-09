@@ -23,29 +23,36 @@ func (h *SellerHandler) SignUp(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&signUpReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
 			})
 	}
 	if err := requestvalidation.ValidateRequest(signUpReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
 			})
 	}
 
 	token, err := h.usecase.SignUp(&signUpReq)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to register",
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
 		JSON(res.SellerLoginRes{
-			Status: "success",
-			Token:  token,
+			Status:  "success",
+			Message: "successfully signed up",
+			Token:   token,
 		})
 }
 
@@ -54,22 +61,28 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&loginReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to parse body",
+				Error:   err.Error(),
 			})
 	}
 	if err := requestvalidation.ValidateRequest(loginReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err,
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
 			})
 	}
 
 	token, err := h.usecase.Login(&loginReq)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{
-				"error": err.Error(),
+			JSON(res.CommonRes{
+				Status:  "success",
+				Message: "failed to Login",
+				Error:   err.Error(),
 			})
 	}
 

@@ -13,15 +13,15 @@ func AdminRoutes(f *fiber.App, admin *handlers.AdminHandler) {
 	r := f.Group("/admin", middlewares.AuthenticateAdmin)
 
 	r.Get("/sellers", admin.GetAllSellers)
-	r.Patch("/sellers/verify/:id", admin.VerifySeller)
-	r.Patch("/sellers/block/:id", admin.BlockSeller)
-	r.Patch("/sellers/unblock/:id", admin.UnblockSeller)
+	r.Patch("/sellers/:id/verify", admin.VerifySeller)
+	r.Patch("/sellers/:id/block", admin.BlockSeller)
+	r.Patch("/sellers/:id/unblock", admin.UnblockSeller)
 
 	r.Get("/users", admin.GetAllUsers)
-	r.Patch("/users/block/:id", admin.BlockUser)
-	r.Patch("/users/unblock/:id", admin.UnblockUser)
+	r.Patch("/users/:id/block", admin.BlockUser)
+	r.Patch("/users/:id/unblock", admin.UnblockUser)
 
 	r.Post("/category/addCategory", admin.AddCategory)
-	r.Patch("/category/edit/:id", admin.EditCategory)
+	r.Patch("/category/:id/edit", admin.EditCategory)
 
 }
