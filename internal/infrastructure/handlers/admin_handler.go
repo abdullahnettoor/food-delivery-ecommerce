@@ -280,6 +280,18 @@ func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
 
 }
 
+//	@Summary		Add a category
+//	@Description	Create a new category
+//	@Security		Bearer
+//	@Tags			Admin
+//	@Accept			json
+//	@Produce		json
+//	@Param			req	body		req.CreateCategoryReq	true	"Category creation request"
+//	@Success		200	{object}	res.CommonRes			"Category successfully created"
+//	@Failure		400	{object}	res.CommonRes			"Bad Request"
+//	@Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/admin/categories/addCategory [post]
 func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 	var req req.CreateCategoryReq
 
@@ -317,6 +329,19 @@ func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 		})
 }
 
+//	@Summary		Edit a category
+//	@Description	Update an existing category by ID
+//	@Security		Bearer
+//	@Tags			Admin
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string					true	"Category ID"	int
+//	@Param			req	body		req.UpdateCategoryReq	true	"Category update request"
+//	@Success		200	{object}	res.CommonRes			"Category successfully updated"
+//	@Failure		400	{object}	res.CommonRes			"Bad Request"
+//	@Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/admin/categories/{id}/edit [patch]
 func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 	categoryId := c.Params("id")
 	var req req.UpdateCategoryReq
@@ -354,4 +379,34 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 			Message: "successfully updated category",
 		})
 
+}
+
+//	@Summary		Get all categories
+//	@Description	Retrieve a list of all categories
+//	@Security		Bearer
+//	@Tags			Admin
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.AllCategoriesRes	"Successful operation"
+//	@Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/admin/categories [get]
+func (h *AdminHandler) GetAllCategories(c *fiber.Ctx) error {
+
+	categories, err := h.usecase.GetAllCategory()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch categories",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.AllCategoriesRes{
+			Status:     "success",
+			Message:    "successfully fetched categories",
+			Categories: *categories,
+		})
 }
