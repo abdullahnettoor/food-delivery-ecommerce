@@ -1,0 +1,325 @@
+definitions:
+  entities.Seller:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      pinCode:
+        type: string
+      sellerId:
+        type: integer
+      status:
+        type: string
+    type: object
+  entities.User:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+      status:
+        type: string
+      userId:
+        type: integer
+    type: object
+  req.AdminLoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  res.AdminLoginRes:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+      token:
+        type: string
+    type: object
+  res.CommonRes:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+      result: {}
+      status:
+        type: string
+    type: object
+  res.SellerListRes:
+    properties:
+      message:
+        type: string
+      sellerList:
+        items:
+          $ref: '#/definitions/entities.Seller'
+        type: array
+      status:
+        type: string
+    type: object
+  res.UserListRes:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      userList:
+        items:
+          $ref: '#/definitions/entities.User'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Admin Login Request
+        in: body
+        name: adminLoginReq
+        required: true
+        schema:
+          $ref: '#/definitions/req.AdminLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/res.AdminLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Admin login
+      tags:
+      - Admin
+  /admin/sellers:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all sellers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/res.SellerListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get all sellers
+      tags:
+      - Admin
+  /admin/sellers/{id}/block:
+    patch:
+      consumes:
+      - application/json
+      description: Block a specific seller by ID
+      parameters:
+      - description: Seller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Seller successfully blocked
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Block a seller
+      tags:
+      - Admin
+  /admin/sellers/{id}/unblock:
+    patch:
+      consumes:
+      - application/json
+      description: Unblock a specific seller by ID
+      parameters:
+      - description: Seller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Seller successfully unblocked
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Unblock a seller
+      tags:
+      - Admin
+  /admin/sellers/{id}/verify:
+    patch:
+      consumes:
+      - application/json
+      description: Verify a specific seller by ID
+      parameters:
+      - description: Seller ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Seller successfully verified
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      - Bearer: []
+      summary: Verify a seller
+      tags:
+      - Admin
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/res.UserListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get all users
+      tags:
+      - Admin
+  /admin/users/{id}/block:
+    patch:
+      consumes:
+      - application/json
+      description: Block a specific user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully blocked
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Block a user
+      tags:
+      - Admin
+  /admin/users/{id}/unblock:
+    patch:
+      consumes:
+      - application/json
+      description: Unblock a specific user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully unblocked
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Unblock a user
+      tags:
+      - Admin
+swagger: "2.0"
