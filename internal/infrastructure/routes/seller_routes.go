@@ -16,7 +16,7 @@ func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler) {
 	s.Post("/addDish", seller.CreateDish)
 	s.Get("/dishes", seller.GetAllDish)
 	s.Get("/dishes/:id", seller.GetDish)
-	s.Put("/dishes/edit/:id", seller.UpdateDish)
-	s.Delete("/dishes/delete/:id", seller.DeleteDish)
+	s.Put("/dishes/:id", seller.UpdateDish)
+	s.Delete("/dishes/:id", seller.DeleteDish)
 
 }

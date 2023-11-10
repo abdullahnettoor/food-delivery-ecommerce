@@ -8,18 +8,18 @@ import (
 
 func UserRoutes(f *fiber.App, user *handlers.UserHandler) {
 
-	f.Post("/login", user.Login)
 	f.Post("/signup", user.SignUp)
-	f.Post("/verifyOtp", middlewares.AuthenticateUser, user.VerifyOtp)
 	f.Post("/sendOtp", middlewares.AuthenticateUser, user.SendOtp)
+	f.Post("/verifyOtp", middlewares.AuthenticateUser, user.VerifyOtp)
+	f.Post("/login", user.Login)
 
 	u := f.Group("/", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 	u.Get("/dishes", user.GetDishesPage)
 	u.Get("/dishes/:id", user.GetDish)
-	u.Get("/search", user.SearchDish)
+	u.Get("/search/dishes", user.SearchDish)
 
 	u.Get("/sellers", user.GetSellersPage)
-	u.Get("/sellers/search", user.SearchSeller)
 	u.Get("/sellers/:id", user.GetSeller)
+	u.Get("/search/sellers", user.SearchSeller)
 
 }

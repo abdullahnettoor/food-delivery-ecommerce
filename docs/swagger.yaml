@@ -6,6 +6,27 @@ definitions:
       name:
         type: string
     type: object
+  entities.Dish:
+    properties:
+      categoryId:
+        type: integer
+      description:
+        type: string
+      dishId:
+        type: integer
+      isAvailable:
+        type: boolean
+      isVeg:
+        type: boolean
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      sellerId:
+        type: integer
+    type: object
   entities.Seller:
     properties:
       description:
@@ -55,6 +76,65 @@ definitions:
     required:
     - name
     type: object
+  req.CreateDishReq:
+    properties:
+      categoryId:
+        type: integer
+      description:
+        type: string
+      isAvailable:
+        type: boolean
+      isVeg:
+        type: boolean
+      name:
+        minLength: 3
+        type: string
+      price:
+        minimum: 0
+        type: number
+      quantity:
+        minimum: 0
+        type: integer
+    required:
+    - categoryId
+    - name
+    - price
+    - quantity
+    type: object
+  req.SellerLoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  req.SellerSignUpReq:
+    properties:
+      confirmPassword:
+        minLength: 3
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      name:
+        minLength: 2
+        type: string
+      password:
+        minLength: 3
+        type: string
+      pinCode:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - pinCode
+    type: object
   req.UpdateCategoryReq:
     properties:
       name:
@@ -62,6 +142,70 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  req.UpdateDishReq:
+    properties:
+      categoryId:
+        type: integer
+      description:
+        type: string
+      isAvailable:
+        type: boolean
+      isVeg:
+        type: boolean
+      name:
+        minLength: 3
+        type: string
+      price:
+        minimum: 0
+        type: number
+      quantity:
+        minimum: 0
+        type: integer
+    required:
+    - categoryId
+    - name
+    - price
+    - quantity
+    type: object
+  req.UserLoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  req.UserSignUpReq:
+    properties:
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      firstName:
+        minLength: 3
+        type: string
+      lastName:
+        type: string
+      password:
+        minLength: 3
+        type: string
+      phone:
+        type: string
+    required:
+    - email
+    - firstName
+    - phone
+    type: object
+  req.UserVerifyOtpReq:
+    properties:
+      otp:
+        type: string
+    required:
+    - otp
     type: object
   res.AdminLoginRes:
     properties:
@@ -97,6 +241,17 @@ definitions:
       status:
         type: string
     type: object
+  res.DishListRes:
+    properties:
+      dishList:
+        items:
+          $ref: '#/definitions/entities.Dish'
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
   res.SellerListRes:
     properties:
       message:
@@ -105,6 +260,33 @@ definitions:
         items:
           $ref: '#/definitions/entities.Seller'
         type: array
+      status:
+        type: string
+    type: object
+  res.SellerLoginRes:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      token:
+        type: string
+    type: object
+  res.SingleDishRes:
+    properties:
+      dish:
+        $ref: '#/definitions/entities.Dish'
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  res.SingleSellerRes:
+    properties:
+      message:
+        type: string
+      seller:
+        $ref: '#/definitions/entities.Seller'
       status:
         type: string
     type: object
@@ -118,6 +300,15 @@ definitions:
         items:
           $ref: '#/definitions/entities.User'
         type: array
+    type: object
+  res.UserLoginRes:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      token:
+        type: string
     type: object
 info:
   contact: {}
@@ -460,4 +651,563 @@ paths:
       summary: Unblock a user
       tags:
       - Admin
+  /dishes:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of dishes for the user
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: p
+        type: string
+      - description: Number of items per page
+        in: query
+        name: l
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched dishes
+          schema:
+            $ref: '#/definitions/res.DishListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get paginated list of dishes
+      tags:
+      - User
+  /dishes/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific dish by ID for the user
+      parameters:
+      - description: Dish ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched dish
+          schema:
+            $ref: '#/definitions/res.SingleDishRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get a dish
+      tags:
+      - User
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate and log in as a user
+      parameters:
+      - description: User login request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in
+          schema:
+            $ref: '#/definitions/res.UserLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: User Login
+      tags:
+      - User
+  /search/dishes:
+    get:
+      consumes:
+      - application/json
+      description: Search for dishes based on a query
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched dishes
+          schema:
+            $ref: '#/definitions/res.DishListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Search dishes
+      tags:
+      - User
+  /search/sellers:
+    get:
+      consumes:
+      - application/json
+      description: Search for sellers based on a query
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched sellers
+          schema:
+            $ref: '#/definitions/res.SellerListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Search sellers
+      tags:
+      - User
+  /seller/addDish:
+    post:
+      consumes:
+      - application/json
+      description: Add a new dish for the seller
+      parameters:
+      - description: Dish creation request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateDishReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully created dish
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Create a dish
+      tags:
+      - Seller
+  /seller/dishes:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all dishes for the seller
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched dishes
+          schema:
+            $ref: '#/definitions/res.DishListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get all dishes
+      tags:
+      - Seller
+  /seller/dishes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a specific dish by ID for the seller
+      parameters:
+      - description: Dish ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted dish
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Delete a dish
+      tags:
+      - Seller
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific dish by ID for the seller
+      parameters:
+      - description: Dish ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched dish
+          schema:
+            $ref: '#/definitions/res.SingleDishRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get a dish
+      tags:
+      - Seller
+    put:
+      consumes:
+      - application/json
+      description: Modify an existing dish by ID for the seller
+      parameters:
+      - description: Dish ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dish update request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UpdateDishReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated dish
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update a dish
+      tags:
+      - Seller
+  /seller/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate and log in as a seller
+      parameters:
+      - description: Seller login request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.SellerLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in
+          schema:
+            $ref: '#/definitions/res.SellerLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Seller Login
+      tags:
+      - Seller
+  /seller/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new seller
+      parameters:
+      - description: Seller sign-up request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.SellerSignUpReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully signed up
+          schema:
+            $ref: '#/definitions/res.SellerLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Seller Sign Up
+      tags:
+      - Seller
+  /sellers:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of sellers for the user
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: p
+        type: string
+      - description: Number of items per page
+        in: query
+        name: l
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched sellers
+          schema:
+            $ref: '#/definitions/res.SellerListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get paginated list of sellers
+      tags:
+      - User
+  /sellers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific seller by ID for the user
+      parameters:
+      - description: Seller ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched seller
+          schema:
+            $ref: '#/definitions/res.SingleSellerRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get a seller
+      tags:
+      - User
+  /sendOtp:
+    post:
+      consumes:
+      - application/json
+      description: Send OTP to the user's registered phone number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully sent OTP
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Send OTP
+      tags:
+      - User
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User sign-up request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserSignUpReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully signed up
+          schema:
+            $ref: '#/definitions/res.UserLoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Sign up as a user
+      tags:
+      - User
+  /verifyOtp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP for the user's registered phone number
+      parameters:
+      - description: User OTP verification request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserVerifyOtpReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully verified OTP
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Verify OTP
+      tags:
+      - User
 swagger: "2.0"

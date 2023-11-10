@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -29,6 +30,15 @@ func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 	if err != nil {
 		fmt.Println("DB Error", err.Error())
 		return "", err
+	}
+
+	switch seller.Status {
+	case "Pending":
+		return "", errors.New("seller is not verified")
+	case "Blocked":
+		return "", errors.New("seller is blocked")
+	case "Rejected":
+		return "", errors.New("seller's application is rejected")
 	}
 
 	if err := hashpassword.CompareHashedPassword(seller.Password, req.Password); err != nil {

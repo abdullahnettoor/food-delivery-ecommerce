@@ -18,6 +18,16 @@ func NewSellerHandler(uCase interfaces.ISellerUseCase) *SellerHandler {
 	return &SellerHandler{uCase}
 }
 
+// @Summary		Seller Sign Up
+// @Description	Register a new seller
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.SellerSignUpReq	true	"Seller sign-up request"
+// @Success		200	{object}	res.SellerLoginRes	"Successfully signed up"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/seller/register [post]
 func (h *SellerHandler) SignUp(c *fiber.Ctx) error {
 	var signUpReq req.SellerSignUpReq
 
@@ -56,6 +66,16 @@ func (h *SellerHandler) SignUp(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Seller Login
+// @Description	Authenticate and log in as a seller
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.SellerLoginReq	true	"Seller login request"
+// @Success		200	{object}	res.SellerLoginRes	"Successfully logged in"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/seller/login [post]
 func (h *SellerHandler) Login(c *fiber.Ctx) error {
 	var loginReq req.SellerLoginReq
 
@@ -93,6 +113,18 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Create a dish
+// @Description	Add a new dish for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.CreateDishReq	true	"Dish creation request"
+// @Success		200	{object}	res.CommonRes		"Successfully created dish"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/seller/addDish [post]
 func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
 	var req req.CreateDishReq
@@ -130,6 +162,19 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Update a dish
+// @Description	Modify an existing dish by ID for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string				true	"Dish ID"	Format(uuid)
+// @Param			req	body		req.UpdateDishReq	true	"Dish update request"
+// @Success		200	{object}	res.CommonRes		"Successfully updated dish"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/seller/dishes/{id} [put]
 func (h *SellerHandler) UpdateDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 	seller := c.Locals("SellerModel").(map[string]any)
@@ -170,6 +215,18 @@ func (h *SellerHandler) UpdateDish(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Get a dish
+// @Description	Retrieve a specific dish by ID for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string				true	"Dish ID"	Format(uuid)
+// @Success		200	{object}	res.SingleDishRes	"Successfully fetched dish"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/seller/dishes/{id} [get]
 func (h *SellerHandler) GetDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 	seller := c.Locals("SellerModel").(map[string]any)
@@ -192,6 +249,16 @@ func (h *SellerHandler) GetDish(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Get all dishes
+// @Description	Retrieve a list of all dishes for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
+// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
+// @Router			/seller/dishes [get]
 func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
 
@@ -213,6 +280,18 @@ func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Delete a dish
+// @Description	Remove a specific dish by ID for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string			true	"Dish ID"	Format(uuid)
+// @Success		200	{object}	res.CommonRes	"Successfully deleted dish"
+// @Failure		400	{object}	res.CommonRes	"Bad Request"
+// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
+// @Router			/seller/dishes/{id} [delete]
 func (h *SellerHandler) DeleteDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 	seller := c.Locals("SellerModel").(map[string]any)
