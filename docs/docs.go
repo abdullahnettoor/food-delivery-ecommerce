@@ -390,7 +390,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Seller ID",
                         "name": "id",
                         "in": "path",
@@ -928,7 +927,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Dish ID",
                         "name": "id",
                         "in": "path",
@@ -982,7 +980,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Dish ID",
                         "name": "id",
                         "in": "path",
@@ -1045,7 +1042,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Dish ID",
                         "name": "id",
                         "in": "path",
@@ -1247,7 +1243,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Seller ID",
                         "name": "id",
                         "in": "path",

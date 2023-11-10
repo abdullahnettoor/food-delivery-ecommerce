@@ -372,7 +372,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Seller ID",
                         "name": "id",
                         "in": "path",
@@ -910,7 +909,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Dish ID",
                         "name": "id",
                         "in": "path",
@@ -964,7 +962,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Dish ID",
                         "name": "id",
                         "in": "path",
@@ -1027,7 +1024,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Dish ID",
                         "name": "id",
                         "in": "path",
@@ -1229,7 +1225,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "Seller ID",
                         "name": "id",
                         "in": "path",

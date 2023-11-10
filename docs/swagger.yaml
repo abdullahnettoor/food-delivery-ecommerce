@@ -538,7 +538,6 @@ paths:
       description: Verify a specific seller by ID
       parameters:
       - description: Seller ID
-        format: uuid
         in: path
         name: id
         required: true
@@ -880,7 +879,6 @@ paths:
       description: Remove a specific dish by ID for the seller
       parameters:
       - description: Dish ID
-        format: uuid
         in: path
         name: id
         required: true
@@ -915,7 +913,6 @@ paths:
       description: Retrieve a specific dish by ID for the seller
       parameters:
       - description: Dish ID
-        format: uuid
         in: path
         name: id
         required: true
@@ -950,7 +947,6 @@ paths:
       description: Modify an existing dish by ID for the seller
       parameters:
       - description: Dish ID
-        format: uuid
         in: path
         name: id
         required: true
@@ -1086,7 +1082,6 @@ paths:
       description: Retrieve a specific seller by ID for the user
       parameters:
       - description: Seller ID
-        format: uuid
         in: path
         name: id
         required: true

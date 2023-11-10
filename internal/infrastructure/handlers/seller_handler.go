@@ -168,7 +168,7 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 // @Tags			Seller
 // @Accept			json
 // @Produce		json
-// @Param			id	path		string				true	"Dish ID"	Format(uuid)
+// @Param			id	path		string				true	"Dish ID"	int
 // @Param			req	body		req.UpdateDishReq	true	"Dish update request"
 // @Success		200	{object}	res.CommonRes		"Successfully updated dish"
 // @Failure		400	{object}	res.CommonRes		"Bad Request"
@@ -221,7 +221,7 @@ func (h *SellerHandler) UpdateDish(c *fiber.Ctx) error {
 // @Tags			Seller
 // @Accept			json
 // @Produce		json
-// @Param			id	path		string				true	"Dish ID"	Format(uuid)
+// @Param			id	path		string				true	"Dish ID"	int
 // @Success		200	{object}	res.SingleDishRes	"Successfully fetched dish"
 // @Failure		400	{object}	res.CommonRes		"Bad Request"
 // @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
@@ -286,7 +286,7 @@ func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 // @Tags			Seller
 // @Accept			json
 // @Produce		json
-// @Param			id	path		string			true	"Dish ID"	Format(uuid)
+// @Param			id	path		string			true	"Dish ID"	int
 // @Success		200	{object}	res.CommonRes	"Successfully deleted dish"
 // @Failure		400	{object}	res.CommonRes	"Bad Request"
 // @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
