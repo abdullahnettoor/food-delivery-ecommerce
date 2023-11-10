@@ -85,6 +85,15 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 		return nil, err
 	}
 
+	switch user.Status {
+	case "Blocked":
+		return nil, errors.New("user is blocked")
+	case "Pending":
+		return nil, errors.New("user need to verify otp")
+	case "Deleted":
+		return nil, e.ErrNotFound
+	}
+
 	if err := hashpassword.CompareHashedPassword(user.Password, req.Password); err != nil {
 		return nil, e.ErrInvalidPassword
 	}

@@ -73,8 +73,9 @@ func (repo *UserRepository) Create(user *entities.User) (*entities.User, error) 
 	query := repo.DB.Raw(`
 		SELECT * 
 		FROM users 
-		WHERE email = ?`,
-		user.Email)
+		WHERE email = ?
+		OR phone = ?`,
+		user.Email, user.Phone)
 
 	if query.Error != nil {
 		return nil, query.Error
