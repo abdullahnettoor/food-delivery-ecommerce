@@ -15,13 +15,14 @@ type SellerLoginReq struct {
 }
 
 type CreateDishReq struct {
-	Name         string  `json:"name" validate:"required,gte=3"`
-	Description  string  `json:"description"`
-	Price        float64 `json:"price" validate:"required,gte=0"`
-	Quantity     uint    `json:"quantity" validate:"required,gte=0"`
-	CategoryID   uint    `json:"categoryId" validate:"required,number"`
-	IsVeg        bool    `json:"isVeg" validate:"boolean"`
-	Availability bool    `json:"isAvailable" validate:"boolean"`
+	Name         string  `form:"name" validate:"required,gte=3"`
+	Description  string  `form:"description"`
+	Price        float64 `form:"price" validate:"required,gte=0"`
+	Quantity     uint    `form:"quantity" validate:"required,gte=0"`
+	CategoryID   uint    `form:"categoryId" validate:"required,number"`
+	IsVeg        bool    `form:"isVeg" validate:"boolean"`
+	Availability bool    `form:"isAvailable" validate:"boolean"`
+	ImageUrl     string  `swaggerignore:"true"`
 }
 
 type UpdateDishReq struct {

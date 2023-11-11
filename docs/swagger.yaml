@@ -14,6 +14,8 @@ definitions:
         type: string
       dishId:
         type: integer
+      imageUrl:
+        type: string
       isAvailable:
         type: boolean
       isVeg:
@@ -75,31 +77,6 @@ definitions:
         type: string
     required:
     - name
-    type: object
-  req.CreateDishReq:
-    properties:
-      categoryId:
-        type: integer
-      description:
-        type: string
-      isAvailable:
-        type: boolean
-      isVeg:
-        type: boolean
-      name:
-        minLength: 3
-        type: string
-      price:
-        minimum: 0
-        type: number
-      quantity:
-        minimum: 0
-        type: integer
-    required:
-    - categoryId
-    - name
-    - price
-    - quantity
     type: object
   req.SellerLoginReq:
     properties:
@@ -814,15 +791,42 @@ paths:
   /seller/addDish:
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Add a new dish for the seller
       parameters:
-      - description: Dish creation request
-        in: body
-        name: req
+      - description: Image file for the dish
+        in: formData
+        name: image
         required: true
-        schema:
-          $ref: '#/definitions/req.CreateDishReq'
+        type: file
+      - in: formData
+        name: categoryId
+        required: true
+        type: integer
+      - in: formData
+        name: description
+        type: string
+      - in: formData
+        name: isAvailable
+        type: boolean
+      - in: formData
+        name: isVeg
+        type: boolean
+      - in: formData
+        minLength: 3
+        name: name
+        required: true
+        type: string
+      - in: formData
+        minimum: 0
+        name: price
+        required: true
+        type: number
+      - in: formData
+        minimum: 0
+        name: quantity
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

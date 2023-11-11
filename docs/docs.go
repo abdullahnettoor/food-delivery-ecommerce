@@ -15,12 +15,12 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "securityDefinitions": {
-        "Bearer": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
-        }
-    },
+        	"Bearer": {
+        	"type": "apiKey",
+        	"name": "Authorization",
+        	"in": "header"
+        	}
+        },
     "paths": {
         "/admin/categories": {
             "get": {
@@ -818,7 +818,7 @@ const docTemplate = `{
                 ],
                 "description": "Add a new dish for the seller",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -829,13 +829,53 @@ const docTemplate = `{
                 "summary": "Create a dish",
                 "parameters": [
                     {
-                        "description": "Dish creation request",
-                        "name": "req",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.CreateDishReq"
-                        }
+                        "type": "file",
+                        "description": "Image file for the dish",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "categoryId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "isAvailable",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "isVeg",
+                        "in": "formData"
+                    },
+                    {
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "name": "quantity",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1451,6 +1491,9 @@ const docTemplate = `{
                 "dishId": {
                     "type": "integer"
                 },
+                "imageUrl": {
+                    "type": "string"
+                },
                 "isAvailable": {
                     "type": "boolean"
                 },
@@ -1542,41 +1585,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "minLength": 3
-                }
-            }
-        },
-        "req.CreateDishReq": {
-            "type": "object",
-            "required": [
-                "categoryId",
-                "name",
-                "price",
-                "quantity"
-            ],
-            "properties": {
-                "categoryId": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "isAvailable": {
-                    "type": "boolean"
-                },
-                "isVeg": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 3
-                },
-                "price": {
-                    "type": "number",
-                    "minimum": 0
-                },
-                "quantity": {
-                    "type": "integer",
-                    "minimum": 0
                 }
             }
         },

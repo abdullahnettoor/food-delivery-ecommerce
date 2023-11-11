@@ -8,12 +8,14 @@ import (
 )
 
 func main() {
-	config, configErr := config.LoadDbConfig()
+	dbCfg, configErr := config.LoadDbConfig()
 	if configErr != nil {
 		log.Fatal("cannot load config: ", configErr)
 	}
 
-	server, diErr := di.InitializeAPI(config)
+	cldCfg := config.LoadImageUploader()
+
+	server, diErr := di.InitializeAPI(dbCfg, cldCfg)
 	if diErr != nil {
 		log.Fatal("cannot start server: ", diErr)
 	}

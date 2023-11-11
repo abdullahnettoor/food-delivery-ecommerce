@@ -1,10 +1,16 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
 
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	res "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/response_models"
+	imageuploader "github.com/abdullahnettoor/food-delivery-eCommerce/internal/services/image_uploader"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 	requestvalidation "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/request_validation"
 	"github.com/gofiber/fiber/v2"
@@ -108,8 +114,9 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).
 		JSON(res.SellerLoginRes{
-			Status: "success",
-			Token:  token,
+			Status:  "success",
+			Message: "successfully logged in",
+			Token:   token,
 		})
 }
 
@@ -117,16 +124,18 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 // @Description	Add a new dish for the seller
 // @Security		Bearer
 // @Tags			Seller
-// @Accept			json
+// @Accept			multipart/form-data
 // @Produce		json
-// @Param			req	body		req.CreateDishReq	true	"Dish creation request"
-// @Success		200	{object}	res.CommonRes		"Successfully created dish"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Param			image	formData	file			true				"Image file for the dish"
+// @Param			req		body		formData		req.CreateDishReq	true	"Dish creation request"
+// @Success		200		{object}	res.CommonRes	"Successfully created dish"
+// @Failure		400		{object}	res.CommonRes	"Bad Request"
+// @Failure		401		{object}	res.CommonRes	"Unauthorized Access"
+// @Failure		500		{object}	res.CommonRes	"Internal Server Error"
 // @Router			/seller/addDish [post]
 func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
+	sellerId := fmt.Sprint(seller["sellerId"])
 	var req req.CreateDishReq
 
 	if err := c.BodyParser(&req); err != nil {
@@ -146,7 +155,85 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 			})
 	}
 
-	if err := h.usecase.AddDish(fmt.Sprint(seller["sellerId"]), &req); err != nil {
+	formFile, err := c.FormFile("image")
+	if err != nil {
+		fmt.Println("Error is", err)
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to get image from form",
+			})
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to get directory",
+			})
+	}
+	path := filepath.Join(wd, "tmp", formFile.Filename)
+
+	trgt, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to open file path in server",
+			})
+	}
+	defer trgt.Close()
+
+	f, err := formFile.Open()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to open file from form",
+			})
+	}
+
+	if _, err := io.Copy(trgt, f); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to copy form file to temp",
+			})
+	}
+
+	ctx := context.Background()
+	imgUploader := imageuploader.NewUploadImage()
+	fileName := fmt.Sprintf("%s-%s", sellerId, strings.ToLower(strings.ReplaceAll(req.Name, " ", "-")))
+
+	url, err := imgUploader.Handler(ctx, path, fileName, "dishes")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to upload file to cloud",
+			})
+	}
+
+	req.ImageUrl = url
+
+	e := os.Remove(path)
+	if e != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to delete temp image",
+			})
+	}
+
+	if err := h.usecase.AddDish(sellerId, &req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",

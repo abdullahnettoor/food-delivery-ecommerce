@@ -7,11 +7,17 @@ import (
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/infrastructure/handlers"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases"
+	cld "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/cloudinary"
 )
 
-func InitializeAPI(c *config.DbConfig) (*api.ServerHttp, error) {
+func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*api.ServerHttp, error) {
 
 	gormDB, err := db.ConnectPostgres(c)
+	if err != nil {
+		return nil, err
+	}
+
+	err = cld.ConnectCloudinary(imgUploaderCfg)
 	if err != nil {
 		return nil, err
 	}

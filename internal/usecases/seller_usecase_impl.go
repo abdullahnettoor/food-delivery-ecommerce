@@ -99,6 +99,7 @@ func (uc *sellerUsecase) AddDish(sellerId string, req *req.CreateDishReq) error 
 		SellerID:     uint(id),
 		Name:         req.Name,
 		Description:  req.Description,
+		ImageUrl:     req.ImageUrl,
 		Price:        req.Price,
 		Quantity:     req.Quantity,
 		CategoryID:   req.CategoryID,

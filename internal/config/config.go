@@ -27,3 +27,13 @@ func LoadDbConfig() (*DbConfig, error) {
 
 	return &dbConfig, nil
 }
+
+type ImgUploaderCfg struct {
+	CloudUrl string
+}
+
+func LoadImageUploader() *ImgUploaderCfg {
+	var cfg ImgUploaderCfg
+	cfg.CloudUrl = viper.GetString("IMG_CLOUD_URL")
+	return &cfg
+}

@@ -12,3 +12,6 @@ deps: ## Install dependencies
 swag: ## Generate swagger docs
 	swag init -g cmd/main.go   
 # 	swag init -g pkg/api/handler/admin.go -o ./cmd/api/docs
+
+nodemon:
+	nodemon --exec go run cmd/main.go --signal SIGTERM
