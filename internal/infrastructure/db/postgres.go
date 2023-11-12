@@ -37,7 +37,7 @@ func syncDatabase(db *gorm.DB) error {
 		&entities.Dish{},
 		&entities.Cart{},
 		&entities.CartItem{},
-	// &models.Address{},
+		&entities.Address{},
 	// &models.Cart{},
 	// &models.CartItem{},
 	// &models.Order{},

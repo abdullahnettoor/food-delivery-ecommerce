@@ -15,7 +15,18 @@ type UserListRes struct {
 }
 
 type ViewCartRes struct {
-	Status   string          `json:"status,omitempty"`
-	Cart entities.Cart `json:"cart,omitempty"`
-	Message  string          `json:"message,omitempty"`
+	Status  string        `json:"status,omitempty"`
+	Cart    entities.Cart `json:"cart,omitempty"`
+	Message string        `json:"message,omitempty"`
+}
+type ViewAddressRes struct {
+	Status  string           `json:"status,omitempty"`
+	Address entities.Address `json:"address,omitempty"`
+	Message string           `json:"message,omitempty"`
+}
+
+type ViewAddressListRes struct {
+	Status  string           `json:"status,omitempty"`
+	AddressList []entities.Address `json:"addressList,omitempty"`
+	Message string           `json:"message,omitempty"`
 }

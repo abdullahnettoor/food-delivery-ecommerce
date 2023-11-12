@@ -14,4 +14,8 @@ type IUserRepository interface {
 	Block(id string) error
 	Unblock(id string) error
 	DeleteByPhone(phone string) error
+
+	AddAddress(address *entities.Address) error
+	FindAddressByUserID(id, userId string) (*entities.Address, error)
+	FindAllAddressByUserID(userId string) (*[]entities.Address, error)
 }

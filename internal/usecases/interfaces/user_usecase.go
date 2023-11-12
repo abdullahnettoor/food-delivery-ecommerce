@@ -11,6 +11,10 @@ type IUserUseCase interface {
 	SendOtp(phone string) error
 	VerifyOtp(phone string, req *req.UserVerifyOtpReq) error
 
+	AddAddress(id string, req *req.NewAddressReq) error
+	ViewAddress(id, userId string) (*entities.Address, error)
+	ViewAllAddresses(userId string) (*[]entities.Address, error)
+
 	SearchDish(search string) (*[]entities.Dish, error)
 	GetDishesPage(page, limit string) (*[]entities.Dish, error)
 	GetDish(id string) (*entities.Dish, error)

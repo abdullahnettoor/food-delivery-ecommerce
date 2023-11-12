@@ -1,4 +1,25 @@
 definitions:
+  entities.Address:
+    properties:
+      addressId:
+        type: integer
+      district:
+        type: string
+      houseName:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      pinCode:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+      userId:
+        type: integer
+    type: object
   entities.Cart:
     properties:
       cartId:
@@ -111,6 +132,31 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  req.NewAddressReq:
+    properties:
+      district:
+        type: string
+      houseName:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      pinCode:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+    required:
+    - district
+    - houseName
+    - name
+    - phone
+    - pinCode
+    - state
+    - street
     type: object
   req.SellerLoginReq:
     properties:
@@ -319,6 +365,26 @@ definitions:
       status:
         type: string
       token:
+        type: string
+    type: object
+  res.ViewAddressListRes:
+    properties:
+      addressList:
+        items:
+          $ref: '#/definitions/entities.Address'
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  res.ViewAddressRes:
+    properties:
+      address:
+        $ref: '#/definitions/entities.Address'
+      message:
+        type: string
+      status:
         type: string
     type: object
   res.ViewCartRes:
@@ -920,6 +986,106 @@ paths:
           schema:
             $ref: '#/definitions/res.CommonRes'
       summary: User Login
+      tags:
+      - User
+  /profile/addAddress:
+    post:
+      consumes:
+      - application/json
+      description: Add a new address for the user
+      parameters:
+      - description: New address request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.NewAddressReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added address
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Add an address
+      tags:
+      - User
+  /profile/address:
+    get:
+      consumes:
+      - application/json
+      description: View details of all addresses for the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched addresses
+          schema:
+            $ref: '#/definitions/res.ViewAddressListRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View all addresses
+      tags:
+      - User
+  /profile/address/{id}:
+    get:
+      consumes:
+      - application/json
+      description: View details of a specific address for the user
+      parameters:
+      - description: Address ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched address
+          schema:
+            $ref: '#/definitions/res.ViewAddressRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "404":
+          description: Address not found
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View a specific address
       tags:
       - User
   /search/dishes:

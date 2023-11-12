@@ -9,6 +9,7 @@ import (
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
+	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 	hashpassword "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/hash_password"
 	otphelper "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/twilio"
 )
@@ -19,7 +20,7 @@ type userUcase struct {
 	sellerRepo interfaces.ISellerRepository
 }
 
-func NewUserUsecase(userRepo interfaces.IUserRepository, dishRepo interfaces.IDishRepository, sellerRepo interfaces.ISellerRepository) *userUcase {
+func NewUserUsecase(userRepo interfaces.IUserRepository, dishRepo interfaces.IDishRepository, sellerRepo interfaces.ISellerRepository) i.IUserUseCase {
 	return &userUcase{userRepo, dishRepo, sellerRepo}
 }
 
@@ -141,4 +142,30 @@ func (uc *userUcase) GetSellersPage(page, limit string) (*[]entities.Seller, err
 
 func (uc *userUcase) GetSeller(id string) (*entities.Seller, error) {
 	return uc.sellerRepo.FindVerifiedByID(id)
+}
+
+func (uc *userUcase) AddAddress(id string, req *req.NewAddressReq) error {
+
+	userId, _ := strconv.ParseUint(id, 10, 0)
+
+	address := entities.Address{
+		UserID:    uint(userId),
+		Name:      req.Name,
+		HouseName: req.HouseName,
+		Street:    req.Street,
+		District:  req.District,
+		State:     req.State,
+		PinCode:   req.PinCode,
+		Phone:     req.Phone,
+	}
+
+	return uc.userRepo.AddAddress(&address)
+}
+
+func (uc *userUcase) ViewAddress(id, userId string) (*entities.Address, error) {
+	return uc.userRepo.FindAddressByUserID(id, userId)
+}
+
+func (uc *userUcase) ViewAllAddresses(userId string) (*[]entities.Address, error) {
+	return uc.userRepo.FindAllAddressByUserID(userId)
 }

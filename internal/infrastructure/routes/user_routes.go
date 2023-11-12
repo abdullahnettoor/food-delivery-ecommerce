@@ -22,6 +22,10 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHan
 	u.Get("/sellers/:id", user.GetSeller)
 	u.Get("/search/sellers", user.SearchSeller)
 
+	u.Post("/profile/addAddress", user.AddAddress)
+	u.Get("/profile/address", user.ViewAllAddress)
+	u.Get("/profile/address/:id", user.ViewAddress)
+
 	u.Post("/addToCart/:id", cart.AddToCart)
 	u.Get("/cart", cart.ViewCart)
 	u.Delete("/cart/:id/deleteItem", cart.DeleteCartItem)

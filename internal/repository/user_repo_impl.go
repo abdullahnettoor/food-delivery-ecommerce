@@ -162,3 +162,41 @@ func (repo *UserRepository) DeleteByPhone(phone string) error {
 
 	return nil
 }
+
+func (repo *UserRepository) AddAddress(address *entities.Address) error {
+	return repo.DB.Create(&address).Error
+}
+
+func (repo *UserRepository) FindAddressByUserID(id, userId string) (*entities.Address, error) {
+	var address entities.Address
+
+	res := repo.DB.Raw(`
+	SELECT *
+	FROM addresses
+	WHERE id = ?
+	AND user_id = ?`,
+		id, userId).Scan(&address)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrNotFound
+	}
+	return &address, nil
+
+}
+
+func (repo *UserRepository) FindAllAddressByUserID(userId string) (*[]entities.Address, error) {
+	var addressList []entities.Address
+
+	res := repo.DB.Raw(`
+	SELECT *
+	FROM addresses
+	WHERE user_id = ?`,
+		userId).Scan(&addressList)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return &addressList, nil
+}
