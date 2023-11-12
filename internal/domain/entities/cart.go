@@ -1,12 +1,15 @@
 package entities
 
-type Cart struct {
-	ID       uint `json:"cartId"`
-	SellerID uint `json:"sellerId"`
-}
-
 type CartItem struct {
 	ID       uint `json:"-"`
-	DishID   uint `json:"dishId"`
-	Quantity uint `json:"dishQuantiy"`
+	CartID   uint `json:"-"`
+	DishID   uint `json:"-"`
+	Quantity uint `json:"quantity"`
+	Dish     `gorm:"-"`
+}
+
+type Cart struct {
+	ID        uint       `json:"cartId"`
+	SellerID  uint       `json:"sellerId"`
+	CartItems []CartItem `json:"dishes" gorm:"-"`
 }

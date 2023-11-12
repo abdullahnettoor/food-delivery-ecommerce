@@ -1,4 +1,38 @@
 definitions:
+  entities.Cart:
+    properties:
+      cartId:
+        type: integer
+      dishes:
+        items:
+          $ref: '#/definitions/entities.CartItem'
+        type: array
+      sellerId:
+        type: integer
+    type: object
+  entities.CartItem:
+    properties:
+      categoryId:
+        type: integer
+      description:
+        type: string
+      dishId:
+        type: integer
+      imageUrl:
+        type: string
+      isAvailable:
+        type: boolean
+      isVeg:
+        type: boolean
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      sellerId:
+        type: integer
+    type: object
   entities.Category:
     properties:
       categoryId:
@@ -287,9 +321,51 @@ definitions:
       token:
         type: string
     type: object
+  res.ViewCartRes:
+    properties:
+      cart:
+        $ref: '#/definitions/entities.Cart'
+      message:
+        type: string
+      status:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /addToCart/{id}:
+    post:
+      description: Add a dish to the user's cart
+      parameters:
+      - description: Dish ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added to cart
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Add to Cart
+      tags:
+      - Cart
   /admin/categories:
     get:
       consumes:
@@ -627,6 +703,126 @@ paths:
       summary: Unblock a user
       tags:
       - Admin
+  /cart:
+    get:
+      description: Fetch the user's cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cart is empty
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View Cart
+      tags:
+      - Cart
+  /cart/{id}/decrement:
+    patch:
+      description: Decrement the quantity of a dish in the user's cart
+      parameters:
+      - description: Dish ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully decremented cart item
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Decrement Cart Item
+      tags:
+      - Cart
+  /cart/{id}/deleteItem:
+    delete:
+      description: Delete a dish from the user's cart
+      parameters:
+      - description: Dish ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted cart item
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Delete Cart Item
+      tags:
+      - Cart
+  /cart/empty:
+    delete:
+      description: Empty the user's cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully emptied cart
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Empty Cart
+      tags:
+      - Cart
   /dishes:
     get:
       consumes:

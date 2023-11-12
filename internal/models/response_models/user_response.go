@@ -13,3 +13,9 @@ type UserListRes struct {
 	UserList []entities.User `json:"userList,omitempty"`
 	Message  string          `json:"message,omitempty"`
 }
+
+type ViewCartRes struct {
+	Status   string          `json:"status,omitempty"`
+	Cart entities.Cart `json:"cart,omitempty"`
+	Message  string          `json:"message,omitempty"`
+}

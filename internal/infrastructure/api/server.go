@@ -20,7 +20,11 @@ type ServerHttp struct {
 // 	}
 // },
 
-func NewServerHttp(adminHandler *handlers.AdminHandler, sellerHandler *handlers.SellerHandler, userHandler *handlers.UserHandler) *ServerHttp {
+func NewServerHttp(
+	adminHandler *handlers.AdminHandler,
+	sellerHandler *handlers.SellerHandler,
+	userHandler *handlers.UserHandler,
+	cartHandler *handlers.CartHandler) *ServerHttp {
 	app := fiber.New()
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
@@ -31,7 +35,7 @@ func NewServerHttp(adminHandler *handlers.AdminHandler, sellerHandler *handlers.
 
 	routes.AdminRoutes(app, adminHandler)
 	routes.SellerRoutes(app, sellerHandler)
-	routes.UserRoutes(app, userHandler)
+	routes.UserRoutes(app, userHandler, cartHandler)
 
 	return &ServerHttp{app}
 }

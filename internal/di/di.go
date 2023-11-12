@@ -27,16 +27,19 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 	dishRepo := repository.NewDishRepository(gormDB)
 	sellerRepo := repository.NewSellerRepository(gormDB)
 	userRepo := repository.NewUserRepository(gormDB)
+	cartRepo := repository.NewCartRepository(gormDB)
 
 	adminUcase := usecases.NewAdminUsecase(adminRepo, userRepo, sellerRepo, categoryRepo)
 	sellerUcase := usecases.NewSellerUsecase(sellerRepo, dishRepo)
 	userUcase := usecases.NewUserUsecase(userRepo, dishRepo, sellerRepo)
+	cartUcase := usecases.NewCartUsecase(cartRepo, dishRepo)
 
 	sellerHandler := handlers.NewSellerHandler(sellerUcase)
 	userHandler := handlers.NewUserHandler(userUcase)
 	adminHandler := handlers.NewAdminHandler(adminUcase)
+	cartHandler := handlers.NewCartHandler(cartUcase)
 
-	serverHttp := api.NewServerHttp(adminHandler, sellerHandler, userHandler)
+	serverHttp := api.NewServerHttp(adminHandler, sellerHandler, userHandler, cartHandler)
 
 	return serverHttp, nil
 }
