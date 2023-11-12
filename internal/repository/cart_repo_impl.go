@@ -167,10 +167,21 @@ func (repo *cartRepository) DecrementItem(id, dishId string) error {
 }
 
 func (repo *cartRepository) DeleteCart(id string) error {
-	return repo.DB.Exec(`
+	if err := repo.DB.Exec(`
 	DELETE FROM carts
 	WHERE id = ?`,
-		id).Error
+		id).Error; err != nil {
+		return err
+	}
+	
+	if err := repo.DB.Exec(`
+	DELETE FROM cart_items
+	WHERE cart_id = ?`,
+		id).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (repo *cartRepository) CreateCart(id, sellerId string) error {
