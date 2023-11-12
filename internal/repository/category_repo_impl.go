@@ -7,12 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type ICategoryRepository interface {
-	FindByID(id string) (*entities.Category, error)
-	FindAll() (*[]entities.Category, error)
-	Create(category *entities.Category) error
-}
-
 type CategoryRepository struct {
 	DB *gorm.DB
 }

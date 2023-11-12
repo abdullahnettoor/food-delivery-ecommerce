@@ -11,7 +11,7 @@ import (
 
 func ConnectPostgres(c *config.DbConfig) (*gorm.DB, error) {
 
-	// dbUri = "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+	// dbUriFormat = "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 	dbUri := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		c.Host, c.User, c.Password, c.Name, c.Port)
 
@@ -35,12 +35,9 @@ func syncDatabase(db *gorm.DB) error {
 		&entities.User{},
 		&entities.Category{},
 		&entities.Dish{},
-	// &models.Admin{},
-	// &models.User{},
+		&entities.Cart{},
+		&entities.CartItem{},
 	// &models.Address{},
-	// &models.Restaurant{},
-	// &models.Dish{},
-	// &models.Category{},
 	// &models.Cart{},
 	// &models.CartItem{},
 	// &models.Order{},
