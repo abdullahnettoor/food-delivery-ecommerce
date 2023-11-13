@@ -202,3 +202,19 @@ func (repo *DishRepository) Search(search string) (*[]entities.Dish, error) {
 
 	return &dishList, nil
 }
+
+func (repo *DishRepository) ReduceStock(id string, quantity uint) error {
+	return repo.DB.Exec(`
+	UPDATE dishes
+	SET quantity = quantity - ?
+	WHERE id = ?`,
+		quantity, id).Error
+}
+
+func (repo *DishRepository) IncreaseStock(id string, quantity uint) error {
+	return repo.DB.Exec(`
+	UPDATE dishes
+	SET quantity = quantity + ?
+	WHERE id = ?`,
+		quantity, id).Error
+}

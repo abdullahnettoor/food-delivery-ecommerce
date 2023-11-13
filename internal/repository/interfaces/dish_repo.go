@@ -12,5 +12,7 @@ type IDishRepository interface {
 	FindBySellerAndID(id, sellerId string) (*entities.Dish, error)
 	Create(dish *entities.Dish) error
 	Update(id string, dish *entities.Dish) (*entities.Dish, error)
+	ReduceStock(id string, quantity uint) error
+	IncreaseStock(id string, quantity uint) error
 	Delete(id, sellerId string) error
 }
