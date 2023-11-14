@@ -79,7 +79,6 @@ func (repo *cartRepository) AddToCart(id, dishId string) error {
 	}
 
 	for _, item := range cartItems {
-		fmt.Println("Cart Item is", item)
 
 		if fmt.Sprint(item.DishID) == dishId {
 			item.Quantity += 1
@@ -97,7 +96,6 @@ func (repo *cartRepository) AddToCart(id, dishId string) error {
 			return nil
 		}
 	}
-	fmt.Println("Hello-----------------------")
 
 	dId, _ := strconv.ParseUint(dishId, 10, 0)
 	cId, _ := strconv.ParseUint(id, 10, 0)
@@ -173,7 +171,6 @@ func (repo *cartRepository) DeleteCart(id string) error {
 		id).Error; err != nil {
 		return err
 	}
-	
 	if err := repo.DB.Exec(`
 	DELETE FROM cart_items
 	WHERE cart_id = ?`,

@@ -84,6 +84,60 @@ definitions:
       sellerId:
         type: integer
     type: object
+  entities.Order:
+    properties:
+      addressId:
+        type: integer
+      deliveryCharge:
+        type: number
+      deliveryDate:
+        type: string
+      discount:
+        type: number
+      itemCount:
+        type: integer
+      orderDate:
+        type: string
+      orderId:
+        type: integer
+      orderStatus:
+        type: string
+      paymentMethod:
+        type: string
+      paymentStatus:
+        type: string
+      sellerId:
+        type: integer
+      totalPrice:
+        type: number
+      transactionId:
+        type: string
+      userId:
+        type: integer
+    type: object
+  entities.OrderItem:
+    properties:
+      categoryId:
+        type: integer
+      description:
+        type: string
+      dishId:
+        type: integer
+      imageUrl:
+        type: string
+      isAvailable:
+        type: boolean
+      isVeg:
+        type: boolean
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      sellerId:
+        type: integer
+    type: object
   entities.Seller:
     properties:
       description:
@@ -157,6 +211,13 @@ definitions:
     - pinCode
     - state
     - street
+    type: object
+  req.NewOrderReq:
+    properties:
+      addressId:
+        type: string
+      paymentMethod:
+        type: string
     type: object
   req.SellerLoginReq:
     properties:
@@ -387,12 +448,36 @@ definitions:
       status:
         type: string
     type: object
+  res.ViewAllOrdersRes:
+    properties:
+      message:
+        type: string
+      orders:
+        items:
+          $ref: '#/definitions/entities.Order'
+        type: array
+      status:
+        type: string
+    type: object
   res.ViewCartRes:
     properties:
       cart:
         $ref: '#/definitions/entities.Cart'
       message:
         type: string
+      status:
+        type: string
+    type: object
+  res.ViewOrderRes:
+    properties:
+      message:
+        type: string
+      order:
+        $ref: '#/definitions/entities.Order'
+      orderItems:
+        items:
+          $ref: '#/definitions/entities.OrderItem'
+        type: array
       status:
         type: string
     type: object
@@ -862,6 +947,42 @@ paths:
       summary: Delete Cart Item
       tags:
       - Cart
+  /cart/checkout:
+    post:
+      consumes:
+      - application/json
+      description: Place a new order for the user
+      parameters:
+      - description: New order request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.NewOrderReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully placed order
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Place an order
+      tags:
+      - User Order
   /cart/empty:
     delete:
       description: Empty the user's cart
@@ -988,6 +1109,71 @@ paths:
       summary: User Login
       tags:
       - User
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: View details of all orders for the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched orders
+          schema:
+            $ref: '#/definitions/res.ViewAllOrdersRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View all orders for the user
+      tags:
+      - User Order
+  /orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: View details of a specific order for the user
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched order
+          schema:
+            $ref: '#/definitions/res.ViewOrderRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "404":
+          description: Order not found
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View a specific order
+      tags:
+      - User Order
+      - Seller Order
   /profile/addAddress:
     post:
       consumes:
@@ -1377,6 +1563,114 @@ paths:
       summary: Seller Login
       tags:
       - Seller
+  /seller/orders:
+    get:
+      consumes:
+      - application/json
+      description: View details of all orders for the seller
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched orders
+          schema:
+            $ref: '#/definitions/res.ViewAllOrdersRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View all orders for the seller
+      tags:
+      - Seller Order
+  /seller/orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: View details of a specific order for the user
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched order
+          schema:
+            $ref: '#/definitions/res.ViewOrderRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "404":
+          description: Order not found
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View a specific order
+      tags:
+      - User Order
+      - Seller Order
+    patch:
+      consumes:
+      - application/json
+      description: Update the status of a specific order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New status for the order
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated order
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "404":
+          description: Order not found
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update order status
+      tags:
+      - Seller Order
   /seller/register:
     post:
       consumes:
@@ -1571,4 +1865,12 @@ paths:
       summary: Verify OTP
       tags:
       - User
+securityDefinitions:
+  Bearer:
+    description: 'Authentication using a JSON Web Token (JWT). The token should be
+      included in the request header named "Authorization". The format of the header
+      is: Authorization: Bearer <token>. Replace `<token>` with the actual JWT token.'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

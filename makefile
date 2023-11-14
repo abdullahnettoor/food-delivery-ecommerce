@@ -10,8 +10,8 @@ deps: ## Install dependencies
 	$(GOCMD) mod vendor
 
 swag: ## Generate swagger docs
-	swag init -g cmd/main.go   
-# 	swag init -g pkg/api/handler/admin.go -o ./cmd/api/docs
+	swag init -g internal/infrastructure/api/server.go   
+# 	swag init -g pkg/api/handler/admin.go -o ./cmd/api/docs # -o is to define the output location of swagger docs folder
 
 nodemon:
 	nodemon --exec go run cmd/main.go --signal SIGTERM

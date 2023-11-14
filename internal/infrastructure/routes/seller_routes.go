@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler) {
+func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler, order *handlers.OrderHandler) {
 
 	f.Post("/seller/register", seller.SignUp)
 	f.Post("/seller/login", seller.Login)
@@ -18,5 +18,8 @@ func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler) {
 	s.Get("/dishes/:id", seller.GetDish)
 	s.Put("/dishes/:id", seller.UpdateDish)
 	s.Delete("/dishes/:id", seller.DeleteDish)
+
+	s.Get("/orders", order.ViewOrdersForSeller)
+	s.Get("/orders/:id", order.ViewOrder)
 
 }

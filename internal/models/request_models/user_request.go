@@ -18,7 +18,6 @@ type UserLoginReq struct {
 	Password string `json:"password" validate:"required,gte=3"`
 }
 
-
 type NewAddressReq struct {
 	Name      string `json:"name" validate:"required"`
 	HouseName string `json:"houseName" validate:"required"`
@@ -27,4 +26,9 @@ type NewAddressReq struct {
 	State     string `json:"state" validate:"required"`
 	PinCode   string `json:"pinCode" validate:"required,len=6"`
 	Phone     string `json:"phone" validate:"required,e164"`
+}
+
+type NewOrderReq struct {
+	PaymentMethod string `json:"paymentMethod"`
+	AddressID     string `json:"addressId"`
 }

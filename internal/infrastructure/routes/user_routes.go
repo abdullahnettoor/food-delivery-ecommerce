@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHandler) {
+func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHandler, order *handlers.OrderHandler) {
 
 	f.Post("/signup", user.SignUp)
 	f.Post("/sendOtp", middlewares.AuthenticateUser, user.SendOtp)
@@ -32,4 +32,8 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHan
 	u.Patch("/cart/:id/decrement", cart.DecrementCartItem)
 	u.Delete("/cart/empty", cart.EmptyCart)
 
+	u.Post("/cart/checkout", order.PlaceOrder)
+	u.Post("/cart/checkout/online", order.PlaceOrder)
+	u.Get("/orders", order.ViewOrdersForUser)
+	u.Get("/orders/:id", order.ViewOrder)
 }

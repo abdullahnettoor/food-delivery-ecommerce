@@ -38,7 +38,7 @@ func (h *SellerHandler) SignUp(c *fiber.Ctx) error {
 	var signUpReq req.SellerSignUpReq
 
 	if err := c.BodyParser(&signUpReq); err != nil {
-		return c.Status(fiber.StatusBadRequest).
+		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
 				Error:   err.Error(),

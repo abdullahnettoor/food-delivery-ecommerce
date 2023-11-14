@@ -12,21 +12,19 @@ type ServerHttp struct {
 	app *fiber.App
 }
 
-// "securityDefinitions": {
-// 	"Bearer": {
-// 	"type": "apiKey",
-// 	"name": "Authorization",
-// 	"in": "header"
-// 	}
-// },
-
 func NewServerHttp(
 	adminHandler *handlers.AdminHandler,
 	sellerHandler *handlers.SellerHandler,
 	userHandler *handlers.UserHandler,
-	cartHandler *handlers.CartHandler) *ServerHttp {
+	cartHandler *handlers.CartHandler,
+	orderHandler *handlers.OrderHandler,
+) *ServerHttp {
 	app := fiber.New()
 
+	//	@securityDefinitions.apikey	Bearer
+	//	@in							header
+	//	@name						Authorization
+	//	@description				Authentication using a JSON Web Token (JWT). The token should be included in the request header named "Authorization". The format of the header is: Authorization: Bearer <token>. Replace `<token>` with the actual JWT token.
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	app.Get("healthcheck", func(c *fiber.Ctx) error {
@@ -34,8 +32,8 @@ func NewServerHttp(
 	})
 
 	routes.AdminRoutes(app, adminHandler)
-	routes.SellerRoutes(app, sellerHandler)
-	routes.UserRoutes(app, userHandler, cartHandler)
+	routes.SellerRoutes(app, sellerHandler, orderHandler)
+	routes.UserRoutes(app, userHandler, cartHandler, orderHandler)
 
 	return &ServerHttp{app}
 }
