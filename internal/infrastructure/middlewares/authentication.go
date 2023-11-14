@@ -14,7 +14,7 @@ import (
 func AuthenticateAdmin(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing Admin")
 
-	tokenString := StripToken(c.Get("Authorization"))
+	tokenString := strings.TrimPrefix(c.Get("Authorization"), "Bearer ")
 
 	var secretKey = viper.GetString("KEY")
 
@@ -37,7 +37,7 @@ func AuthenticateAdmin(c *fiber.Ctx) error {
 func AuthenticateSeller(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing Seller")
 
-	tokenString := StripToken(c.Get("Authorization"))
+	tokenString := strings.TrimPrefix(c.Get("Authorization"), "Bearer ")
 
 	var secretKey = viper.GetString("KEY")
 
@@ -61,7 +61,7 @@ func AuthenticateSeller(c *fiber.Ctx) error {
 func AuthenticateUser(c *fiber.Ctx) error {
 	fmt.Println("MW: Authorizing User")
 
-	tokenString := StripToken(c.Get("Authorization"))
+	tokenString := strings.TrimPrefix(c.Get("Authorization"), "Bearer ")
 
 	var secretKey = viper.GetString("KEY")
 
@@ -78,16 +78,4 @@ func AuthenticateUser(c *fiber.Ctx) error {
 	fmt.Println(c.Locals("UserModel"))
 	fmt.Println("MW: User Authorised")
 	return c.Next()
-}
-
-func StripToken(tokenHeader string) string {
-	if tokenHeader == "" {
-		return ""
-	}
-	token := strings.Split(tokenHeader, " ")
-	if len(token) != 2 {
-		return ""
-	}
-	fmt.Println("Token is", token)
-	return token[1]
 }
