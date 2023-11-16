@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"></head>
+<body>
+    <section style="background-color: #eee; height: 100vh; width: 100vw;">
+        <div class="container py-5">
+          <div class="card">
+            <div class="card-body">
+              <div class="row d-flex justify-content-center pb-5">
+      
+                <div class="col-md-5 col-xl-4 offset-xl-1">
+                  <!-- <div class="py-4 d-flex justify-content-end"><h6><a href="#!">Cancel and return to website</a></h6></div> -->
+                  <div class="rounded d-flex flex-column p-2" style="background-color: #f8f9fa;">
+                    <div class="p-2 me-3">
+                      <h4>Order Recap</h4>
+                    </div>
+                    <!-- <div class="p-2 d-flex">
+                      <div class="col-8">Contracted Price</div>
+                      <div class="ms-auto">₹186.76</div>
+                    </div>
+                    <div class="border-top px-2 mx-2"></div> -->
+                    <!-- <div class="p-2 d-flex pt-3">
+                      <div class="col-8">Total</div>
+                      <div class="ms-auto"><b>₹0.00</b></div>
+                    </div> -->
+                    <div class="p-2 d-flex pt-3">
+                      <div class="col-8">Discount</div>
+                      <div class="ms-auto">₹{{.Discount}}</div>
+                    </div>
+                    <div class="border-top px-2 mx-2"></div>
+                    <!-- <div class="p-2 d-flex pt-3">
+                      <div class="col-8"></div>
+                      <div class="ms-auto">₹0.00</div>
+                    </div> -->
+                    <div class="p-2 d-flex pt-3">
+                      <div class="col-8">Delivery Charge</div>
+                      <div class="ms-auto"><b>+ ₹{{.DeliveryCharge}}</b></div>
+                    </div>
+                    <div class="border-top px-2 mx-2"></div>
+                    <div class="p-2 d-flex pt-3">
+                      <div class="col-8"><b>Amount to be paid</b></div>
+                      <div class="ms-auto"><b class="text-success">₹{{.TotalPrice}}</b></div>
+                    </div>
+                    <button id="rzp-button1" class="btn btn-primary btn-block btn-lg">Proceed to payment </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            "key": "{{.ID}}", // Enter the Key ID generated from the Dashboard
+            "amount": "{{.TotalPrice}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Foodie Buddie",
+            "description": "Checkout Transaction",
+            "order_id": "{{.OrderID}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "callback_url":"https://49ed-2409-40f3-100e-4909-f4d4-e07-24de-b501.ngrok-free.app/cart/checkout/online/",
+            // "handler": function (response) {
+            //     alert(response.razorpay_payment_id);
+            //     alert(response.razorpay_order_id);
+            //     alert(response.razorpay_signature)
+            // },
+            "prefill": {
+                "name": "{{.FirstName}}",
+                "email": "{{.Email}}",
+                "contact": "{{.Phone}}"
+            },
+            "notes": {
+                "address": "Foodie Buddie Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+        });
+        document.getElementById('rzp-button1').onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+
+</html>

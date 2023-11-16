@@ -6,7 +6,8 @@ import (
 )
 
 type IOrderUseCase interface {
-	PlaceOrder(userId string, req *req.NewOrderReq) error
+	PlaceOrder(userId string, req *req.NewOrderReq) (*entities.Order,error)
+	VerifyPayment(orderId, rzpPaymentId, signature string) error 
 	ViewOrder(id string) (*entities.Order, *[]entities.OrderItem, error)
 	ViewOrdersForUser(userId string) (*[]entities.Order, error)
 	ViewOrdersForSeller(sellerId string) (*[]entities.Order, error)

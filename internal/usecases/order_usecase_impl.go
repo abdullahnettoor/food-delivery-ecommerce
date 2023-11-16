@@ -9,6 +9,7 @@ import (
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
+	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/services/payment"
 	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 	"github.com/google/uuid"
 )
@@ -23,27 +24,27 @@ func NewOrderUsecase(cartRepo interfaces.ICartRepository, orderRepo interfaces.I
 	return &orderUsecase{cartRepo, orderRepo, dishRepo}
 }
 
-func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) error {
+func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entities.Order, error) {
 	var order entities.Order
 	var orderItems []entities.OrderItem
 	var totalPrice, deliveryCharge, discount float64
 
 	cartItems, err := uc.cartRepo.FindCartItems(userId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, item := range *cartItems {
 		id := fmt.Sprint(item.DishID)
 		dish, err := uc.dishRepo.FindByID(id)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if dish.Quantity < item.Quantity {
-			return e.ErrQuantityExceeds
+			return nil, e.ErrQuantityExceeds
 		}
 		if !dish.Availability {
-			return e.ErrNotAvailable
+			return nil, e.ErrNotAvailable
 		}
 		o := entities.OrderItem{
 			DishID:   item.DishID,
@@ -67,8 +68,9 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) error {
 		OrderDate:      time.Now(),
 		TransactionID:  uuid.New().String(),
 		PaymentMethod:  req.PaymentMethod,
-		PayementStatus: "Success",
+		PaymentStatus: "Pending",
 		ItemCount:      uint(len(orderItems)),
+		Dishes:         orderItems,
 		Discount:       discount,
 		DeliveryCharge: deliveryCharge,
 		DeliveryDate:   time.Now().Add(time.Minute * 45),
@@ -76,22 +78,40 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) error {
 		Status:         "Ordered",
 	}
 
+	if req.PaymentMethod == "Online" {
+		rzp := payment.PaymentService{}
+		rzpOrder, err := rzp.CreatePaymentOrder(order.TotalPrice)
+		if err != nil {
+			return nil, err
+		}
+		order.TransactionID = rzpOrder["id"].(string)
+	}
+
 	if err := uc.orderRepo.CreateOrder(&order); err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, item := range orderItems {
 		id, quantity := fmt.Sprint(item.ID), item.Quantity
 		if err := uc.dishRepo.ReduceStock(id, quantity); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	if err := uc.cartRepo.DeleteCart(userId); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &order, nil
+}
+
+func (uc *orderUsecase) VerifyPayment(orderId, rzpPaymentId, signature string) error {
+	rzp := payment.PaymentService{}
+
+	if err := rzp.VerifyPayment(orderId, rzpPaymentId, signature); err != nil {
+		return err
+	}
+	return uc.orderRepo.UpdateOrderPaymentStatus(orderId, "Success")
 }
 
 func (uc *orderUsecase) ViewOrder(id string) (*entities.Order, *[]entities.OrderItem, error) {

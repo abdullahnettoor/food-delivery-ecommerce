@@ -25,7 +25,7 @@ func (repo *orderRepository) CreateOrder(order *entities.Order) error {
 	for _, item := range order.Dishes {
 		item.OrderID = order.ID
 		items = append(items, item)
-		
+
 	}
 
 	if err := repo.DB.Create(&items).Error; err != nil {
@@ -116,6 +116,18 @@ func (repo *orderRepository) UpdateOrderStatus(id, status string) error {
 	UPDATE orders
 	SET status = ?
 	WHERE id = ?`,
+		status, id).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *orderRepository) UpdateOrderPaymentStatus(id, status string) error {
+	if err := repo.DB.Exec(`
+	UPDATE orders
+	SET payment_status = ?
+	WHERE transaction_id = ?`,
 		status, id).Error; err != nil {
 		return err
 	}

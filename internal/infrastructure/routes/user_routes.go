@@ -12,15 +12,18 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHan
 	f.Post("/sendOtp", middlewares.AuthenticateUser, user.SendOtp)
 	f.Post("/verifyOtp", middlewares.AuthenticateUser, user.VerifyOtp)
 	f.Post("/login", user.Login)
+	f.Get("/cart/checkout/online", order.PlaceOrderPayOnline)
+	f.Post("/cart/checkout/online", order.VerifyPayment)
 
-	u := f.Group("/", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
-	u.Get("/dishes", user.GetDishesPage)
-	u.Get("/dishes/:id", user.GetDish)
-	u.Get("/search/dishes", user.SearchDish)
+	f.Get("/dishes", user.GetDishesPage)
+	f.Get("/dishes/:id", user.GetDish)
+	f.Get("/search/dishes", user.SearchDish)
 
-	u.Get("/sellers", user.GetSellersPage)
-	u.Get("/sellers/:id", user.GetSeller)
-	u.Get("/search/sellers", user.SearchSeller)
+	f.Get("/sellers", user.GetSellersPage)
+	f.Get("/sellers/:id", user.GetSeller)
+	f.Get("/search/sellers", user.SearchSeller)
+
+	u := f.Group("/u", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 
 	u.Post("/profile/addAddress", user.AddAddress)
 	u.Get("/profile/address", user.ViewAllAddress)
@@ -33,7 +36,7 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHan
 	u.Delete("/cart/empty", cart.EmptyCart)
 
 	u.Post("/cart/checkout", order.PlaceOrder)
-	u.Post("/cart/checkout/online", order.PlaceOrder)
+	// u.Post("/cart/checkout/online", order.PlaceOrderPayOnline)
 	u.Get("/orders", order.ViewOrdersForUser)
 	u.Get("/orders/:id", order.ViewOrder)
 }

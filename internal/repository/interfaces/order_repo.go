@@ -12,6 +12,7 @@ type IOrderRepository interface {
 	FindAllOrdersBySellerId(sellerId string) (*[]entities.Order, error)
 
 	UpdateOrderStatus(id, status string) error
+	UpdateOrderPaymentStatus(id, status string) error
 
 	CancelOrder(id string) error
 }

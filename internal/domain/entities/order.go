@@ -26,5 +26,5 @@ type Order struct {
 	DeliveryCharge float64     `json:"deliveryCharge"`
 	TotalPrice     float64     `json:"totalPrice"`
 	Status         string      `json:"orderStatus"`
-	PayementStatus string      `json:"paymentStatus"`
+	PaymentStatus string      `json:"paymentStatus"`
 }

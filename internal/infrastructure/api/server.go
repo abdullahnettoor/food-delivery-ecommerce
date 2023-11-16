@@ -5,7 +5,9 @@ import (
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/infrastructure/handlers"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/infrastructure/routes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
+	"github.com/gofiber/template/html/v2"
 )
 
 type ServerHttp struct {
@@ -19,7 +21,12 @@ func NewServerHttp(
 	cartHandler *handlers.CartHandler,
 	orderHandler *handlers.OrderHandler,
 ) *ServerHttp {
-	app := fiber.New()
+
+	views := html.New("internal/view", ".html")
+
+	app := fiber.New(fiber.Config{Views: views})
+
+	app.Use(logger.New(logger.Config{TimeFormat: "2006/01/02 15:04:05"}))
 
 	//	@securityDefinitions.apikey	Bearer
 	//	@in							header
