@@ -68,7 +68,7 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		OrderDate:      time.Now(),
 		TransactionID:  uuid.New().String(),
 		PaymentMethod:  req.PaymentMethod,
-		PaymentStatus: "Pending",
+		PaymentStatus:  "Pending",
 		ItemCount:      uint(len(orderItems)),
 		Dishes:         orderItems,
 		Discount:       discount,
@@ -84,6 +84,7 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		if err != nil {
 			return nil, err
 		}
+		order.Status = "Pending"
 		order.TransactionID = rzpOrder["id"].(string)
 	}
 
@@ -92,7 +93,7 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 	}
 
 	for _, item := range orderItems {
-		id, quantity := fmt.Sprint(item.ID), item.Quantity
+		id, quantity := fmt.Sprint(item.DishID), item.Quantity
 		if err := uc.dishRepo.ReduceStock(id, quantity); err != nil {
 			return nil, err
 		}

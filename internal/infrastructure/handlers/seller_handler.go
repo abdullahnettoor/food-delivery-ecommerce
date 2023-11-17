@@ -223,8 +223,8 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 
 	req.ImageUrl = url
 
-	e := os.Remove(path)
-	if e != nil {
+	err = os.Remove(path)
+	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",

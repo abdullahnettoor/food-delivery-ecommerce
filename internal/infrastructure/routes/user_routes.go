@@ -23,7 +23,7 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHan
 	f.Get("/sellers/:id", user.GetSeller)
 	f.Get("/search/sellers", user.SearchSeller)
 
-	u := f.Group("/u", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
+	u := f.Group("/", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 
 	u.Post("/profile/addAddress", user.AddAddress)
 	u.Get("/profile/address", user.ViewAllAddress)

@@ -126,7 +126,8 @@ func (repo *orderRepository) UpdateOrderStatus(id, status string) error {
 func (repo *orderRepository) UpdateOrderPaymentStatus(id, status string) error {
 	if err := repo.DB.Exec(`
 	UPDATE orders
-	SET payment_status = ?
+	SET payment_status = ?,
+	status = 'Ordered'
 	WHERE transaction_id = ?`,
 		status, id).Error; err != nil {
 		return err

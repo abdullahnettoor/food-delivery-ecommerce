@@ -96,7 +96,7 @@ func (h *CartHandler) AddToCart(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
-			Message: "suucessfully added to cart",
+			Message: "successfully added to cart",
 		})
 
 }
@@ -131,7 +131,7 @@ func (h *CartHandler) DecrementCartItem(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
-			Message: "suucessfully decremented to cart item",
+			Message: "successfully decremented to cart item",
 		})
 }
 
@@ -165,7 +165,7 @@ func (h *CartHandler) DeleteCartItem(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
-			Message: "suucessfully deleted cart item",
+			Message: "successfully deleted cart item",
 		})
 }
 
@@ -197,6 +197,6 @@ func (h *CartHandler) EmptyCart(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
-			Message: "suucessfully emptied cart",
+			Message: "successfully emptied cart",
 		})
 }
