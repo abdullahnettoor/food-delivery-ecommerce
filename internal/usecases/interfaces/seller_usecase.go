@@ -10,7 +10,7 @@ type ISellerUseCase interface {
 	SignUp(req *req.SellerSignUpReq) (string, error)
 
 	GetDish(id, sellerId string) (*entities.Dish, error)
-	GetAllDishes(sellerId string) (*[]entities.Dish, error)
+	GetAllDishes(sellerId, category_id string) (*[]entities.Dish, error)
 	AddDish(sellerId string, req *req.CreateDishReq) error
 	UpdateDish(id, sellerId string, req *req.UpdateDishReq) (*entities.Dish, error)
 	DeleteDish(id, sellerId string) error

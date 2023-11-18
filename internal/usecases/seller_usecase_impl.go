@@ -10,6 +10,7 @@ import (
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
+	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 	hashpassword "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/hash_password"
 	jwttoken "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/jwt_token"
 	"github.com/spf13/viper"
@@ -20,7 +21,7 @@ type sellerUsecase struct {
 	dishRepo   interfaces.IDishRepository
 }
 
-func NewSellerUsecase(sellerRepo interfaces.ISellerRepository, dishRepo interfaces.IDishRepository) *sellerUsecase {
+func NewSellerUsecase(sellerRepo interfaces.ISellerRepository, dishRepo interfaces.IDishRepository) i.ISellerUseCase {
 	return &sellerUsecase{sellerRepo, dishRepo}
 }
 
@@ -59,7 +60,6 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 
 	_, err := uc.sellerRepo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
-		fmt.Println("UC Seller #1:", err.Error())
 		return "", err
 	}
 
@@ -74,7 +74,6 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 	}
 
 	if err := uc.sellerRepo.Create(&seller); err != nil {
-		fmt.Println("UC Seller #2:", err.Error())
 		return "", err
 	}
 
@@ -129,8 +128,8 @@ func (uc *sellerUsecase) UpdateDish(dishId, sellerId string, req *req.UpdateDish
 	return uc.dishRepo.Update(dishId, &updatedDish)
 }
 
-func (uc *sellerUsecase) GetAllDishes(sellerId string) (*[]entities.Dish, error) {
-	return uc.dishRepo.FindBySeller(sellerId)
+func (uc *sellerUsecase) GetAllDishes(sellerId, category_id string) (*[]entities.Dish, error) {
+	return uc.dishRepo.FindBySeller(sellerId, category_id)
 }
 
 func (uc *sellerUsecase) GetDish(id, sellerId string) (*entities.Dish, error) {

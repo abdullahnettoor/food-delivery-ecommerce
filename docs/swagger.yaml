@@ -1423,6 +1423,11 @@ paths:
       consumes:
       - application/json
       description: Retrieve a list of all dishes for the seller
+      parameters:
+      - description: Category Id
+        in: query
+        name: category
+        type: integer
       produces:
       - application/json
       responses:

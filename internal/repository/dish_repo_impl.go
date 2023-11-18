@@ -61,16 +61,19 @@ func (repo *DishRepository) FindByID(id string) (*entities.Dish, error) {
 	return &dish, nil
 }
 
-func (repo *DishRepository) FindBySeller(sellerId string) (*[]entities.Dish, error) {
+func (repo *DishRepository) FindBySeller(sellerId, category_id string) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 
 	query := `
 	SELECT * 
 	FROM dishes
-	WHERE seller_id = ?
-	AND deleted = false`
+	WHERE deleted = false` + " AND seller_id = " + sellerId
 
-	res := repo.DB.Raw(query, sellerId).Scan(&dishList)
+	if category_id != "" {
+		query += " AND category_id = " + category_id
+	}
+
+	res := repo.DB.Raw(query).Scan(&dishList)
 	if res.Error != nil {
 		return nil, res.Error
 	}

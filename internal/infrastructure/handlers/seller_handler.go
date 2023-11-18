@@ -342,21 +342,24 @@ func (h *SellerHandler) GetDish(c *fiber.Ctx) error {
 // @Tags			Seller
 // @Accept			json
 // @Produce		json
-// @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
-// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
+// @Param			category	query		int				false	"Category Id"
+// @Success		200			{object}	res.DishListRes	"Successfully fetched dishes"
+// @Failure		401			{object}	res.CommonRes	"Unauthorized Access"
+// @Failure		500			{object}	res.CommonRes	"Internal Server Error"
 // @Router			/seller/dishes [get]
 func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
+	sellerId := fmt.Sprint(seller["sellerId"])
+	categoryId := c.Query("category")
 
-	dishList, err := h.usecase.GetAllDishes(fmt.Sprint(seller["sellerId"]))
+	dishList, err := h.usecase.GetAllDishes(sellerId, categoryId)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to fetch dish",
 				Error:   err.Error(),
-			})
+		})
 	}
 
 	return c.Status(fiber.StatusOK).

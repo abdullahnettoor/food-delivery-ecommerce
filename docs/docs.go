@@ -1476,6 +1476,14 @@ const docTemplate = `{
                     "Seller"
                 ],
                 "summary": "Get all dishes",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Category Id",
+                        "name": "category",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successfully fetched dishes",
