@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -166,18 +165,18 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 			})
 	}
 
-	wd, err := os.Getwd()
-	if err != nil {
+	path := filepath.Join(os.TempDir(), formFile.Filename)
+
+	if err := c.SaveFile(formFile, path); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
 				Error:   err.Error(),
-				Message: "failed to get directory",
+				Message: "failed to open file path in server",
 			})
 	}
-	path := filepath.Join(wd, "tmp", formFile.Filename)
 
-	trgt, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0666)
+	file, err := os.Open(path)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -186,32 +185,17 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 				Message: "failed to open file path in server",
 			})
 	}
-	defer trgt.Close()
-
-	f, err := formFile.Open()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to open file from form",
-			})
-	}
-
-	if _, err := io.Copy(trgt, f); err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to copy form file to temp",
-			})
-	}
+	defer file.Close()
 
 	ctx := context.Background()
 	imgUploader := imageuploader.NewUploadImage()
-	fileName := fmt.Sprintf("%s-%s", sellerId, strings.ToLower(strings.ReplaceAll(req.Name, " ", "-")))
+	fileName := fmt.Sprintf(
+		"%s-%s",
+		sellerId,
+		strings.ToLower(
+			strings.ReplaceAll(req.Name, " ", "-")))
 
-	url, err := imgUploader.Handler(ctx, path, fileName, "dishes")
+	url, err := imgUploader.Handler(ctx, fileName, "dishes", file)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -359,7 +343,7 @@ func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 				Status:  "failed",
 				Message: "failed to fetch dish",
 				Error:   err.Error(),
-		})
+			})
 	}
 
 	return c.Status(fiber.StatusOK).

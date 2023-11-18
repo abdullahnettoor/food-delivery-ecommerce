@@ -18,8 +18,16 @@ func NewUploadImage() *UploadImage {
 		cloudinary: cld.Cld,
 	}
 }
-func (h *UploadImage) Handler(ctx context.Context, imageFile, imageName, dir string) (string, error) {
-	result, err := h.cloudinary.Upload.Upload(ctx, imageFile, uploader.UploadParams{PublicID: imageName, Folder: "foodiebuddie/" + dir})
+func (h *UploadImage) Handler(ctx context.Context, imageName, dir string, imageFile any) (string, error) {
+	log.Println("File is", imageFile)
+	result, err := h.cloudinary.Upload.Upload(
+		ctx,
+		imageFile,
+		uploader.UploadParams{
+			PublicID: imageName,
+			Folder:   "foodiebuddie/" + dir,
+		})
+	log.Println("Result is", result)
 	if err != nil {
 		log.Println(err)
 		return "", err
