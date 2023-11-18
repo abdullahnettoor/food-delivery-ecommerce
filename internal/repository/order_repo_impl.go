@@ -82,7 +82,8 @@ func (repo *orderRepository) FindAllOrdersBySellerId(sellerId string) (*[]entiti
 	SELECT *
 	FROM orders
 	WHERE seller_id = ?
-	AND payment_status = 'Pending'`,
+	AND ((payment_status <> 'Pending')
+	OR (payment_method = 'COD' AND payment_status = 'Pending'))`,
 		sellerId).Scan(&orderList)
 
 	if res.Error != nil {
