@@ -21,5 +21,6 @@ func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler, order *handlers.
 
 	s.Get("/orders", order.ViewOrdersForSeller)
 	s.Get("/orders/:id", order.ViewOrder)
+	s.Patch("/orders/:id", order.UpdateOrderStatus)
 
 }

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"strings"
+
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
@@ -79,7 +81,8 @@ func (repo *orderRepository) FindAllOrdersBySellerId(sellerId string) (*[]entiti
 	res := repo.DB.Raw(`
 	SELECT *
 	FROM orders
-	WHERE seller_id = ?`,
+	WHERE seller_id = ?
+	AND payment_status = 'Pending'`,
 		sellerId).Scan(&orderList)
 
 	if res.Error != nil {
@@ -112,11 +115,17 @@ func (repo *orderRepository) FindOrderItems(id string) (*[]entities.OrderItem, e
 }
 
 func (repo *orderRepository) UpdateOrderStatus(id, status string) error {
+	paymentStatus := "Pending"
+	if strings.ToLower(status) == "delivered" {
+		paymentStatus = "Success"
+	}
+
 	if err := repo.DB.Exec(`
 	UPDATE orders
-	SET status = ?
+	SET status = ?,
+	payment_status = ?
 	WHERE id = ?`,
-		status, id).Error; err != nil {
+		status, paymentStatus, id).Error; err != nil {
 		return err
 	}
 
