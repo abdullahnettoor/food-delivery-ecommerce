@@ -1841,11 +1841,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "New status for the order",
-                        "name": "status",
-                        "in": "query",
-                        "required": true
+                        "description": "Update order status request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UpdateOrderStatusReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -2278,6 +2280,9 @@ const docTemplate = `{
                 "categoryId": {
                     "type": "integer"
                 },
+                "iconUrl": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -2511,12 +2516,20 @@ const docTemplate = `{
         },
         "req.NewOrderReq": {
             "type": "object",
+            "required": [
+                "addressId",
+                "paymentMethod"
+            ],
             "properties": {
                 "addressId": {
                     "type": "string"
                 },
                 "paymentMethod": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "COD",
+                        "Online"
+                    ]
                 }
             }
         },
@@ -2612,6 +2625,22 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer",
                     "minimum": 0
+                }
+            }
+        },
+        "req.UpdateOrderStatusReq": {
+            "type": "object",
+            "required": [
+                "orderStatus"
+            ],
+            "properties": {
+                "orderStatus": {
+                    "type": "string",
+                    "enum": [
+                        "Cooking",
+                        "Food Ready",
+                        "Delivered"
+                    ]
                 }
             }
         },

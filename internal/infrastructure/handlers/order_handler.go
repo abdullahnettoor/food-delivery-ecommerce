@@ -292,20 +292,29 @@ func (h *OrderHandler) ViewOrdersForSeller(c *fiber.Ctx) error {
 // @Tags			Seller Order
 // @Accept			json
 // @Produce		json
-// @Param			id		path		string			true	"Order ID"
-// @Param			status	query		string			true	"New status for the order"
-// @Success		200		{object}	res.CommonRes	"Successfully updated order"
-// @Failure		400		{object}	res.CommonRes	"Bad Request"
-// @Failure		401		{object}	res.CommonRes	"Unauthorized Access"
-// @Failure		404		{object}	res.CommonRes	"Order not found"
-// @Failure		500		{object}	res.CommonRes	"Internal Server Error"
+// @Param			id	path		string						true	"Order ID"
+// @Param			req	body		req.UpdateOrderStatusReq	true	"Update order status request"
+// @Success		200	{object}	res.CommonRes				"Successfully updated order"
+// @Failure		400	{object}	res.CommonRes				"Bad Request"
+// @Failure		401	{object}	res.CommonRes				"Unauthorized Access"
+// @Failure		404	{object}	res.CommonRes				"Order not found"
+// @Failure		500	{object}	res.CommonRes				"Internal Server Error"
 // @Router			/seller/orders/{id} [patch]
 func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
+	var req req.UpdateOrderStatusReq
 
 	id := c.Params("id")
-	status := c.Query("status")
 
-	if err := h.usecase.UpdateOrderStatus(id, status); err != nil {
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to parse body",
+				Error:   err.Error(),
+			})
+	}
+
+	if err := h.usecase.UpdateOrderStatus(id, req.OrderStatus); err != nil {
 		if err == e.ErrNotFound {
 			return c.Status(fiber.StatusBadRequest).
 				JSON(res.CommonRes{

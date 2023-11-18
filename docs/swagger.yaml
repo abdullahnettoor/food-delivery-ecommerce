@@ -58,6 +58,8 @@ definitions:
     properties:
       categoryId:
         type: integer
+      iconUrl:
+        type: string
       name:
         type: string
     type: object
@@ -217,7 +219,13 @@ definitions:
       addressId:
         type: string
       paymentMethod:
+        enum:
+        - COD
+        - Online
         type: string
+    required:
+    - addressId
+    - paymentMethod
     type: object
   req.SellerLoginReq:
     properties:
@@ -285,6 +293,17 @@ definitions:
     - name
     - price
     - quantity
+    type: object
+  req.UpdateOrderStatusReq:
+    properties:
+      orderStatus:
+        enum:
+        - Cooking
+        - Food Ready
+        - Delivered
+        type: string
+    required:
+    - orderStatus
     type: object
   req.UserLoginReq:
     properties:
@@ -1638,11 +1657,12 @@ paths:
         name: id
         required: true
         type: string
-      - description: New status for the order
-        in: query
-        name: status
+      - description: Update order status request
+        in: body
+        name: req
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/req.UpdateOrderStatusReq'
       produces:
       - application/json
       responses:

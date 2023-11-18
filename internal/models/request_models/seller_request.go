@@ -34,3 +34,7 @@ type UpdateDishReq struct {
 	IsVeg        bool    `json:"isVeg" validate:"boolean"`
 	Availability bool    `json:"isAvailable" validate:"boolean"`
 }
+
+type UpdateOrderStatusReq struct {
+	OrderStatus string `json:"orderStatus" validate:"required,oneof='Cooking' 'Food Ready' 'Delivered'"`
+}

@@ -29,6 +29,6 @@ type NewAddressReq struct {
 }
 
 type NewOrderReq struct {
-	PaymentMethod string `query:"paymentMethod" json:"paymentMethod" `
-	AddressID     string `query:"addressId" json:"addressId" `
+	PaymentMethod string `query:"paymentMethod" json:"paymentMethod" validate:"required,oneof='COD' 'Online'"`
+	AddressID     string `query:"addressId" json:"addressId" validate:"required,number"`
 }
