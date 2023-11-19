@@ -3,7 +3,6 @@ package usecases
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -85,57 +84,4 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 	}
 
 	return token, nil
-}
-
-func (uc *sellerUsecase) AddDish(sellerId string, req *req.CreateDishReq) error {
-
-	id, err := strconv.ParseInt(sellerId, 10, 32)
-	if err != nil {
-		return err
-	}
-
-	newDish := entities.Dish{
-		SellerID:     uint(id),
-		Name:         req.Name,
-		Description:  req.Description,
-		ImageUrl:     req.ImageUrl,
-		Price:        req.Price,
-		Quantity:     req.Quantity,
-		CategoryID:   req.CategoryID,
-		IsVeg:        req.IsVeg,
-		Availability: req.Availability,
-	}
-	return uc.dishRepo.Create(&newDish)
-}
-
-func (uc *sellerUsecase) UpdateDish(dishId, sellerId string, req *req.UpdateDishReq) (*entities.Dish, error) {
-
-	id, err := strconv.ParseInt(sellerId, 10, 32)
-	if err != nil {
-		return nil, err
-	}
-
-	updatedDish := entities.Dish{
-		SellerID:     uint(id),
-		Name:         req.Name,
-		Description:  req.Description,
-		Price:        req.Price,
-		Quantity:     req.Quantity,
-		CategoryID:   req.CategoryID,
-		IsVeg:        req.IsVeg,
-		Availability: req.Availability,
-	}
-	return uc.dishRepo.Update(dishId, &updatedDish)
-}
-
-func (uc *sellerUsecase) GetAllDishes(sellerId, category_id string) (*[]entities.Dish, error) {
-	return uc.dishRepo.FindBySeller(sellerId, category_id)
-}
-
-func (uc *sellerUsecase) GetDish(id, sellerId string) (*entities.Dish, error) {
-	return uc.dishRepo.FindBySellerAndID(id, sellerId)
-}
-
-func (uc *sellerUsecase) DeleteDish(id, sellerId string) error {
-	return uc.dishRepo.Delete(id, sellerId)
 }

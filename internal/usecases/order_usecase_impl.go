@@ -50,15 +50,19 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 			DishID:   item.DishID,
 			Dish:     *dish,
 			Quantity: item.Quantity,
-			Price:    dish.Price,
+			Price:    dish.SalePrice,
 		}
-		totalPrice += (dish.Price * float64(item.Quantity))
+		totalPrice += (dish.SalePrice * float64(item.Quantity))
 		orderItems = append(orderItems, o)
 	}
 
 	discount = 0
-	deliveryCharge = 10
+	if totalPrice > 500 {
+		deliveryCharge = 0
+	}
+	deliveryCharge = totalPrice * .1
 	totalPrice = totalPrice + deliveryCharge - discount
+
 	addressId, _ := strconv.ParseUint(req.AddressID, 10, 0)
 	uId, _ := strconv.ParseUint(userId, 10, 0)
 	order = entities.Order{
@@ -133,7 +137,7 @@ func (uc *orderUsecase) ViewOrder(id string) (*entities.Order, *[]entities.Order
 			DishID:   oItem.DishID,
 			Dish:     *dish,
 			Quantity: oItem.Quantity,
-			Price:    dish.Price,
+			Price:    dish.SalePrice,
 		}
 		orderItems = append(orderItems, o)
 	}

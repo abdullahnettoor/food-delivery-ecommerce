@@ -17,10 +17,11 @@ import (
 
 type SellerHandler struct {
 	usecase interfaces.ISellerUseCase
+	dishUcase interfaces.IDishUseCase
 }
 
-func NewSellerHandler(uCase interfaces.ISellerUseCase) *SellerHandler {
-	return &SellerHandler{uCase}
+func NewSellerHandler(uCase interfaces.ISellerUseCase, dishUcase interfaces.IDishUseCase) *SellerHandler {
+	return &SellerHandler{uCase, dishUcase}
 }
 
 // @Summary		Seller Sign Up
@@ -217,7 +218,7 @@ func (h *SellerHandler) CreateDish(c *fiber.Ctx) error {
 			})
 	}
 
-	if err := h.usecase.AddDish(sellerId, &req); err != nil {
+	if err := h.dishUcase.AddDish(sellerId, &req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
@@ -268,7 +269,7 @@ func (h *SellerHandler) UpdateDish(c *fiber.Ctx) error {
 			})
 	}
 
-	dish, err := h.usecase.UpdateDish(dishId, fmt.Sprint(seller["sellerId"]), &req)
+	dish, err := h.dishUcase.UpdateDish(dishId, fmt.Sprint(seller["sellerId"]), &req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -302,7 +303,7 @@ func (h *SellerHandler) GetDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 	seller := c.Locals("SellerModel").(map[string]any)
 
-	dish, err := h.usecase.GetDish(dishId, fmt.Sprint(seller["sellerId"]))
+	dish, err := h.dishUcase.GetDishBySeller(dishId, fmt.Sprint(seller["sellerId"]))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -336,7 +337,7 @@ func (h *SellerHandler) GetAllDish(c *fiber.Ctx) error {
 	sellerId := fmt.Sprint(seller["sellerId"])
 	categoryId := c.Query("category")
 
-	dishList, err := h.usecase.GetAllDishes(sellerId, categoryId)
+	dishList, err := h.dishUcase.GetAllDishesBySeller(sellerId, categoryId)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -370,7 +371,7 @@ func (h *SellerHandler) DeleteDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 	seller := c.Locals("SellerModel").(map[string]any)
 
-	err := h.usecase.DeleteDish(dishId, fmt.Sprint(seller["sellerId"]))
+	err := h.dishUcase.DeleteDish(dishId, fmt.Sprint(seller["sellerId"]))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{

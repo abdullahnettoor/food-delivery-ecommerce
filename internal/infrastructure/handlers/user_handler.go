@@ -15,10 +15,11 @@ import (
 
 type UserHandler struct {
 	usecase interfaces.IUserUseCase
+	dishUcase interfaces.IDishUseCase
 }
 
-func NewUserHandler(uCase interfaces.IUserUseCase) *UserHandler {
-	return &UserHandler{uCase}
+func NewUserHandler(uCase interfaces.IUserUseCase, dishUcase interfaces.IDishUseCase) *UserHandler {
+	return &UserHandler{uCase, dishUcase}
 }
 
 // @Summary		Sign up as a user
@@ -240,7 +241,7 @@ func (h *UserHandler) GetDishesPage(c *fiber.Ctx) error {
 	page := c.Query("p", "1")
 	limit := c.Query("l")
 
-	dishList, err := h.usecase.GetDishesPage(page, limit)
+	dishList, err := h.dishUcase.GetDishesPage(page, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -274,7 +275,7 @@ func (h *UserHandler) GetDishesPage(c *fiber.Ctx) error {
 func (h *UserHandler) GetDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 
-	dish, err := h.usecase.GetDish(dishId)
+	dish, err := h.dishUcase.GetDish(dishId)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
@@ -306,7 +307,7 @@ func (h *UserHandler) GetDish(c *fiber.Ctx) error {
 func (h *UserHandler) SearchDish(c *fiber.Ctx) error {
 	searchQuery := c.Query("q")
 
-	dishList, err := h.usecase.SearchDish(searchQuery)
+	dishList, err := h.dishUcase.SearchDish(searchQuery)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{

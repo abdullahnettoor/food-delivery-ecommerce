@@ -15,10 +15,6 @@ type IUserUseCase interface {
 	ViewAddress(id, userId string) (*entities.Address, error)
 	ViewAllAddresses(userId string) (*[]entities.Address, error)
 
-	SearchDish(search string) (*[]entities.Dish, error)
-	GetDishesPage(page, limit string) (*[]entities.Dish, error)
-	GetDish(id string) (*entities.Dish, error)
-
 	SearchSeller(search string) (*[]entities.Seller, error)
 	GetSellersPage(page, limit string) (*[]entities.Seller, error)
 	GetSeller(id string) (*entities.Seller, error)

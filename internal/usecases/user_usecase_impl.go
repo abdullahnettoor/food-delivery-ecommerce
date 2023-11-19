@@ -102,27 +102,6 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 	return user, nil
 }
 
-func (uc *userUcase) SearchDish(search string) (*[]entities.Dish, error) {
-	return uc.dishRepo.Search(search)
-}
-
-func (uc *userUcase) GetDishesPage(page, limit string) (*[]entities.Dish, error) {
-	p, err := strconv.ParseUint(page, 10, 0)
-	if err != nil {
-		return nil, err
-	}
-	l, err := strconv.ParseUint(limit, 10, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	return uc.dishRepo.FindPageWise(uint(p), uint(l))
-}
-
-func (uc *userUcase) GetDish(id string) (*entities.Dish, error) {
-	return uc.dishRepo.FindByID(id)
-}
-
 func (uc *userUcase) SearchSeller(search string) (*[]entities.Seller, error) {
 	return uc.sellerRepo.SearchVerified(search)
 }

@@ -6,6 +6,7 @@ type Dish struct {
 	Name         string  `json:"name"`
 	Description  string  `json:"description"`
 	Price        float64 `json:"price"`
+	SalePrice    float64 `json:"salePrice"`
 	ImageUrl     string  `json:"imageUrl"`
 	Quantity     uint    `json:"quantity"`
 	CategoryID   uint    `json:"categoryId"`
