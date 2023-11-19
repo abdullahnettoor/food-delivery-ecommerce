@@ -16,12 +16,11 @@ import (
 
 type userUcase struct {
 	userRepo   interfaces.IUserRepository
-	dishRepo   interfaces.IDishRepository
 	sellerRepo interfaces.ISellerRepository
 }
 
-func NewUserUsecase(userRepo interfaces.IUserRepository, dishRepo interfaces.IDishRepository, sellerRepo interfaces.ISellerRepository) i.IUserUseCase {
-	return &userUcase{userRepo, dishRepo, sellerRepo}
+func NewUserUsecase(userRepo interfaces.IUserRepository, sellerRepo interfaces.ISellerRepository) i.IUserUseCase {
+	return &userUcase{userRepo, sellerRepo}
 }
 
 func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {

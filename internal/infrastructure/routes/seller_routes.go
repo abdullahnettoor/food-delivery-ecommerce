@@ -6,18 +6,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler, order *handlers.OrderHandler) {
+func SellerRoutes(f *fiber.App, seller *handlers.SellerHandler, order *handlers.OrderHandler, dish *handlers.DishHandler) {
 
 	f.Post("/seller/register", seller.SignUp)
 	f.Post("/seller/login", seller.Login)
 
 	s := f.Group("/seller", middlewares.AuthenticateSeller, middlewares.AuthorizeSeller)
 
-	s.Post("/addDish", seller.CreateDish)
-	s.Get("/dishes", seller.GetAllDish)
-	s.Get("/dishes/:id", seller.GetDish)
-	s.Put("/dishes/:id", seller.UpdateDish)
-	s.Delete("/dishes/:id", seller.DeleteDish)
+	s.Post("/addDish", dish.CreateDish)
+	s.Get("/dishes", dish.GetAllDishBySeller)
+	s.Get("/dishes/:id", dish.GetDishBySeller)
+	s.Put("/dishes/:id", dish.UpdateDish)
+	s.Delete("/dishes/:id", dish.DeleteDish)
 
 	s.Get("/orders", order.ViewOrdersForSeller)
 	s.Get("/orders/:id", order.ViewOrder)

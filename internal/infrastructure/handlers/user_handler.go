@@ -15,11 +15,10 @@ import (
 
 type UserHandler struct {
 	usecase interfaces.IUserUseCase
-	dishUcase interfaces.IDishUseCase
 }
 
-func NewUserHandler(uCase interfaces.IUserUseCase, dishUcase interfaces.IDishUseCase) *UserHandler {
-	return &UserHandler{uCase, dishUcase}
+func NewUserHandler(uCase interfaces.IUserUseCase) *UserHandler {
+	return &UserHandler{uCase}
 }
 
 // @Summary		Sign up as a user
@@ -222,106 +221,6 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 			Status:  "success",
 			Message: "successfully logged in",
 			Token:   token,
-		})
-}
-
-// @Summary		Get paginated list of dishes
-// @Description	Retrieve a paginated list of dishes for the user
-// @Security		Bearer
-// @Tags			User
-// @Accept			json
-// @Produce		json
-// @Param			p	query		string			false	"Page number (default: 1)"
-// @Param			l	query		string			false	"Number of items per page"
-// @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
-// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
-// @Router			/dishes [get]
-func (h *UserHandler) GetDishesPage(c *fiber.Ctx) error {
-	page := c.Query("p", "1")
-	limit := c.Query("l")
-
-	dishList, err := h.dishUcase.GetDishesPage(page, limit)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Message: "failed to fetch dishes",
-				Error:   err.Error(),
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.DishListRes{
-			Status:   "success",
-			Message:  "successfully fetched dish",
-			DishList: *dishList,
-		})
-
-}
-
-// @Summary		Get a dish
-// @Description	Retrieve a specific dish by ID for the user
-// @Security		Bearer
-// @Tags			User
-// @Accept			json
-// @Produce		json
-// @Param			id	path		string				true	"Dish ID"	int
-// @Success		200	{object}	res.SingleDishRes	"Successfully fetched dish"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
-// @Router			/dishes/{id} [get]
-func (h *UserHandler) GetDish(c *fiber.Ctx) error {
-	dishId := c.Params("id")
-
-	dish, err := h.dishUcase.GetDish(dishId)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Message: "failed to fetch dish",
-				Error:   err.Error(),
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.SingleDishRes{
-			Status:  "success",
-			Message: "successfully fetched dish",
-			Dish:    *dish,
-		})
-}
-
-// @Summary		Search dishes
-// @Description	Search for dishes based on a query
-// @Security		Bearer
-// @Tags			User
-// @Accept			json
-// @Produce		json
-// @Param			q	query		string			true	"Search query"
-// @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
-// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
-// @Router			/search/dishes [get]
-func (h *UserHandler) SearchDish(c *fiber.Ctx) error {
-	searchQuery := c.Query("q")
-
-	dishList, err := h.dishUcase.SearchDish(searchQuery)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Message: "failed to fetch dish",
-				Error:   err.Error(),
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.DishListRes{
-			Status:   "success",
-			Message:  "successfully fetched dish",
-			DishList: *dishList,
 		})
 }
 

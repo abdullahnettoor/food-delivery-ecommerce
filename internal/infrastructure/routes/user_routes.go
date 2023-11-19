@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHandler, order *handlers.OrderHandler) {
+func UserRoutes(f *fiber.App, user *handlers.UserHandler, dish *handlers.DishHandler, cart *handlers.CartHandler, order *handlers.OrderHandler) {
 
 	f.Post("/signup", user.SignUp)
 	f.Post("/sendOtp", middlewares.AuthenticateUser, user.SendOtp)
@@ -15,9 +15,9 @@ func UserRoutes(f *fiber.App, user *handlers.UserHandler, cart *handlers.CartHan
 	f.Get("/cart/checkout/online", order.PlaceOrderPayOnline)
 	f.Post("/cart/checkout/online", order.VerifyPayment)
 
-	f.Get("/dishes", user.GetDishesPage)
-	f.Get("/dishes/:id", user.GetDish)
-	f.Get("/search/dishes", user.SearchDish)
+	f.Get("/dishes", dish.GetDishesPage)
+	f.Get("/dishes/:id", dish.GetDish)
+	f.Get("/search/dishes", dish.SearchDish)
 
 	f.Get("/sellers", user.GetSellersPage)
 	f.Get("/sellers/:id", user.GetSeller)

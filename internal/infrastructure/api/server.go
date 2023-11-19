@@ -18,6 +18,7 @@ func NewServerHttp(
 	adminHandler *handlers.AdminHandler,
 	sellerHandler *handlers.SellerHandler,
 	userHandler *handlers.UserHandler,
+	dishHandler *handlers.DishHandler,
 	cartHandler *handlers.CartHandler,
 	orderHandler *handlers.OrderHandler,
 ) *ServerHttp {
@@ -39,8 +40,8 @@ func NewServerHttp(
 	})
 
 	routes.AdminRoutes(app, adminHandler)
-	routes.SellerRoutes(app, sellerHandler, orderHandler)
-	routes.UserRoutes(app, userHandler, cartHandler, orderHandler)
+	routes.SellerRoutes(app, sellerHandler, orderHandler, dishHandler)
+	routes.UserRoutes(app, userHandler, dishHandler, cartHandler, orderHandler)
 
 	return &ServerHttp{app}
 }

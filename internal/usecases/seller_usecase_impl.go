@@ -16,17 +16,16 @@ import (
 )
 
 type sellerUsecase struct {
-	sellerRepo interfaces.ISellerRepository
-	dishRepo   interfaces.IDishRepository
+	repo interfaces.ISellerRepository
 }
 
-func NewSellerUsecase(sellerRepo interfaces.ISellerRepository, dishRepo interfaces.IDishRepository) i.ISellerUseCase {
-	return &sellerUsecase{sellerRepo, dishRepo}
+func NewSellerUsecase(repo interfaces.ISellerRepository) i.ISellerUseCase {
+	return &sellerUsecase{repo}
 }
 
 func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 
-	seller, err := uc.sellerRepo.FindByEmail(req.Email)
+	seller, err := uc.repo.FindByEmail(req.Email)
 	if err != nil {
 		fmt.Println("DB Error", err.Error())
 		return "", err
@@ -57,7 +56,7 @@ func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 
 func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 
-	_, err := uc.sellerRepo.FindByEmail(req.Email)
+	_, err := uc.repo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
 		return "", err
 	}
@@ -72,7 +71,7 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 		PinCode:     req.PinCode,
 	}
 
-	if err := uc.sellerRepo.Create(&seller); err != nil {
+	if err := uc.repo.Create(&seller); err != nil {
 		return "", err
 	}
 
