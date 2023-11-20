@@ -226,7 +226,6 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 
 // @Summary		Get paginated list of sellers
 // @Description	Retrieve a paginated list of sellers for the user
-// @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json
@@ -261,7 +260,6 @@ func (h *UserHandler) GetSellersPage(c *fiber.Ctx) error {
 
 // @Summary		Get a seller
 // @Description	Retrieve a specific seller by ID for the user
-// @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json
@@ -294,7 +292,6 @@ func (h *UserHandler) GetSeller(c *fiber.Ctx) error {
 
 // @Summary		Search sellers
 // @Description	Search for sellers based on a query
-// @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json

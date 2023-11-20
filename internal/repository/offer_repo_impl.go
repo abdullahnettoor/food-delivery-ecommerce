@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"strings"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -31,11 +32,16 @@ func (repo *offerRepository) Update(id string, offer *entities.CategoryOffer) er
 }
 
 func (repo *offerRepository) UpdateStatus(id, status string) error {
-	res := repo.DB.Exec(`
-	UPDATE category_offers
-	SET status = ?
-	WHERE id = ?`,
-		status, id)
+
+	query := "UPDATE category_offers SET status = '" + status
+
+	if strings.ToUpper(status) == "CLOSED" {
+		query += "', end_date = '" + time.Now().Format("2006-01-02 15:04:05.999999-07:00")
+	}
+
+	query += "' WHERE id = " + id
+
+	res := repo.DB.Exec(query)
 	if res.RowsAffected == 0 {
 		return e.ErrNotFound
 	}
@@ -53,6 +59,9 @@ func (repo *offerRepository) FindAll() (*[]entities.CategoryOffer, error) {
 		time.Now(), time.Now()).Scan(&offerList)
 	if res.Error != nil {
 		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrIsEmpty
 	}
 
 	return &offerList, nil

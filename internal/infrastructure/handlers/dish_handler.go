@@ -293,7 +293,6 @@ func (h *DishHandler) DeleteDish(c *fiber.Ctx) error {
 
 // @Summary		Get paginated list of dishes
 // @Description	Retrieve a paginated list of dishes for the user
-// @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json
@@ -328,7 +327,6 @@ func (h *DishHandler) GetDishesPage(c *fiber.Ctx) error {
 
 // @Summary		Get a dish
 // @Description	Retrieve a specific dish by ID for the user
-// @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json
@@ -361,7 +359,6 @@ func (h *DishHandler) GetDish(c *fiber.Ctx) error {
 
 // @Summary		Search dishes
 // @Description	Search for dishes based on a query
-// @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json

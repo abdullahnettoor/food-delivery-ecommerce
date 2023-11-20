@@ -146,8 +146,8 @@ func (repo *DishRepository) Update(id string, dish *entities.Dish) (*entities.Di
 		return nil, e.ErrConflict
 	}
 
-	query := fmt.Sprintf("UPDATE dishes SET name='%v', description = '%v', price = '%v', quantity = '%v', category_id = '%v', is_veg = '%v' , availability = '%v' WHERE id = '%v'",
-		dish.Name, dish.Description, dish.Price, dish.Quantity, dish.CategoryID, dish.IsVeg, dish.Availability, id)
+	query := fmt.Sprintf("UPDATE dishes SET name='%v', description = '%v', price = '%v', sale_price='%v', quantity = '%v', category_id = '%v', is_veg = '%v' , availability = '%v' WHERE id = '%v'",
+		dish.Name, dish.Description, dish.Price, dish.SalePrice, dish.Quantity, dish.CategoryID, dish.IsVeg, dish.Availability, id)
 
 	res := repo.DB.Exec(query)
 	if res.Error != nil {

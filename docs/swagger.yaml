@@ -51,6 +51,8 @@ definitions:
         type: number
       quantity:
         type: integer
+      salePrice:
+        type: number
       sellerId:
         type: integer
     type: object
@@ -61,6 +63,25 @@ definitions:
       iconUrl:
         type: string
       name:
+        type: string
+    type: object
+  entities.CategoryOffer:
+    properties:
+      categoryId:
+        type: integer
+      endDate:
+        type: string
+      offerId:
+        type: integer
+      offerPercentage:
+        type: integer
+      offerTitle:
+        type: string
+      sellerId:
+        type: integer
+      startDate:
+        type: string
+      status:
         type: string
     type: object
   entities.Dish:
@@ -83,6 +104,8 @@ definitions:
         type: number
       quantity:
         type: integer
+      salePrice:
+        type: number
       sellerId:
         type: integer
     type: object
@@ -137,6 +160,8 @@ definitions:
         type: number
       quantity:
         type: integer
+      salePrice:
+        type: number
       sellerId:
         type: integer
     type: object
@@ -188,6 +213,32 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  req.CreateOfferReq:
+    properties:
+      categoryId:
+        type: integer
+      endDate:
+        type: string
+      offerPercentage:
+        type: integer
+      offerTitle:
+        type: string
+      startDate:
+        type: string
+      status:
+        enum:
+        - Active
+        - Closed
+        - Deleted
+        type: string
+    required:
+    - categoryId
+    - endDate
+    - offerPercentage
+    - offerTitle
+    - startDate
+    - status
     type: object
   req.NewAddressReq:
     properties:
@@ -288,11 +339,40 @@ definitions:
       quantity:
         minimum: 0
         type: integer
+      salePrice:
+        minimum: 0
+        type: number
     required:
     - categoryId
     - name
     - price
     - quantity
+    type: object
+  req.UpdateOfferReq:
+    properties:
+      categoryId:
+        type: integer
+      endDate:
+        type: string
+      offerPercentage:
+        type: integer
+      offerTitle:
+        type: string
+      startDate:
+        type: string
+      status:
+        enum:
+        - Active
+        - Closed
+        - Deleted
+        type: string
+    required:
+    - categoryId
+    - endDate
+    - offerPercentage
+    - offerTitle
+    - startDate
+    - status
     type: object
   req.UpdateOrderStatusReq:
     properties:
@@ -386,6 +466,17 @@ definitions:
         type: array
       message:
         type: string
+      status:
+        type: string
+    type: object
+  res.OfferListRes:
+    properties:
+      message:
+        type: string
+      offerList:
+        items:
+          $ref: '#/definitions/entities.CategoryOffer'
+        type: array
       status:
         type: string
     type: object
@@ -1058,8 +1149,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
-      security:
-      - Bearer: []
       summary: Get paginated list of dishes
       tags:
       - User
@@ -1093,8 +1182,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
-      security:
-      - Bearer: []
       summary: Get a dish
       tags:
       - User
@@ -1126,6 +1213,23 @@ paths:
           schema:
             $ref: '#/definitions/res.CommonRes'
       summary: User Login
+      tags:
+      - User
+  /offers:
+    get:
+      description: Fetches a list of all offers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: List of offers fetched successfully'
+          schema:
+            $ref: '#/definitions/res.OfferListRes'
+        "500":
+          description: 'Internal Server Error: Failed to fetch offers'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Get all offers
       tags:
       - User
   /orders:
@@ -1319,8 +1423,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
-      security:
-      - Bearer: []
       summary: Search dishes
       tags:
       - User
@@ -1350,8 +1452,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
-      security:
-      - Bearer: []
       summary: Search sellers
       tags:
       - User
@@ -1394,6 +1494,9 @@ paths:
         name: quantity
         required: true
         type: integer
+      - in: formData
+        name: salePrice
+        type: number
       produces:
       - application/json
       responses:
@@ -1587,6 +1690,126 @@ paths:
       summary: Seller Login
       tags:
       - Seller
+  /seller/offers:
+    get:
+      description: Fetches a list of offers associated with the seller
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: List of offers fetched successfully'
+          schema:
+            $ref: '#/definitions/res.OfferListRes'
+        "500":
+          description: 'Internal Server Error: Failed to fetch offers'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get offers by seller
+      tags:
+      - Seller
+  /seller/offers/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the status of a specific offer
+      parameters:
+      - description: Offer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New offer status
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Offer status updated successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Error occurred while updating offer
+            status'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update offer status
+      tags:
+      - Seller
+    put:
+      consumes:
+      - application/json
+      description: Updates details of a specific offer for the seller
+      parameters:
+      - description: Offer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Offer Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UpdateOfferReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Offer updated successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Invalid inputs'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Error occurred while updating offer'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update an offer
+      tags:
+      - Seller
+  /seller/offers/addOffer:
+    post:
+      consumes:
+      - application/json
+      description: Create new offer for the seller
+      parameters:
+      - description: Create Offer Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateOfferReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Offer updated successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Invalid inputs'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Error occurred while updating offer'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Create an offer
+      tags:
+      - Seller
   /seller/orders:
     get:
       consumes:
@@ -1755,8 +1978,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
-      security:
-      - Bearer: []
       summary: Get paginated list of sellers
       tags:
       - User
@@ -1790,8 +2011,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
-      security:
-      - Bearer: []
       summary: Get a seller
       tags:
       - User

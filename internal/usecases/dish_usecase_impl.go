@@ -37,6 +37,9 @@ func (uc *dishUsecase) AddDish(sellerId string, req *req.CreateDishReq) error {
 		IsVeg:        req.IsVeg,
 		Availability: req.Availability,
 	}
+	if req.SalePrice == 0 {
+		newDish.SalePrice = req.Price
+	}
 	return uc.dishRepo.Create(&newDish)
 }
 
@@ -57,6 +60,9 @@ func (uc *dishUsecase) UpdateDish(dishId, sellerId string, req *req.UpdateDishRe
 		CategoryID:   req.CategoryID,
 		IsVeg:        req.IsVeg,
 		Availability: req.Availability,
+	}
+	if req.SalePrice == 0 {
+		updatedDish.SalePrice = req.Price
 	}
 	return uc.dishRepo.Update(dishId, &updatedDish)
 }

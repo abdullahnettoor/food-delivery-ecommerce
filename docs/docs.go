@@ -850,11 +850,6 @@ const docTemplate = `{
         },
         "/dishes": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Retrieve a paginated list of dishes for the user",
                 "consumes": [
                     "application/json"
@@ -904,11 +899,6 @@ const docTemplate = `{
         },
         "/dishes/{id}": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Retrieve a specific dish by ID for the user",
                 "consumes": [
                     "application/json"
@@ -996,6 +986,32 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers": {
+            "get": {
+                "description": "Fetches a list of all offers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get all offers",
+                "responses": {
+                    "200": {
+                        "description": "Success: List of offers fetched successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.OfferListRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch offers",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
@@ -1265,11 +1281,6 @@ const docTemplate = `{
         },
         "/search/dishes": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Search for dishes based on a query",
                 "consumes": [
                     "application/json"
@@ -1314,11 +1325,6 @@ const docTemplate = `{
         },
         "/search/sellers": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Search for sellers based on a query",
                 "consumes": [
                     "application/json"
@@ -1428,6 +1434,11 @@ const docTemplate = `{
                         "name": "quantity",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "number",
+                        "name": "salePrice",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -1722,6 +1733,194 @@ const docTemplate = `{
                 }
             }
         },
+        "/seller/offers": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches a list of offers associated with the seller",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller"
+                ],
+                "summary": "Get offers by seller",
+                "responses": {
+                    "200": {
+                        "description": "Success: List of offers fetched successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.OfferListRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch offers",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/seller/offers/addOffer": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create new offer for the seller",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller"
+                ],
+                "summary": "Create an offer",
+                "parameters": [
+                    {
+                        "description": "Create Offer Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateOfferReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Offer updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Invalid inputs",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Error occurred while updating offer",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/seller/offers/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates details of a specific offer for the seller",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller"
+                ],
+                "summary": "Update an offer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Offer Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UpdateOfferReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Offer updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Invalid inputs",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Error occurred while updating offer",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the status of a specific offer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller"
+                ],
+                "summary": "Update offer status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "New offer status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Offer status updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Error occurred while updating offer status",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/seller/orders": {
             "get": {
                 "security": [
@@ -1940,11 +2139,6 @@ const docTemplate = `{
         },
         "/sellers": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Retrieve a paginated list of sellers for the user",
                 "consumes": [
                     "application/json"
@@ -1994,11 +2188,6 @@ const docTemplate = `{
         },
         "/sellers/{id}": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "Retrieve a specific seller by ID for the user",
                 "consumes": [
                     "application/json"
@@ -2277,6 +2466,9 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer"
                 },
+                "salePrice": {
+                    "type": "number"
+                },
                 "sellerId": {
                     "type": "integer"
                 }
@@ -2292,6 +2484,35 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.CategoryOffer": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "offerId": {
+                    "type": "integer"
+                },
+                "offerPercentage": {
+                    "type": "integer"
+                },
+                "offerTitle": {
+                    "type": "string"
+                },
+                "sellerId": {
+                    "type": "integer"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -2325,6 +2546,9 @@ const docTemplate = `{
                 },
                 "quantity": {
                     "type": "integer"
+                },
+                "salePrice": {
+                    "type": "number"
                 },
                 "sellerId": {
                     "type": "integer"
@@ -2408,6 +2632,9 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer"
                 },
+                "salePrice": {
+                    "type": "number"
+                },
                 "sellerId": {
                     "type": "integer"
                 }
@@ -2484,6 +2711,42 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "minLength": 3
+                }
+            }
+        },
+        "req.CreateOfferReq": {
+            "type": "object",
+            "required": [
+                "categoryId",
+                "endDate",
+                "offerPercentage",
+                "offerTitle",
+                "startDate",
+                "status"
+            ],
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "offerPercentage": {
+                    "type": "integer"
+                },
+                "offerTitle": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Active",
+                        "Closed",
+                        "Deleted"
+                    ]
                 }
             }
         },
@@ -2633,6 +2896,46 @@ const docTemplate = `{
                 "quantity": {
                     "type": "integer",
                     "minimum": 0
+                },
+                "salePrice": {
+                    "type": "number",
+                    "minimum": 0
+                }
+            }
+        },
+        "req.UpdateOfferReq": {
+            "type": "object",
+            "required": [
+                "categoryId",
+                "endDate",
+                "offerPercentage",
+                "offerTitle",
+                "startDate",
+                "status"
+            ],
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "offerPercentage": {
+                    "type": "integer"
+                },
+                "offerTitle": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Active",
+                        "Closed",
+                        "Deleted"
+                    ]
                 }
             }
         },
@@ -2772,6 +3075,23 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.OfferListRes": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "offerList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.CategoryOffer"
+                    }
                 },
                 "status": {
                     "type": "string"

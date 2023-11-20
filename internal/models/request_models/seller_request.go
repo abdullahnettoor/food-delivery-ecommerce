@@ -1,5 +1,7 @@
 package req
 
+import "time"
+
 type SellerSignUpReq struct {
 	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required,gte=3"`
@@ -18,7 +20,7 @@ type CreateDishReq struct {
 	Name         string  `form:"name" validate:"required,gte=3"`
 	Description  string  `form:"description"`
 	Price        float64 `form:"price" validate:"required,gte=0"`
-	SalePrice        float64 `form:"salePrice" validate:"required,gte=0"`
+	SalePrice    float64 `form:"salePrice" validate:""`
 	Quantity     uint    `form:"quantity" validate:"required,gte=0"`
 	CategoryID   uint    `form:"categoryId" validate:"required,number"`
 	IsVeg        bool    `form:"isVeg" validate:"boolean"`
@@ -30,7 +32,7 @@ type UpdateDishReq struct {
 	Name         string  `json:"name" validate:"required,gte=3"`
 	Description  string  `json:"description"`
 	Price        float64 `json:"price" validate:"required,gte=0"`
-	SalePrice        float64 `json:"salePrice" validate:"gte=0"`
+	SalePrice    float64 `json:"salePrice" validate:"gte=0"`
 	Quantity     uint    `json:"quantity" validate:"required,gte=0"`
 	CategoryID   uint    `json:"categoryId" validate:"required,number"`
 	IsVeg        bool    `json:"isVeg" validate:"boolean"`
@@ -39,4 +41,22 @@ type UpdateDishReq struct {
 
 type UpdateOrderStatusReq struct {
 	OrderStatus string `json:"orderStatus" validate:"required,oneof='Cooking' 'Food Ready' 'Delivered'"`
+}
+
+type CreateOfferReq struct {
+	Title      string    `json:"offerTitle" validate:"required"`
+	CategoryID uint      `json:"categoryId" validate:"required,number"`
+	Percentage uint      `json:"offerPercentage" validate:"required,gt=0,lte=100"`
+	StartDate  time.Time `json:"startDate" validate:""`
+	EndDate    time.Time `json:"endDate" validate:""`
+	Status     string    `json:"status" validate:"required,oneof=Active Closed Deleted"`
+}
+
+type UpdateOfferReq struct {
+	Title      string    `json:"offerTitle" validate:"required"`
+	CategoryID uint      `json:"categoryId" validate:"required,number"`
+	Percentage uint      `json:"offerPercentage" validate:"required,gt=0,lte=100"`
+	StartDate  time.Time `json:"startDate" validate:""`
+	EndDate    time.Time `json:"endDate" validate:""`
+	Status     string    `json:"status" validate:"required,oneof=Active Closed Deleted"`
 }

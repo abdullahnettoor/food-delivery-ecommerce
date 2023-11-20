@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type CategoryOffer struct {
-	ID         uint      `json:"categoryOfferId"`
+	ID         uint      `json:"offerId"`
 	Title      string    `json:"offerTitle"`
 	SellerID   uint      `json:"sellerId"`
 	CategoryID uint      `json:"categoryId"`
