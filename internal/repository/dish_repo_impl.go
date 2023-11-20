@@ -17,17 +17,19 @@ func NewDishRepository(db *gorm.DB) interfaces.IDishRepository {
 	return &DishRepository{db}
 }
 
-func (repo *DishRepository) FindPageWise(page, limit uint) (*[]entities.Dish, error) {
+func (repo *DishRepository) FindPageWise(categoryId string, page, limit uint) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 
-	offset := (page - 1) * uint(limit)
+	query := ` SELECT * FROM dishes WHERE availability = true AND deleted = false `
 
-	query := `
-	SELECT *
-	FROM dishes
-	WHERE availability = true
-	AND deleted = false
-	OFFSET ? LIMIT ?`
+	if categoryId != "" {
+		query += "AND category_id = " + categoryId
+	}
+
+	offset := (page - 1) * uint(limit)
+	if limit != 0 || page != 0 {
+		query += fmt.Sprintf(" OFFSET %v LIMIT %v", offset, limit)
+	}
 
 	res := repo.DB.Raw(query, offset, limit).Scan(&dishList)
 	if res.Error != nil {

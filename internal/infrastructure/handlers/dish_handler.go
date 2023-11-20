@@ -89,7 +89,6 @@ func (h *DishHandler) CreateDish(c *fiber.Ctx) error {
 				Message: "failed to open file path in server",
 			})
 	}
-	defer file.Close()
 
 	ctx := context.Background()
 	imgUploader := imageuploader.NewUploadImage()
@@ -108,6 +107,7 @@ func (h *DishHandler) CreateDish(c *fiber.Ctx) error {
 				Message: "failed to upload file to cloud",
 			})
 	}
+	file.Close()
 
 	req.ImageUrl = url
 
@@ -305,8 +305,9 @@ func (h *DishHandler) DeleteDish(c *fiber.Ctx) error {
 func (h *DishHandler) GetDishesPage(c *fiber.Ctx) error {
 	page := c.Query("p", "1")
 	limit := c.Query("l")
+	categoryId := c.Query("category")
 
-	dishList, err := h.dishUc.GetDishesPage(page, limit)
+	dishList, err := h.dishUc.GetDishesPage(categoryId, page, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
