@@ -298,6 +298,7 @@ func (h *DishHandler) DeleteDish(c *fiber.Ctx) error {
 // @Produce		json
 // @Param			p	query		string			false	"Page number (default: 1)"
 // @Param			l	query		string			false	"Number of items per page"
+// @Param			category	query		string			false	"Item category"
 // @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
 // @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes	"Internal Server Error"

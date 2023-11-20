@@ -31,7 +31,7 @@ func (repo *DishRepository) FindPageWise(categoryId string, page, limit uint) (*
 		query += fmt.Sprintf(" OFFSET %v LIMIT %v", offset, limit)
 	}
 
-	res := repo.DB.Raw(query, offset, limit).Scan(&dishList)
+	res := repo.DB.Raw(query).Scan(&dishList)
 	if res.Error != nil {
 		return nil, res.Error
 	}

@@ -862,6 +862,12 @@
                         "description": "Number of items per page",
                         "name": "l",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Item category",
+                        "name": "category",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2707,10 +2713,8 @@
             "type": "object",
             "required": [
                 "categoryId",
-                "endDate",
                 "offerPercentage",
                 "offerTitle",
-                "startDate",
                 "status"
             ],
             "properties": {
@@ -2721,7 +2725,8 @@
                     "type": "string"
                 },
                 "offerPercentage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 100
                 },
                 "offerTitle": {
                     "type": "string"
@@ -2896,10 +2901,8 @@
             "type": "object",
             "required": [
                 "categoryId",
-                "endDate",
                 "offerPercentage",
                 "offerTitle",
-                "startDate",
                 "status"
             ],
             "properties": {
@@ -2910,7 +2913,8 @@
                     "type": "string"
                 },
                 "offerPercentage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 100
                 },
                 "offerTitle": {
                     "type": "string"

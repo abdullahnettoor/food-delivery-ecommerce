@@ -221,6 +221,7 @@ definitions:
       endDate:
         type: string
       offerPercentage:
+        maximum: 100
         type: integer
       offerTitle:
         type: string
@@ -234,10 +235,8 @@ definitions:
         type: string
     required:
     - categoryId
-    - endDate
     - offerPercentage
     - offerTitle
-    - startDate
     - status
     type: object
   req.NewAddressReq:
@@ -355,6 +354,7 @@ definitions:
       endDate:
         type: string
       offerPercentage:
+        maximum: 100
         type: integer
       offerTitle:
         type: string
@@ -368,10 +368,8 @@ definitions:
         type: string
     required:
     - categoryId
-    - endDate
     - offerPercentage
     - offerTitle
-    - startDate
     - status
     type: object
   req.UpdateOrderStatusReq:
@@ -1133,6 +1131,10 @@ paths:
       - description: Number of items per page
         in: query
         name: l
+        type: string
+      - description: Item category
+        in: query
+        name: category
         type: string
       produces:
       - application/json

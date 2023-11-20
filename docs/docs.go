@@ -873,6 +873,12 @@ const docTemplate = `{
                         "description": "Number of items per page",
                         "name": "l",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Item category",
+                        "name": "category",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2718,10 +2724,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "categoryId",
-                "endDate",
                 "offerPercentage",
                 "offerTitle",
-                "startDate",
                 "status"
             ],
             "properties": {
@@ -2732,7 +2736,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "offerPercentage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 100
                 },
                 "offerTitle": {
                     "type": "string"
@@ -2907,10 +2912,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "categoryId",
-                "endDate",
                 "offerPercentage",
                 "offerTitle",
-                "startDate",
                 "status"
             ],
             "properties": {
@@ -2921,7 +2924,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "offerPercentage": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 100
                 },
                 "offerTitle": {
                     "type": "string"
