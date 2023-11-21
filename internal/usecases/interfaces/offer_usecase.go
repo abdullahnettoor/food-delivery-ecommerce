@@ -11,4 +11,7 @@ type IOfferUseCase interface {
 	UpdateOfferStatus(id, status string) error
 	GetAllOffer() (*[]entities.CategoryOffer, error)
 	GetOffersBySeller(sellerId string) (*[]entities.CategoryOffer, error)
+
+	ApplyOfferToDishList(dishList *[]entities.Dish) (*[]entities.Dish, error)
+	ApplyOfferToDish(dish *entities.Dish) (*entities.Dish, error)
 }

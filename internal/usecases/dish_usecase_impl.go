@@ -10,12 +10,12 @@ import (
 )
 
 type dishUsecase struct {
-	dishRepo     interfaces.IDishRepository
-	categoryRepo interfaces.ICategoryRepository
+	dishRepo   interfaces.IDishRepository
+	offerUcase i.IOfferUseCase
 }
 
-func NewDishUsecase(dishRepo interfaces.IDishRepository, categoryRepo interfaces.ICategoryRepository) i.IDishUseCase {
-	return &dishUsecase{dishRepo, categoryRepo}
+func NewDishUsecase(dishRepo interfaces.IDishRepository, offerUcase i.IOfferUseCase) i.IDishUseCase {
+	return &dishUsecase{dishRepo, offerUcase}
 }
 
 func (uc *dishUsecase) AddDish(sellerId string, req *req.CreateDishReq) error {
@@ -68,11 +68,19 @@ func (uc *dishUsecase) UpdateDish(dishId, sellerId string, req *req.UpdateDishRe
 }
 
 func (uc *dishUsecase) GetAllDishesBySeller(sellerId, category_id string) (*[]entities.Dish, error) {
-	return uc.dishRepo.FindBySeller(sellerId, category_id)
+	dishList, err := uc.dishRepo.FindBySeller(sellerId, category_id)
+	if err != nil {
+		return nil, err
+	}
+	return uc.offerUcase.ApplyOfferToDishList(dishList)
 }
 
 func (uc *dishUsecase) GetDishBySeller(id, sellerId string) (*entities.Dish, error) {
-	return uc.dishRepo.FindBySellerAndID(id, sellerId)
+	dish, err := uc.dishRepo.FindBySellerAndID(id, sellerId)
+	if err != nil {
+		return nil, err
+	}
+	return uc.offerUcase.ApplyOfferToDish(dish)
 }
 
 func (uc *dishUsecase) DeleteDish(id, sellerId string) error {
@@ -80,7 +88,11 @@ func (uc *dishUsecase) DeleteDish(id, sellerId string) error {
 }
 
 func (uc *dishUsecase) SearchDish(search string) (*[]entities.Dish, error) {
-	return uc.dishRepo.Search(search)
+	dishList, err := uc.dishRepo.Search(search)
+	if err != nil {
+		return nil, err
+	}
+	return uc.offerUcase.ApplyOfferToDishList(dishList)
 }
 
 func (uc *dishUsecase) GetDishesPage(categoryId string, page, limit string) (*[]entities.Dish, error) {
@@ -93,9 +105,22 @@ func (uc *dishUsecase) GetDishesPage(categoryId string, page, limit string) (*[]
 		return nil, err
 	}
 
-	return uc.dishRepo.FindPageWise(categoryId, uint(p), uint(l))
+	dishList, err := uc.dishRepo.FindPageWise(categoryId, uint(p), uint(l))
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.offerUcase.ApplyOfferToDishList(dishList)
 }
 
 func (uc *dishUsecase) GetDish(id string) (*entities.Dish, error) {
-	return uc.dishRepo.FindByID(id)
+	dish, err := uc.dishRepo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return uc.offerUcase.ApplyOfferToDish(dish)
+}
+
+func (uc *dishUsecase) ReduceStock(id string, quantity uint) error {
+	return uc.dishRepo.ReduceStock(id, quantity)
 }

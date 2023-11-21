@@ -82,6 +82,22 @@ func (repo *offerRepository) FindAllForSeller(sellerId string) (*[]entities.Cate
 	return &offerList, nil
 }
 
+func (repo *offerRepository) FindBySellerAndCategory(sellerId, categoryId string) (*entities.CategoryOffer, error) {
+	var offer entities.CategoryOffer
+	res := repo.DB.Raw(`
+	SELECT * 
+	FROM category_offers
+	WHERE seller_id = ?
+	AND category_id = ?`,
+		sellerId, categoryId).Scan(&offer)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return &offer, nil
+}
+
 func (repo *offerRepository) FindByID(id string) (*entities.CategoryOffer, error) {
 	var offer entities.CategoryOffer
 	res := repo.DB.Raw(`

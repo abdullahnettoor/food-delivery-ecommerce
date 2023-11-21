@@ -9,4 +9,5 @@ type IOfferRepository interface {
 	FindAll() (*[]entities.CategoryOffer, error)
 	FindByID(id string) (*entities.CategoryOffer, error)
 	FindAllForSeller(sellerId string) (*[]entities.CategoryOffer, error)
+	FindBySellerAndCategory(sellerId, categoryId string) (*entities.CategoryOffer, error)
 }

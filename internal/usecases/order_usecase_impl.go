@@ -17,11 +17,15 @@ import (
 type orderUsecase struct {
 	cartRepo  interfaces.ICartRepository
 	orderRepo interfaces.IOrderRepository
-	dishRepo  interfaces.IDishRepository
+	dishUcase i.IDishUseCase
 }
 
-func NewOrderUsecase(cartRepo interfaces.ICartRepository, orderRepo interfaces.IOrderRepository, dishRepo interfaces.IDishRepository) i.IOrderUseCase {
-	return &orderUsecase{cartRepo, orderRepo, dishRepo}
+func NewOrderUsecase(
+	cartRepo interfaces.ICartRepository,
+	orderRepo interfaces.IOrderRepository,
+	dishUcase i.IDishUseCase,
+) i.IOrderUseCase {
+	return &orderUsecase{cartRepo, orderRepo, dishUcase}
 }
 
 func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entities.Order, error) {
@@ -36,7 +40,7 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 
 	for _, item := range *cartItems {
 		id := fmt.Sprint(item.DishID)
-		dish, err := uc.dishRepo.FindByID(id)
+		dish, err := uc.dishUcase.GetDish(id)
 		if err != nil {
 			return nil, err
 		}
@@ -46,11 +50,12 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		if !dish.Availability {
 			return nil, e.ErrNotAvailable
 		}
+		fmt.Println("\nDish is", dish)
 		o := entities.OrderItem{
-			DishID:   item.DishID,
-			Dish:     *dish,
-			Quantity: item.Quantity,
-			Price:    dish.SalePrice,
+			DishID:    item.DishID,
+			Dish:      *dish,
+			Quantity:  item.Quantity,
+			SalePrice: dish.SalePrice,
 		}
 		totalPrice += (dish.SalePrice * float64(item.Quantity))
 		orderItems = append(orderItems, o)
@@ -59,8 +64,9 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 	discount = 0
 	if totalPrice > 500 {
 		deliveryCharge = 0
+	} else {
+		deliveryCharge = totalPrice * .1
 	}
-	deliveryCharge = totalPrice * .1
 	totalPrice = totalPrice + deliveryCharge - discount
 
 	addressId, _ := strconv.ParseUint(req.AddressID, 10, 0)
@@ -98,7 +104,7 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 
 	for _, item := range orderItems {
 		id, quantity := fmt.Sprint(item.DishID), item.Quantity
-		if err := uc.dishRepo.ReduceStock(id, quantity); err != nil {
+		if err := uc.dishUcase.ReduceStock(id, quantity); err != nil {
 			return nil, err
 		}
 	}
@@ -129,15 +135,15 @@ func (uc *orderUsecase) ViewOrder(id string) (*entities.Order, *[]entities.Order
 
 	for _, oItem := range *items {
 		id := fmt.Sprint(oItem.DishID)
-		dish, err := uc.dishRepo.FindByID(id)
+		dish, err := uc.dishUcase.GetDish(id)
 		if err != nil {
 			return nil, nil, err
 		}
 		o := entities.OrderItem{
-			DishID:   oItem.DishID,
-			Dish:     *dish,
-			Quantity: oItem.Quantity,
-			Price:    dish.SalePrice,
+			DishID:    oItem.DishID,
+			Dish:      *dish,
+			Quantity:  oItem.Quantity,
+			SalePrice: oItem.SalePrice,
 		}
 		orderItems = append(orderItems, o)
 	}

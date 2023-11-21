@@ -12,14 +12,14 @@ import (
 
 type cartUseCase struct {
 	cartRepo interfaces.ICartRepository
-	dishRepo interfaces.IDishRepository
+	dishUcase i.IDishUseCase
 }
 
 func NewCartUsecase(
 	cartRepo interfaces.ICartRepository,
-	dishRepo interfaces.IDishRepository,
+	dishUcase i.IDishUseCase,
 ) i.ICartUseCase {
-	return &cartUseCase{cartRepo, dishRepo}
+	return &cartUseCase{cartRepo, dishUcase}
 }
 
 func (uc *cartUseCase) AddtoCart(id, dishId string) error {
@@ -29,7 +29,7 @@ func (uc *cartUseCase) AddtoCart(id, dishId string) error {
 		return cartErr
 	}
 
-	dish, err := uc.dishRepo.FindByID(dishId)
+	dish, err := uc.dishUcase.GetDish(dishId)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (uc *cartUseCase) ViewCart(id string) (*entities.Cart, error) {
 
 	var cartItems []entities.CartItem
 	for _, item := range *items {
-		dish, err := uc.dishRepo.FindByID(fmt.Sprint(item.DishID))
+		dish, err := uc.dishUcase.GetDish(fmt.Sprint(item.DishID))
 		if err != nil {
 			return nil, err
 		}
@@ -82,6 +82,7 @@ func (uc *cartUseCase) ViewCart(id string) (*entities.Cart, error) {
 				Name:         dish.Name,
 				Description:  dish.Description,
 				Price:        dish.Price,
+				SalePrice:    dish.SalePrice,
 				ImageUrl:     dish.ImageUrl,
 				CategoryID:   dish.CategoryID,
 				IsVeg:        dish.IsVeg,
@@ -89,6 +90,7 @@ func (uc *cartUseCase) ViewCart(id string) (*entities.Cart, error) {
 			},
 		}
 		cartItems = append(cartItems, item)
+		fmt.Println("\nCart Item is", item)
 	}
 
 	cart.CartItems = cartItems

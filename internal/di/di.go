@@ -34,10 +34,10 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 	adminUcase := usecases.NewAdminUsecase(adminRepo, userRepo, sellerRepo, categoryRepo)
 	sellerUcase := usecases.NewSellerUsecase(sellerRepo)
 	userUcase := usecases.NewUserUsecase(userRepo, sellerRepo)
-	dishUcase := usecases.NewDishUsecase(dishRepo, categoryRepo)
-	cartUcase := usecases.NewCartUsecase(cartRepo, dishRepo)
-	orderUcase := usecases.NewOrderUsecase(cartRepo, orderRepo, dishRepo)
 	offerUcase := usecases.NewOfferUsecase(offerRepo)
+	dishUcase := usecases.NewDishUsecase(dishRepo, offerUcase)
+	cartUcase := usecases.NewCartUsecase(cartRepo, dishUcase)
+	orderUcase := usecases.NewOrderUsecase(cartRepo, orderRepo, dishUcase)
 
 	sellerHandler := handlers.NewSellerHandler(sellerUcase, dishUcase)
 	userHandler := handlers.NewUserHandler(userUcase)

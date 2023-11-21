@@ -7,7 +7,8 @@ type OrderItem struct {
 	OrderID  uint    `json:"-"`
 	DishID   uint    `json:"-"`
 	Quantity uint    `json:"quantity"`
-	Price    float64 `json:"price"`
+	// Price    float64 `json:"price"`
+	SalePrice    float64 `json:"salePrice"`
 	Dish     `gorm:"-"`
 }
 
