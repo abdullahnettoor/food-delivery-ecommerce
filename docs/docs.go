@@ -888,12 +888,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/res.DishListRes"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized Access",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -934,12 +928,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized Access",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
@@ -1314,12 +1302,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/res.DishListRes"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized Access",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -1356,12 +1338,6 @@ const docTemplate = `{
                         "description": "Successfully fetched sellers",
                         "schema": {
                             "$ref": "#/definitions/res.SellerListRes"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized Access",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
                         }
                     },
                     "500": {
@@ -2143,105 +2119,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/sellers": {
-            "get": {
-                "description": "Retrieve a paginated list of sellers for the user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get paginated list of sellers",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Page number (default: 1)",
-                        "name": "p",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Number of items per page",
-                        "name": "l",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully fetched sellers",
-                        "schema": {
-                            "$ref": "#/definitions/res.SellerListRes"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized Access",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    }
-                }
-            }
-        },
-        "/sellers/{id}": {
-            "get": {
-                "description": "Retrieve a specific seller by ID for the user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get a seller",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Seller ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully fetched seller",
-                        "schema": {
-                            "$ref": "#/definitions/res.SingleSellerRes"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized Access",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    }
-                }
-            }
-        },
         "/sendOtp": {
             "post": {
                 "security": [
@@ -2317,6 +2194,93 @@ const docTemplate = `{
                         "description": "Successfully signed up",
                         "schema": {
                             "$ref": "#/definitions/res.UserLoginRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/sellers": {
+            "get": {
+                "description": "Retrieve a paginated list of sellers for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get paginated list of sellers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Page number (default: 1)",
+                        "name": "p",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Number of items per page",
+                        "name": "l",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched sellers",
+                        "schema": {
+                            "$ref": "#/definitions/res.SellerListRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/sellers/{id}": {
+            "get": {
+                "description": "Retrieve a specific seller by ID for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get a seller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Seller ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched seller",
+                        "schema": {
+                            "$ref": "#/definitions/res.SingleSellerRes"
                         }
                     },
                     "400": {

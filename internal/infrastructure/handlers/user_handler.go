@@ -232,12 +232,11 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 // @Param			p	query		string				false	"Page number (default: 1)"
 // @Param			l	query		string				false	"Number of items per page"
 // @Success		200	{object}	res.SellerListRes	"Successfully fetched sellers"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error"
-// @Router			/sellers [get]
+// @Router			/user/sellers [get]
 func (h *UserHandler) GetSellersPage(c *fiber.Ctx) error {
 	page := c.Query("p", "1")
-	limit := c.Query("l")
+	limit := c.Query("l", "10")
 
 	sellerList, err := h.usecase.GetSellersPage(page, limit)
 	if err != nil {
@@ -266,9 +265,8 @@ func (h *UserHandler) GetSellersPage(c *fiber.Ctx) error {
 // @Param			id	path		string				true	"Seller ID"	int
 // @Success		200	{object}	res.SingleSellerRes	"Successfully fetched seller"
 // @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error"
-// @Router			/sellers/{id} [get]
+// @Router			/user/sellers/{id} [get]
 func (h *UserHandler) GetSeller(c *fiber.Ctx) error {
 	sellerId := c.Params("id")
 
@@ -297,7 +295,6 @@ func (h *UserHandler) GetSeller(c *fiber.Ctx) error {
 // @Produce		json
 // @Param			q	query		string				true	"Search query"
 // @Success		200	{object}	res.SellerListRes	"Successfully fetched sellers"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error"
 // @Router			/search/sellers [get]
 func (h *UserHandler) SearchSeller(c *fiber.Ctx) error {

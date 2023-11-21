@@ -1143,10 +1143,6 @@ paths:
           description: Successfully fetched dishes
           schema:
             $ref: '#/definitions/res.DishListRes'
-        "401":
-          description: Unauthorized Access
-          schema:
-            $ref: '#/definitions/res.CommonRes'
         "500":
           description: Internal Server Error
           schema:
@@ -1174,10 +1170,6 @@ paths:
             $ref: '#/definitions/res.SingleDishRes'
         "400":
           description: Bad Request
-          schema:
-            $ref: '#/definitions/res.CommonRes'
-        "401":
-          description: Unauthorized Access
           schema:
             $ref: '#/definitions/res.CommonRes'
         "500":
@@ -1417,10 +1409,6 @@ paths:
           description: Successfully fetched dishes
           schema:
             $ref: '#/definitions/res.DishListRes'
-        "401":
-          description: Unauthorized Access
-          schema:
-            $ref: '#/definitions/res.CommonRes'
         "500":
           description: Internal Server Error
           schema:
@@ -1446,10 +1434,6 @@ paths:
           description: Successfully fetched sellers
           schema:
             $ref: '#/definitions/res.SellerListRes'
-        "401":
-          description: Unauthorized Access
-          schema:
-            $ref: '#/definitions/res.CommonRes'
         "500":
           description: Internal Server Error
           schema:
@@ -1951,71 +1935,6 @@ paths:
       summary: Seller Sign Up
       tags:
       - Seller
-  /sellers:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a paginated list of sellers for the user
-      parameters:
-      - description: 'Page number (default: 1)'
-        in: query
-        name: p
-        type: string
-      - description: Number of items per page
-        in: query
-        name: l
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully fetched sellers
-          schema:
-            $ref: '#/definitions/res.SellerListRes'
-        "401":
-          description: Unauthorized Access
-          schema:
-            $ref: '#/definitions/res.CommonRes'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/res.CommonRes'
-      summary: Get paginated list of sellers
-      tags:
-      - User
-  /sellers/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a specific seller by ID for the user
-      parameters:
-      - description: Seller ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully fetched seller
-          schema:
-            $ref: '#/definitions/res.SingleSellerRes'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/res.CommonRes'
-        "401":
-          description: Unauthorized Access
-          schema:
-            $ref: '#/definitions/res.CommonRes'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/res.CommonRes'
-      summary: Get a seller
-      tags:
-      - User
   /sendOtp:
     post:
       consumes:
@@ -2073,6 +1992,63 @@ paths:
           schema:
             $ref: '#/definitions/res.CommonRes'
       summary: Sign up as a user
+      tags:
+      - User
+  /user/sellers:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of sellers for the user
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: p
+        type: string
+      - description: Number of items per page
+        in: query
+        name: l
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched sellers
+          schema:
+            $ref: '#/definitions/res.SellerListRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Get paginated list of sellers
+      tags:
+      - User
+  /user/sellers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific seller by ID for the user
+      parameters:
+      - description: Seller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched seller
+          schema:
+            $ref: '#/definitions/res.SingleSellerRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Get a seller
       tags:
       - User
   /verifyOtp:

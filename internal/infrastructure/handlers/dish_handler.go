@@ -300,12 +300,11 @@ func (h *DishHandler) DeleteDish(c *fiber.Ctx) error {
 // @Param			l	query		string			false	"Number of items per page"
 // @Param			category	query		string			false	"Item category"
 // @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
-// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes	"Internal Server Error"
 // @Router			/dishes [get]
 func (h *DishHandler) GetDishesPage(c *fiber.Ctx) error {
 	page := c.Query("p", "1")
-	limit := c.Query("l")
+	limit := c.Query("l", "0")
 	categoryId := c.Query("category")
 
 	dishList, err := h.dishUc.GetDishesPage(categoryId, page, limit)
@@ -335,7 +334,6 @@ func (h *DishHandler) GetDishesPage(c *fiber.Ctx) error {
 // @Param			id	path		string				true	"Dish ID"	int
 // @Success		200	{object}	res.SingleDishRes	"Successfully fetched dish"
 // @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error"
 // @Router			/dishes/{id} [get]
 func (h *DishHandler) GetDish(c *fiber.Ctx) error {
@@ -366,7 +364,6 @@ func (h *DishHandler) GetDish(c *fiber.Ctx) error {
 // @Produce		json
 // @Param			q	query		string			true	"Search query"
 // @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
-// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
 // @Failure		500	{object}	res.CommonRes	"Internal Server Error"
 // @Router			/search/dishes [get]
 func (h *DishHandler) SearchDish(c *fiber.Ctx) error {

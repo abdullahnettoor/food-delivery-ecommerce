@@ -24,11 +24,13 @@ func UserRoutes(
 
 	f.Get("/dishes", dish.GetDishesPage)
 	f.Get("/dishes/:id", dish.GetDish)
-	f.Get("/search/dishes", dish.SearchDish)
+
 	f.Get("/offers", offer.GetAllOffers)
 
-	f.Get("/sellers", user.GetSellersPage)
-	f.Get("/sellers/:id", user.GetSeller)
+	f.Get("user/sellers", user.GetSellersPage)
+	f.Get("user/sellers/:id", user.GetSeller)
+
+	f.Get("/search/dishes", dish.SearchDish)
 	f.Get("/search/sellers", user.SearchSeller)
 
 	u := f.Group("/", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
