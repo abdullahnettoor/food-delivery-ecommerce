@@ -9,6 +9,18 @@ type UserSignUpReq struct {
 	ConfirmPassword string `json:"confirmPassword" validate:"eqfield=Password"`
 }
 
+type UpdateUserDetailsReq struct {
+	FirstName string `json:"firstName" validate:"required,gte=3"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email" validate:"required,email"`
+}
+
+type ChangePasswordReq struct {
+	Password           string `json:"password" validate:"gte=3"`
+	NewPassword        string `json:"newPassword" validate:"gte=3"`
+	ConfirmNewPassword string `json:"confirmNewPassword" validate:"eqfield=NewPassword"`
+}
+
 type UserVerifyOtpReq struct {
 	Otp string `json:"otp" validate:"required,number"`
 }

@@ -1115,6 +1115,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/profile": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get user details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "View User Details",
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched user details",
+                        "schema": {
+                            "$ref": "#/definitions/res.UserDetailsRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/profile/addAddress": {
             "post": {
                 "security": [
@@ -1312,6 +1358,120 @@ const docTemplate = `{
                         "description": "Successfully updated address",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/changePassword": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Change existing password of user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Change Password",
+                "parameters": [
+                    {
+                        "description": "Change user password request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.ChangePasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully changed user password details",
+                        "schema": {
+                            "$ref": "#/definitions/res.UserDetailsRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/edit": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update user name, email details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Details",
+                "parameters": [
+                    {
+                        "description": "Edit user details request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UpdateUserDetailsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated user details",
+                        "schema": {
+                            "$ref": "#/definitions/res.UserDetailsRes"
                         }
                     },
                     "400": {
@@ -2734,6 +2894,22 @@ const docTemplate = `{
                 }
             }
         },
+        "req.ChangePasswordReq": {
+            "type": "object",
+            "properties": {
+                "confirmNewPassword": {
+                    "type": "string"
+                },
+                "newPassword": {
+                    "type": "string",
+                    "minLength": 3
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 3
+                }
+            }
+        },
         "req.CreateCategoryReq": {
             "type": "object",
             "required": [
@@ -3020,6 +3196,25 @@ const docTemplate = `{
                 }
             }
         },
+        "req.UpdateUserDetailsReq": {
+            "type": "object",
+            "required": [
+                "email",
+                "firstName"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string",
+                    "minLength": 3
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
         "req.UserLoginReq": {
             "type": "object",
             "required": [
@@ -3219,6 +3414,20 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "res.UserDetailsRes": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/entities.User"
                 }
             }
         },

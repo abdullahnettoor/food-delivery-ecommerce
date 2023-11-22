@@ -224,6 +224,143 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		View User Details
+// @Description Get user details
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	res.UserDetailsRes	"Successfully fetched user details"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/profile [get]
+func (h *UserHandler) ViewUserDetails(c *fiber.Ctx) error {
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+
+	userDetails, err := h.usecase.GetUserDetails(userId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch user details",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.UserDetailsRes{
+			Status:  "success",
+			Message: "successfully fetched user details",
+			User:    *userDetails,
+		})
+}
+
+// @Summary		Update User Details
+// @Description Update user name, email details
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.UpdateUserDetailsReq true	"Edit user details request"
+// @Success		200	{object}	res.UserDetailsRes	"Successfully updated user details"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/profile/edit [patch]
+func (h *UserHandler) EditUserDetails(c *fiber.Ctx) error {
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+
+	var req req.UpdateUserDetailsReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
+			})
+	}
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
+			})
+	}
+
+	updatedUser, err := h.usecase.UpdateUserDetails(userId, &req)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to edit details",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.UserDetailsRes{
+			Status:  "success",
+			Message: "successfully updated user details",
+			User:    *updatedUser,
+		})
+}
+
+// @Summary		Change Password
+// @Description Change existing password of user
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.ChangePasswordReq true	"Change user password request"
+// @Success		200	{object}	res.UserDetailsRes	"Successfully changed user password details"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/profile/changePassword [post]
+func (h *UserHandler) ChangePassword(c *fiber.Ctx) error {
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+
+	var req req.ChangePasswordReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
+			})
+	}
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
+			})
+	}
+
+	if err := h.usecase.ChangePassword(userId, &req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to change password",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "password changed successfully",
+		})
+}
+
 // @Summary		Add an address
 // @Description	Add a new address for the user
 // @Security		Bearer
@@ -316,7 +453,7 @@ func (h *UserHandler) EditAddress(c *fiber.Ctx) error {
 			})
 	}
 
-	if err := h.usecase.UpdateAddress(userId,addressId, &req); err != nil {
+	if err := h.usecase.UpdateAddress(userId, addressId, &req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",

@@ -93,23 +93,31 @@ func (repo *UserRepository) Create(user *entities.User) (*entities.User, error) 
 }
 
 func (repo *UserRepository) Update(id string, user *entities.User) (*entities.User, error) {
-	var newUser entities.User
-	query := repo.DB.Raw(`
-		SELECT * 
-		FROM users 
-		WHERE id = ?`,
-		user.ID)
+	var updatedUser entities.User
 
-	if query.Error != nil {
-		return nil, query.Error
-	}
-
-	err := repo.DB.Create(&user).Scan(&newUser).Error
-	if err != nil {
+	if err := repo.DB.Raw(`
+	UPDATE users
+	SET 
+	first_name = ?,
+	last_name = ?,
+	email = ?
+	WHERE id = ?
+	RETURNING *`,
+		user.FirstName,
+		user.LastName,
+		user.Email,
+		id).Scan(&updatedUser).Error; err != nil {
 		return nil, err
 	}
 
-	return &newUser, nil
+	return &updatedUser, nil
+}
+
+func (repo *UserRepository) ChangePassword(id, newPassword string) error {
+	return repo.DB.Exec(`
+	UPDATE users
+	SET password = ?
+	WHERE id = ?`, newPassword, id).Error
 }
 
 func (repo *UserRepository) Verify(phone string) error {
@@ -167,8 +175,7 @@ func (repo *UserRepository) AddAddress(address *entities.Address) error {
 	return repo.DB.Create(&address).Error
 }
 
-
-func (repo *UserRepository) UpdateAddress(addressId string, address *entities.Address) error{
+func (repo *UserRepository) UpdateAddress(addressId string, address *entities.Address) error {
 	return repo.DB.Save(&address).Error
 }
 

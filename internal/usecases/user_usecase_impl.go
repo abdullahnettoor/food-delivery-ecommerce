@@ -29,6 +29,9 @@ func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {
 	if err != nil && err != e.ErrNotFound {
 		return nil, err
 	}
+	if err == e.ErrNotFound {
+		return nil, e.ErrConflict
+	}
 
 	hashedPwd, err := hashpassword.HashPassword(req.Password)
 	if err != nil {
@@ -99,6 +102,45 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 	}
 
 	return user, nil
+}
+
+func (uc *userUcase) GetUserDetails(id string) (*entities.User, error) {
+	return uc.userRepo.FindByID(id)
+}
+
+func (uc *userUcase) UpdateUserDetails(id string, req *req.UpdateUserDetailsReq) (*entities.User, error) {
+	_, err := uc.userRepo.FindByEmail(req.Email)
+	if err != nil && err != e.ErrNotFound {
+		return nil, err
+	}
+
+	user := entities.User{
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Email:     req.Email,
+		// Phone:     req.Phone,
+	}
+
+	return uc.userRepo.Update(id, &user)
+}
+
+func (uc *userUcase) ChangePassword(id string, req *req.ChangePasswordReq) error {
+
+	user, err := uc.userRepo.FindByID(id)
+	if err != nil {
+		return err
+	}
+
+	if err := hashpassword.CompareHashedPassword(user.Password, req.Password); err != nil {
+		return err
+	}
+
+	newPassword, err := hashpassword.HashPassword(req.NewPassword)
+	if err != nil {
+		return err
+	}
+
+	return uc.userRepo.ChangePassword(id, newPassword)
 }
 
 func (uc *userUcase) AddAddress(id string, req *req.NewAddressReq) error {

@@ -206,6 +206,17 @@ definitions:
     - email
     - password
     type: object
+  req.ChangePasswordReq:
+    properties:
+      confirmNewPassword:
+        type: string
+      newPassword:
+        minLength: 3
+        type: string
+      password:
+        minLength: 3
+        type: string
+    type: object
   req.CreateCategoryReq:
     properties:
       name:
@@ -408,6 +419,19 @@ definitions:
     required:
     - orderStatus
     type: object
+  req.UpdateUserDetailsReq:
+    properties:
+      email:
+        type: string
+      firstName:
+        minLength: 3
+        type: string
+      lastName:
+        type: string
+    required:
+    - email
+    - firstName
+    type: object
   req.UserLoginReq:
     properties:
       email:
@@ -540,6 +564,15 @@ definitions:
         $ref: '#/definitions/entities.Seller'
       status:
         type: string
+    type: object
+  res.UserDetailsRes:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      user:
+        $ref: '#/definitions/entities.User'
     type: object
   res.UserListRes:
     properties:
@@ -1316,6 +1349,35 @@ paths:
       tags:
       - User Order
       - Seller Order
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Get user details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched user details
+          schema:
+            $ref: '#/definitions/res.UserDetailsRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View User Details
+      tags:
+      - User
   /profile/addAddress:
     post:
       consumes:
@@ -1454,6 +1516,78 @@ paths:
       security:
       - Bearer: []
       summary: Update address
+      tags:
+      - User
+  /profile/changePassword:
+    post:
+      consumes:
+      - application/json
+      description: Change existing password of user
+      parameters:
+      - description: Change user password request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.ChangePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully changed user password details
+          schema:
+            $ref: '#/definitions/res.UserDetailsRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Change Password
+      tags:
+      - User
+  /profile/edit:
+    patch:
+      consumes:
+      - application/json
+      description: Update user name, email details
+      parameters:
+      - description: Edit user details request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UpdateUserDetailsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated user details
+          schema:
+            $ref: '#/definitions/res.UserDetailsRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update User Details
       tags:
       - User
   /search/dishes:

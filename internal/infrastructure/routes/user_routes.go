@@ -35,6 +35,10 @@ func UserRoutes(
 
 	u := f.Group("/", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 
+	u.Get("/profile", user.ViewUserDetails)
+	u.Patch("/profile/edit", user.EditUserDetails)
+	u.Patch("/profile/changePassword", user.ChangePassword)
+
 	u.Post("/profile/addAddress", user.AddAddress)
 	u.Get("/profile/address", user.ViewAllAddress)
 	u.Get("/profile/address/:id", user.ViewAddress)

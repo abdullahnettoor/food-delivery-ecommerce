@@ -8,6 +8,12 @@ type UserLoginRes struct {
 	Token   string `json:"token"`
 }
 
+type UserDetailsRes struct {
+	Status  string        `json:"status,omitempty"`
+	User    entities.User `json:"user,omitempty"`
+	Message string        `json:"message,omitempty"`
+}
+
 type UserListRes struct {
 	Status   string          `json:"status,omitempty"`
 	UserList []entities.User `json:"userList,omitempty"`
@@ -26,7 +32,7 @@ type ViewAddressRes struct {
 }
 
 type ViewAddressListRes struct {
-	Status  string           `json:"status,omitempty"`
+	Status      string             `json:"status,omitempty"`
 	AddressList []entities.Address `json:"addressList,omitempty"`
-	Message string           `json:"message,omitempty"`
+	Message     string             `json:"message,omitempty"`
 }
