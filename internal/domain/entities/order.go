@@ -3,13 +3,15 @@ package entities
 import "time"
 
 type OrderItem struct {
-	ID       uint    `json:"-"`
-	OrderID  uint    `json:"-"`
-	DishID   uint    `json:"-"`
-	Quantity uint    `json:"quantity"`
-	// Price    float64 `json:"price"`
-	SalePrice    float64 `json:"salePrice"`
-	Dish     `gorm:"-"`
+	ID        uint    `json:"-"`
+	OrderID   uint    `json:"-"`
+	DishID    uint    `json:"-"`
+	Quantity  uint    `json:"quantity"`
+	SalePrice float64 `json:"salePrice"`
+	Dish   `gorm:"-"`
+
+	FkDish Dish  `json:"-" gorm:"foreignkey:DishID;constraint:OnDelete:CASCADE"`
+	FkOrder Order `json:"-" gorm:"foreignkey:OrderID;constraint:OnDelete:CASCADE"`
 }
 
 type Order struct {
@@ -27,5 +29,9 @@ type Order struct {
 	DeliveryCharge float64     `json:"deliveryCharge"`
 	TotalPrice     float64     `json:"totalPrice"`
 	Status         string      `json:"orderStatus"`
-	PaymentStatus string      `json:"paymentStatus"`
+	PaymentStatus  string      `json:"paymentStatus"`
+
+	FkUser  User `json:"-" gorm:"foreignkey:UserID;constraint:OnDelete:CASCADE"`
+	FkAddress  Address `json:"-" gorm:"foreignkey:AddressID;constraint:OnDelete:CASCADE"`
+	FkSeller  Seller `json:"-" gorm:"foreignkey:SellerID;constraint:OnDelete:CASCADE"`
 }

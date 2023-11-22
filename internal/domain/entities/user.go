@@ -20,4 +20,7 @@ type Address struct {
 	State     string `json:"state"`
 	PinCode   string `json:"pinCode"`
 	Phone     string `json:"phone"`
+
+	FkUser  User `json:"-" gorm:"foreignkey:UserID;constraint:OnDelete:CASCADE"`
+
 }
