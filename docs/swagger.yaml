@@ -1245,6 +1245,10 @@ paths:
         in: query
         name: category
         type: string
+      - description: Item by seller
+        in: query
+        name: seller
+        type: string
       produces:
       - application/json
       responses:

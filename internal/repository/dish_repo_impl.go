@@ -17,11 +17,14 @@ func NewDishRepository(db *gorm.DB) interfaces.IDishRepository {
 	return &DishRepository{db}
 }
 
-func (repo *DishRepository) FindPageWise(categoryId string, page, limit uint) (*[]entities.Dish, error) {
+func (repo *DishRepository) FindPageWise(sellerId, categoryId string, page, limit uint) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 
 	query := ` SELECT * FROM dishes WHERE availability = true AND deleted = false `
 
+	if sellerId != "" {
+		query += "AND seller_id = " + sellerId
+	}
 	if categoryId != "" {
 		query += "AND category_id = " + categoryId
 	}

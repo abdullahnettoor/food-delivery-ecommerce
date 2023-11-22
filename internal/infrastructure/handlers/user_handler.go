@@ -199,7 +199,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 }
 
 // @Summary		View User Details
-// @Description Get user details
+// @Description	Get user details
 // @Security		Bearer
 // @Tags			User
 // @Accept			json
@@ -232,16 +232,16 @@ func (h *UserHandler) ViewUserDetails(c *fiber.Ctx) error {
 }
 
 // @Summary		Update User Details
-// @Description Update user name, email details
+// @Description	Update user name, email details
 // @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json
-// @Param			req	body		req.UpdateUserDetailsReq true	"Edit user details request"
-// @Success		200	{object}	res.UserDetailsRes	"Successfully updated user details"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Param			req	body		req.UpdateUserDetailsReq	true	"Edit user details request"
+// @Success		200	{object}	res.UserDetailsRes			"Successfully updated user details"
+// @Failure		401	{object}	res.CommonRes				"Unauthorized Access"
+// @Failure		400	{object}	res.CommonRes				"Bad Request"
+// @Failure		500	{object}	res.CommonRes				"Internal Server Error"
 // @Router			/profile/edit [patch]
 func (h *UserHandler) EditUserDetails(c *fiber.Ctx) error {
 	user := c.Locals("UserModel").(map[string]any)
@@ -285,16 +285,16 @@ func (h *UserHandler) EditUserDetails(c *fiber.Ctx) error {
 }
 
 // @Summary		Change Password
-// @Description Change existing password of user
+// @Description	Change existing password of user
 // @Security		Bearer
 // @Tags			User
 // @Accept			json
 // @Produce		json
-// @Param			req	body		req.ChangePasswordReq true	"Change user password request"
-// @Success		200	{object}	res.CommonRes	"Successfully changed user password details"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Param			req	body		req.ChangePasswordReq	true	"Change user password request"
+// @Success		200	{object}	res.CommonRes			"Successfully changed user password details"
+// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+// @Failure		400	{object}	res.CommonRes			"Bad Request"
+// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
 // @Router			/profile/changePassword [post]
 func (h *UserHandler) ChangePassword(c *fiber.Ctx) error {
 	user := c.Locals("UserModel").(map[string]any)
@@ -336,14 +336,14 @@ func (h *UserHandler) ChangePassword(c *fiber.Ctx) error {
 }
 
 // @Summary		Forgot Password
-// @Description Forgot user password
+// @Description	Forgot user password
 // @Tags			User
 // @Accept			json
 // @Produce		json
-// @Param			req	body		req.ForgotPasswordReq true	"Forgot password request"
-// @Success		200	{object}	res.CommonRes	"Successfully sent otp to number related to the given email"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Param			req	body		req.ForgotPasswordReq	true	"Forgot password request"
+// @Success		200	{object}	res.CommonRes			"Successfully sent otp to number related to the given email"
+// @Failure		400	{object}	res.CommonRes			"Bad Request"
+// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
 // @Router			/forgotPassword [post]
 func (h *UserHandler) ForgotPassword(c *fiber.Ctx) error {
 
@@ -383,14 +383,14 @@ func (h *UserHandler) ForgotPassword(c *fiber.Ctx) error {
 }
 
 // @Summary		Reset Password
-// @Description Reset user password
+// @Description	Reset user password
 // @Tags			User
 // @Accept			json
 // @Produce		json
-// @Param			req	body		req.ResetPasswordReq true	"Reset password request"
-// @Success		200	{object}	res.CommonRes	"Reset Password Successfull"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Param			req	body		req.ResetPasswordReq	true	"Reset password request"
+// @Success		200	{object}	res.CommonRes			"Reset Password Successfull"
+// @Failure		400	{object}	res.CommonRes			"Bad Request"
+// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
 // @Router			/resetPassword [post]
 func (h *UserHandler) ResetPassword(c *fiber.Ctx) error {
 
@@ -489,11 +489,11 @@ func (h *UserHandler) AddAddress(c *fiber.Ctx) error {
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.UpdateAddressReq	true	"Update address request"
-// @Param			id	path		string				true	"Address ID"
-// @Success		200	{object}	res.CommonRes		"Successfully updated address"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Param			id	path		string					true	"Address ID"
+// @Success		200	{object}	res.CommonRes			"Successfully updated address"
+// @Failure		400	{object}	res.CommonRes			"Bad Request"
+// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
 // @Router			/profile/address/{id} [put]
 func (h *UserHandler) EditAddress(c *fiber.Ctx) error {
 

@@ -95,7 +95,7 @@ func (uc *dishUsecase) SearchDish(search string) (*[]entities.Dish, error) {
 	return uc.offerUcase.ApplyOfferToDishList(dishList)
 }
 
-func (uc *dishUsecase) GetDishesPage(categoryId string, page, limit string) (*[]entities.Dish, error) {
+func (uc *dishUsecase) GetDishesPage(sellerId, categoryId string, page, limit string) (*[]entities.Dish, error) {
 	p, err := strconv.ParseUint(page, 10, 0)
 	if err != nil {
 		return nil, err
@@ -105,7 +105,7 @@ func (uc *dishUsecase) GetDishesPage(categoryId string, page, limit string) (*[]
 		return nil, err
 	}
 
-	dishList, err := uc.dishRepo.FindPageWise(categoryId, uint(p), uint(l))
+	dishList, err := uc.dishRepo.FindPageWise(sellerId, categoryId, uint(p), uint(l))
 	if err != nil {
 		return nil, err
 	}

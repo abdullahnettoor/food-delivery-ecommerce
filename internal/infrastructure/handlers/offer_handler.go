@@ -19,16 +19,16 @@ func NewOfferHandler(uc interfaces.IOfferUseCase) *OfferHandler {
 	return &OfferHandler{uc}
 }
 
-// @Summary Get all offers
-// @Description Fetches a list of all offers
-// @Tags User
-// @Produce json
-// @Success 200 {object} res.OfferListRes "Success: List of offers fetched successfully"
-// @Failure 500 {object} res.CommonRes "Internal Server Error: Failed to fetch offers"
-// @Router /offers [get]
+// @Summary		Get all offers
+// @Description	Fetches a list of all offers
+// @Tags			User
+// @Produce		json
+// @Success		200	{object}	res.OfferListRes	"Success: List of offers fetched successfully"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error: Failed to fetch offers"
+// @Router			/offers [get]
 func (h *OfferHandler) GetAllOffers(c *fiber.Ctx) error {
 	offerList, err := h.uc.GetAllOffer()
-	if err != nil && err != e.ErrIsEmpty{
+	if err != nil && err != e.ErrIsEmpty {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
@@ -37,13 +37,13 @@ func (h *OfferHandler) GetAllOffers(c *fiber.Ctx) error {
 			})
 	}
 
-	if err == e.ErrIsEmpty{
+	if err == e.ErrIsEmpty {
 		return c.Status(fiber.StatusOK).
-		JSON(res.CommonRes{
-			Status:  "success",
-			Error:   err.Error(),
-			Message: "there are no offers now",
-		})
+			JSON(res.CommonRes{
+				Status:  "success",
+				Error:   err.Error(),
+				Message: "there are no offers now",
+			})
 	}
 
 	return c.Status(fiber.StatusOK).
@@ -54,14 +54,14 @@ func (h *OfferHandler) GetAllOffers(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary Get offers by seller
-// @Description Fetches a list of offers associated with the seller
-// @Security Bearer
-// @Tags Seller
-// @Produce json
-// @Success 200 {object} res.OfferListRes "Success: List of offers fetched successfully"
-// @Failure 500 {object} res.CommonRes "Internal Server Error: Failed to fetch offers"
-// @Router /seller/offers [get]
+// @Summary		Get offers by seller
+// @Description	Fetches a list of offers associated with the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Produce		json
+// @Success		200	{object}	res.OfferListRes	"Success: List of offers fetched successfully"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error: Failed to fetch offers"
+// @Router			/seller/offers [get]
 func (h *OfferHandler) GetOffersBySeller(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
 	sellerId := fmt.Sprint(seller["sellerId"])
@@ -84,17 +84,17 @@ func (h *OfferHandler) GetOffersBySeller(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary Create an offer
-// @Description Create new offer for the seller
-// @Security Bearer
-// @Tags Seller
-// @Accept json
-// @Produce json
-// @Param req body req.CreateOfferReq true "Create Offer Request"
-// @Success 200 {object} res.CommonRes "Success: Offer updated successfully"
-// @Failure 400 {object} res.CommonRes "Bad Request: Invalid inputs"
-// @Failure 500 {object} res.CommonRes "Internal Server Error: Error occurred while updating offer"
-// @Router /seller/offers/addOffer [post]
+// @Summary		Create an offer
+// @Description	Create new offer for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.CreateOfferReq	true	"Create Offer Request"
+// @Success		200	{object}	res.CommonRes		"Success: Offer updated successfully"
+// @Failure		400	{object}	res.CommonRes		"Bad Request: Invalid inputs"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error: Error occurred while updating offer"
+// @Router			/seller/offers/addOffer [post]
 func (h *OfferHandler) CreateOffer(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
 	sellerId := fmt.Sprint(seller["sellerId"])
@@ -133,18 +133,18 @@ func (h *OfferHandler) CreateOffer(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary Update an offer
-// @Description Updates details of a specific offer for the seller
-// @Security Bearer
-// @Tags Seller
-// @Accept json
-// @Produce json
-// @Param id path string true "Offer ID"
-// @Param req body req.UpdateOfferReq true "Update Offer Request"
-// @Success 200 {object} res.CommonRes "Success: Offer updated successfully"
-// @Failure 400 {object} res.CommonRes "Bad Request: Invalid inputs"
-// @Failure 500 {object} res.CommonRes "Internal Server Error: Error occurred while updating offer"
-// @Router /seller/offers/{id} [put]
+// @Summary		Update an offer
+// @Description	Updates details of a specific offer for the seller
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string				true	"Offer ID"
+// @Param			req	body		req.UpdateOfferReq	true	"Update Offer Request"
+// @Success		200	{object}	res.CommonRes		"Success: Offer updated successfully"
+// @Failure		400	{object}	res.CommonRes		"Bad Request: Invalid inputs"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error: Error occurred while updating offer"
+// @Router			/seller/offers/{id} [put]
 func (h *OfferHandler) UpdateOffer(c *fiber.Ctx) error {
 	seller := c.Locals("SellerModel").(map[string]any)
 	id := c.Params("id")
@@ -184,17 +184,17 @@ func (h *OfferHandler) UpdateOffer(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary Update offer status
-// @Description Updates the status of a specific offer
-// @Security Bearer
-// @Tags Seller
-// @Accept json
-// @Produce json
-// @Param id path string true "Offer ID"
-// @Param status query string true "New offer status"
-// @Success 200 {object} res.CommonRes "Success: Offer status updated successfully"
-// @Failure 500 {object} res.CommonRes "Internal Server Error: Error occurred while updating offer status"
-// @Router /seller/offers/{id} [patch]
+// @Summary		Update offer status
+// @Description	Updates the status of a specific offer
+// @Security		Bearer
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Param			id		path		string			true	"Offer ID"
+// @Param			status	query		string			true	"New offer status"
+// @Success		200		{object}	res.CommonRes	"Success: Offer status updated successfully"
+// @Failure		500		{object}	res.CommonRes	"Internal Server Error: Error occurred while updating offer status"
+// @Router			/seller/offers/{id} [patch]
 func (h *OfferHandler) UpdateOfferStatus(c *fiber.Ctx) error {
 	id := c.Params("id")
 	status := c.Query("status")

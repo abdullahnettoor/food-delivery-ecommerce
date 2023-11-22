@@ -296,18 +296,20 @@ func (h *DishHandler) DeleteDish(c *fiber.Ctx) error {
 // @Tags			User
 // @Accept			json
 // @Produce		json
-// @Param			p	query		string			false	"Page number (default: 1)"
-// @Param			l	query		string			false	"Number of items per page"
+// @Param			p			query		string			false	"Page number (default: 1)"
+// @Param			l			query		string			false	"Number of items per page"
 // @Param			category	query		string			false	"Item category"
-// @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
-// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
+// @Param			seller		query		string			false	"Item by seller"
+// @Success		200			{object}	res.DishListRes	"Successfully fetched dishes"
+// @Failure		500			{object}	res.CommonRes	"Internal Server Error"
 // @Router			/dishes [get]
 func (h *DishHandler) GetDishesPage(c *fiber.Ctx) error {
 	page := c.Query("p", "1")
 	limit := c.Query("l", "0")
+	sellerId := c.Query("seller")
 	categoryId := c.Query("category")
 
-	dishList, err := h.dishUc.GetDishesPage(categoryId, page, limit)
+	dishList, err := h.dishUc.GetDishesPage(sellerId, categoryId, page, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{

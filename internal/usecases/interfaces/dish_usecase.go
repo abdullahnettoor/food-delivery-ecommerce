@@ -13,7 +13,7 @@ type IDishUseCase interface {
 	DeleteDish(id, sellerId string) error
 
 	SearchDish(search string) (*[]entities.Dish, error)
-	GetDishesPage(categoryId string, page, limit string) (*[]entities.Dish, error)
+	GetDishesPage(sellerId,categoryId string, page, limit string) (*[]entities.Dish, error)
 	GetDish(id string) (*entities.Dish, error)
 
 	ReduceStock(id string, quantity uint) error

@@ -928,6 +928,12 @@ const docTemplate = `{
                         "description": "Item category",
                         "name": "category",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Item by seller",
+                        "name": "seller",
+                        "in": "query"
                     }
                 ],
                 "responses": {
