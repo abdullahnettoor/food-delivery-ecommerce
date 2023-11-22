@@ -12,6 +12,7 @@ type IUserUseCase interface {
 	VerifyOtp(phone string, req *req.UserVerifyOtpReq) error
 
 	AddAddress(id string, req *req.NewAddressReq) error
+	UpdateAddress(userId, addressId string, req *req.UpdateAddressReq) error 
 	ViewAddress(id, userId string) (*entities.Address, error)
 	ViewAllAddresses(userId string) (*[]entities.Address, error)
 

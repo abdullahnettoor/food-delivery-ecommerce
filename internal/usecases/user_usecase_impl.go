@@ -101,6 +101,52 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 	return user, nil
 }
 
+func (uc *userUcase) AddAddress(id string, req *req.NewAddressReq) error {
+
+	userId, _ := strconv.ParseUint(id, 10, 0)
+
+	address := entities.Address{
+		UserID:    uint(userId),
+		Name:      req.Name,
+		HouseName: req.HouseName,
+		Street:    req.Street,
+		District:  req.District,
+		State:     req.State,
+		PinCode:   req.PinCode,
+		Phone:     req.Phone,
+	}
+
+	return uc.userRepo.AddAddress(&address)
+}
+
+func (uc *userUcase) UpdateAddress(userId, addressId string, req *req.UpdateAddressReq) error {
+
+	uId, _ := strconv.ParseUint(userId, 10, 0)
+	aId, _ := strconv.ParseUint(addressId, 10, 0)
+
+	address := entities.Address{
+		ID:        uint(aId),
+		UserID:    uint(uId),
+		Name:      req.Name,
+		HouseName: req.HouseName,
+		Street:    req.Street,
+		District:  req.District,
+		State:     req.State,
+		PinCode:   req.PinCode,
+		Phone:     req.Phone,
+	}
+
+	return uc.userRepo.UpdateAddress(addressId, &address)
+}
+
+func (uc *userUcase) ViewAddress(id, userId string) (*entities.Address, error) {
+	return uc.userRepo.FindAddressByUserID(id, userId)
+}
+
+func (uc *userUcase) ViewAllAddresses(userId string) (*[]entities.Address, error) {
+	return uc.userRepo.FindAllAddressByUserID(userId)
+}
+
 func (uc *userUcase) SearchSeller(search string) (*[]entities.Seller, error) {
 	return uc.sellerRepo.SearchVerified(search)
 }
@@ -120,30 +166,4 @@ func (uc *userUcase) GetSellersPage(page, limit string) (*[]entities.Seller, err
 
 func (uc *userUcase) GetSeller(id string) (*entities.Seller, error) {
 	return uc.sellerRepo.FindVerifiedByID(id)
-}
-
-func (uc *userUcase) AddAddress(id string, req *req.NewAddressReq) error {
-
-	userId, _ := strconv.ParseUint(id, 10, 0)
-
-	address := entities.Address{
-		UserID:    uint(userId),
-		Name:      req.Name,
-		HouseName: req.HouseName,
-		Street:    req.Street,
-		District:  req.District,
-		State:     req.State,
-		PinCode:   req.PinCode,
-		Phone:     req.Phone,
-	}
-
-	return uc.userRepo.AddAddress(&address)
-}
-
-func (uc *userUcase) ViewAddress(id, userId string) (*entities.Address, error) {
-	return uc.userRepo.FindAddressByUserID(id, userId)
-}
-
-func (uc *userUcase) ViewAllAddresses(userId string) (*[]entities.Address, error) {
-	return uc.userRepo.FindAllAddressByUserID(userId)
 }

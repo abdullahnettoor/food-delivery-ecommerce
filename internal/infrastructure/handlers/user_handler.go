@@ -224,6 +224,184 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 		})
 }
 
+// @Summary		Add an address
+// @Description	Add a new address for the user
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.NewAddressReq	true	"New address request"
+// @Success		200	{object}	res.CommonRes		"Successfully added address"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/profile/addAddress [post]
+func (h *UserHandler) AddAddress(c *fiber.Ctx) error {
+
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+
+	var req req.NewAddressReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
+			})
+	}
+
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
+			})
+	}
+
+	if err := h.usecase.AddAddress(userId, &req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to add address",
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully added address",
+		})
+}
+
+// @Summary		Update address
+// @Description	Update existing address for the user
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.UpdateAddressReq	true	"Update address request"
+// @Param			id	path		string				true	"Address ID"
+// @Success		200	{object}	res.CommonRes		"Successfully updated address"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/profile/address/{id} [put]
+func (h *UserHandler) EditAddress(c *fiber.Ctx) error {
+
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+	addressId := c.Params("id")
+
+	var req req.UpdateAddressReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
+			})
+	}
+
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
+			})
+	}
+
+	if err := h.usecase.UpdateAddress(userId,addressId, &req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to update address",
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully updated address",
+		})
+}
+
+// @Summary		View a specific address
+// @Description	View details of a specific address for the user
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string				true	"Address ID"
+// @Success		200	{object}	res.ViewAddressRes	"Successfully fetched address"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+// @Failure		404	{object}	res.CommonRes		"Address not found"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/profile/address/{id} [get]
+func (h *UserHandler) ViewAddress(c *fiber.Ctx) error {
+
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+	addressId := c.Params("id")
+
+	address, err := h.usecase.ViewAddress(addressId, userId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to fetch address",
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.ViewAddressRes{
+			Status:  "success",
+			Message: "successfully added address",
+			Address: *address,
+		})
+}
+
+// @Summary		View all addresses
+// @Description	View details of all addresses for the user
+// @Security		Bearer
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	res.ViewAddressListRes	"Successfully fetched addresses"
+// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
+// @Router			/profile/address [get]
+func (h *UserHandler) ViewAllAddress(c *fiber.Ctx) error {
+
+	user := c.Locals("UserModel").(map[string]any)
+	userId := fmt.Sprint(user["userId"])
+
+	addressList, err := h.usecase.ViewAllAddresses(userId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to fetch address",
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.ViewAddressListRes{
+			Status:      "success",
+			Message:     "successfully added address",
+			AddressList: *addressList,
+		})
+}
+
 // @Summary		Get paginated list of sellers
 // @Description	Retrieve a paginated list of sellers for the user
 // @Tags			User
@@ -315,128 +493,5 @@ func (h *UserHandler) SearchSeller(c *fiber.Ctx) error {
 			Status:     "success",
 			Message:    "successfully fetched sellers",
 			SellerList: *sellersList,
-		})
-}
-
-// @Summary		Add an address
-// @Description	Add a new address for the user
-// @Security		Bearer
-// @Tags			User
-// @Accept			json
-// @Produce		json
-// @Param			req	body		req.NewAddressReq	true	"New address request"
-// @Success		200	{object}	res.CommonRes		"Successfully added address"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
-// @Router			/profile/addAddress [post]
-func (h *UserHandler) AddAddress(c *fiber.Ctx) error {
-
-	user := c.Locals("UserModel").(map[string]any)
-	userId := fmt.Sprint(user["userId"])
-
-	var req req.NewAddressReq
-
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to parse body",
-			})
-	}
-
-	if err := requestvalidation.ValidateRequest(req); err != nil {
-		return c.Status(fiber.StatusBadRequest).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   fmt.Sprint(err),
-				Message: "failed. invalid fields",
-			})
-	}
-
-	if err := h.usecase.AddAddress(userId, &req); err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to add address",
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.CommonRes{
-			Status:  "success",
-			Message: "successfully added address",
-		})
-}
-
-// @Summary		View a specific address
-// @Description	View details of a specific address for the user
-// @Security		Bearer
-// @Tags			User
-// @Accept			json
-// @Produce		json
-// @Param			id	path		string				true	"Address ID"
-// @Success		200	{object}	res.ViewAddressRes	"Successfully fetched address"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		404	{object}	res.CommonRes		"Address not found"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
-// @Router			/profile/address/{id} [get]
-func (h *UserHandler) ViewAddress(c *fiber.Ctx) error {
-
-	user := c.Locals("UserModel").(map[string]any)
-	userId := fmt.Sprint(user["userId"])
-	addressId := c.Params("id")
-
-	address, err := h.usecase.ViewAddress(addressId, userId)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to fetch address",
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.ViewAddressRes{
-			Status:  "success",
-			Message: "successfully added address",
-			Address: *address,
-		})
-}
-
-// @Summary		View all addresses
-// @Description	View details of all addresses for the user
-// @Security		Bearer
-// @Tags			User
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	res.ViewAddressListRes	"Successfully fetched addresses"
-// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
-// @Router			/profile/address [get]
-func (h *UserHandler) ViewAllAddress(c *fiber.Ctx) error {
-
-	user := c.Locals("UserModel").(map[string]any)
-	userId := fmt.Sprint(user["userId"])
-
-	addressList, err := h.usecase.ViewAllAddresses(userId)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to fetch address",
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.ViewAddressListRes{
-			Status:      "success",
-			Message:     "successfully added address",
-			AddressList: *addressList,
 		})
 }

@@ -311,6 +311,31 @@ definitions:
     - password
     - pinCode
     type: object
+  req.UpdateAddressReq:
+    properties:
+      district:
+        type: string
+      houseName:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      pinCode:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+    required:
+    - district
+    - houseName
+    - name
+    - phone
+    - pinCode
+    - state
+    - street
+    type: object
   req.UpdateCategoryReq:
     properties:
       name:
@@ -1389,6 +1414,46 @@ paths:
       security:
       - Bearer: []
       summary: View a specific address
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update existing address for the user
+      parameters:
+      - description: Update address request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.UpdateAddressReq'
+      - description: Address ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated address
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update address
       tags:
       - User
   /search/dishes:

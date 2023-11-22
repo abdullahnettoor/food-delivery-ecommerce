@@ -38,6 +38,7 @@ func UserRoutes(
 	u.Post("/profile/addAddress", user.AddAddress)
 	u.Get("/profile/address", user.ViewAllAddress)
 	u.Get("/profile/address/:id", user.ViewAddress)
+	u.Put("/profile/address/:id", user.EditAddress)
 
 	u.Post("/addToCart/:id", cart.AddToCart)
 	u.Get("/cart", cart.ViewCart)

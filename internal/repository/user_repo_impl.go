@@ -167,6 +167,11 @@ func (repo *UserRepository) AddAddress(address *entities.Address) error {
 	return repo.DB.Create(&address).Error
 }
 
+
+func (repo *UserRepository) UpdateAddress(addressId string, address *entities.Address) error{
+	return repo.DB.Save(&address).Error
+}
+
 func (repo *UserRepository) FindAddressByUserID(id, userId string) (*entities.Address, error) {
 	var address entities.Address
 

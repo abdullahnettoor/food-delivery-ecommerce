@@ -1271,6 +1271,68 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update existing address for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update address",
+                "parameters": [
+                    {
+                        "description": "Update address request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UpdateAddressReq"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Address ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated address",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
             }
         },
         "/search/dishes": {
@@ -2817,6 +2879,41 @@ const docTemplate = `{
                     "minLength": 3
                 },
                 "pinCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.UpdateAddressReq": {
+            "type": "object",
+            "required": [
+                "district",
+                "houseName",
+                "name",
+                "phone",
+                "pinCode",
+                "state",
+                "street"
+            ],
+            "properties": {
+                "district": {
+                    "type": "string"
+                },
+                "houseName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pinCode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "street": {
                     "type": "string"
                 }
             }

@@ -16,6 +16,7 @@ type IUserRepository interface {
 	DeleteByPhone(phone string) error
 
 	AddAddress(address *entities.Address) error
+	UpdateAddress(addressId string, address *entities.Address) error
 	FindAddressByUserID(id, userId string) (*entities.Address, error)
 	FindAllAddressByUserID(userId string) (*[]entities.Address, error)
 }

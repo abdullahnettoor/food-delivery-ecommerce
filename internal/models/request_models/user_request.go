@@ -28,6 +28,16 @@ type NewAddressReq struct {
 	Phone     string `json:"phone" validate:"required,e164"`
 }
 
+type UpdateAddressReq struct {
+	Name      string `json:"name" validate:"required"`
+	HouseName string `json:"houseName" validate:"required"`
+	Street    string `json:"street" validate:"required"`
+	District  string `json:"district" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	PinCode   string `json:"pinCode" validate:"required,len=6"`
+	Phone     string `json:"phone" validate:"required,e164"`
+}
+
 type NewOrderReq struct {
 	PaymentMethod string `query:"paymentMethod" json:"paymentMethod" validate:"required,oneof='COD' 'Online'"`
 	AddressID     string `query:"addressId" json:"addressId" validate:"required,number"`
