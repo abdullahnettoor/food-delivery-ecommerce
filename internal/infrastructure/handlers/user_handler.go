@@ -2,15 +2,12 @@ package handlers
 
 import (
 	"fmt"
-	"time"
 
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	res "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/response_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
-	jwttoken "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/jwt_token"
 	requestvalidation "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/request_validation"
 	"github.com/gofiber/fiber/v2"
-	"github.com/spf13/viper"
 )
 
 type UserHandler struct {
@@ -51,7 +48,7 @@ func (h *UserHandler) SignUp(c *fiber.Ctx) error {
 			})
 	}
 
-	user, err := h.usecase.SignUp(&signUpReq)
+	token, err := h.usecase.SignUp(&signUpReq)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
 			JSON(res.CommonRes{
@@ -61,23 +58,11 @@ func (h *UserHandler) SignUp(c *fiber.Ctx) error {
 			})
 	}
 
-	secret := viper.GetString("KEY")
-	fmt.Println("Key is", secret)
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, *user)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Message: "failed to create token",
-				Error:   err.Error(),
-			})
-	}
-
 	return c.Status(fiber.StatusOK).
 		JSON(res.UserLoginRes{
 			Status:  "success",
 			Message: "verify otp to see home",
-			Token:   token,
+			Token:   *token,
 		})
 }
 
@@ -195,7 +180,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 			})
 	}
 
-	user, err := h.usecase.Login(&loginReq)
+	token, err := h.usecase.Login(&loginReq)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
 			JSON(res.CommonRes{
@@ -205,22 +190,11 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 			})
 	}
 
-	secret := viper.GetString("KEY")
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, user)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Message: "failed to create token",
-				Error:   err.Error(),
-			})
-	}
-
 	return c.Status(fiber.StatusOK).
 		JSON(res.UserLoginRes{
 			Status:  "success",
 			Message: "successfully logged in",
-			Token:   token,
+			Token:   *token,
 		})
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 type IUserUseCase interface {
-	SignUp(req *req.UserSignUpReq) (*entities.User, error)
-	Login(req *req.UserLoginReq) (*entities.User, error)
+	SignUp(req *req.UserSignUpReq) (*string, error)
+	Login(req *req.UserLoginReq) (*string, error)
 	SendOtp(phone string) error
 	VerifyOtp(phone string, req *req.UserVerifyOtpReq) error
 	ForgotPassword(req *req.ForgotPasswordReq) error 

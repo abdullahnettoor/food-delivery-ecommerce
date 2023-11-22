@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
@@ -11,7 +12,9 @@ import (
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 	hashpassword "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/hash_password"
+	jwttoken "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/jwt_token"
 	otphelper "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/twilio"
+	"github.com/spf13/viper"
 )
 
 type userUcase struct {
@@ -23,7 +26,7 @@ func NewUserUsecase(userRepo interfaces.IUserRepository, sellerRepo interfaces.I
 	return &userUcase{userRepo, sellerRepo}
 }
 
-func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {
+func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*string, error) {
 
 	_, err := uc.userRepo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
@@ -57,7 +60,14 @@ func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*entities.User, error) {
 		return nil, err
 	}
 
-	return newUser, nil
+	secret := viper.GetString("KEY")
+	fmt.Println("Key is", secret)
+	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, *newUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return &token, nil
 }
 
 func (uc *userUcase) VerifyOtp(phone string, req *req.UserVerifyOtpReq) error {
@@ -81,7 +91,7 @@ func (uc *userUcase) SendOtp(phone string) error {
 	return nil
 }
 
-func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
+func (uc *userUcase) Login(req *req.UserLoginReq) (*string, error) {
 
 	user, err := uc.userRepo.FindByEmail(req.Email)
 	if err != nil {
@@ -101,7 +111,14 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*entities.User, error) {
 		return nil, e.ErrInvalidPassword
 	}
 
-	return user, nil
+	secret := viper.GetString("KEY")
+	fmt.Println("Key is", secret)
+	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, *user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &token, nil
 }
 
 func (uc *userUcase) GetUserDetails(id string) (*entities.User, error) {
