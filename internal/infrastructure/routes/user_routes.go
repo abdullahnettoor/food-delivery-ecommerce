@@ -19,6 +19,9 @@ func UserRoutes(
 	f.Post("/sendOtp", middlewares.AuthenticateUser, user.SendOtp)
 	f.Post("/verifyOtp", middlewares.AuthenticateUser, user.VerifyOtp)
 	f.Post("/login", user.Login)
+	f.Post("/forgotPassword", user.ForgotPassword)
+	f.Post("/resetPassword", user.ResetPassword)
+
 	f.Get("/cart/checkout/online", order.PlaceOrderPayOnline)
 	f.Post("/cart/checkout/online", order.VerifyPayment)
 

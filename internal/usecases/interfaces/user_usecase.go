@@ -10,6 +10,8 @@ type IUserUseCase interface {
 	Login(req *req.UserLoginReq) (*entities.User, error)
 	SendOtp(phone string) error
 	VerifyOtp(phone string, req *req.UserVerifyOtpReq) error
+	ForgotPassword(req *req.ForgotPasswordReq) error 
+	ResetPassword(req *req.ResetPasswordReq) error
 
 	GetUserDetails(id string) (*entities.User, error)
 	UpdateUserDetails(id string, req *req.UpdateUserDetailsReq) (*entities.User, error)

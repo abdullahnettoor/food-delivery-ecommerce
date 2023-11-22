@@ -317,7 +317,7 @@ func (h *UserHandler) EditUserDetails(c *fiber.Ctx) error {
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.ChangePasswordReq true	"Change user password request"
-// @Success		200	{object}	res.UserDetailsRes	"Successfully changed user password details"
+// @Success		200	{object}	res.CommonRes	"Successfully changed user password details"
 // @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
 // @Failure		400	{object}	res.CommonRes		"Bad Request"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error"
@@ -358,6 +358,100 @@ func (h *UserHandler) ChangePassword(c *fiber.Ctx) error {
 		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "password changed successfully",
+		})
+}
+
+// @Summary		Forgot Password
+// @Description Forgot user password
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.ForgotPasswordReq true	"Forgot password request"
+// @Success		200	{object}	res.CommonRes	"Successfully sent otp to number related to the given email"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/forgotPassword [post]
+func (h *UserHandler) ForgotPassword(c *fiber.Ctx) error {
+
+	var req req.ForgotPasswordReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
+			})
+	}
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
+			})
+	}
+
+	if err := h.usecase.ForgotPassword(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to process",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "otp sent to given phone",
+		})
+}
+
+// @Summary		Reset Password
+// @Description Reset user password
+// @Tags			User
+// @Accept			json
+// @Produce		json
+// @Param			req	body		req.ResetPasswordReq true	"Reset password request"
+// @Success		200	{object}	res.CommonRes	"Reset Password Successfull"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/resetPassword [post]
+func (h *UserHandler) ResetPassword(c *fiber.Ctx) error {
+
+	var req req.ResetPasswordReq
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to parse body",
+			})
+	}
+	if err := requestvalidation.ValidateRequest(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   fmt.Sprint(err),
+				Message: "failed. invalid fields",
+			})
+	}
+
+	if err := h.usecase.ResetPassword(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to reset password",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "reset password successfull",
 		})
 }
 

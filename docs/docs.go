@@ -941,6 +941,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/forgotPassword": {
+            "post": {
+                "description": "Forgot user password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Forgot Password",
+                "parameters": [
+                    {
+                        "description": "Forgot password request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.ForgotPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully sent otp to number related to the given email",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Authenticate and log in as a user",
@@ -1414,7 +1460,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Successfully changed user password details",
                         "schema": {
-                            "$ref": "#/definitions/res.UserDetailsRes"
+                            "$ref": "#/definitions/res.CommonRes"
                         }
                     },
                     "400": {
@@ -1482,6 +1528,52 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/resetPassword": {
+            "post": {
+                "description": "Reset user password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Reset Password",
+                "parameters": [
+                    {
+                        "description": "Reset password request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.ResetPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reset Password Successfull",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
@@ -2957,6 +3049,17 @@ const docTemplate = `{
                 }
             }
         },
+        "req.ForgotPasswordReq": {
+            "type": "object",
+            "required": [
+                "phone"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "req.NewAddressReq": {
             "type": "object",
             "required": [
@@ -3008,6 +3111,25 @@ const docTemplate = `{
                         "COD",
                         "Online"
                     ]
+                }
+            }
+        },
+        "req.ResetPasswordReq": {
+            "type": "object",
+            "required": [
+                "otp",
+                "phone"
+            ],
+            "properties": {
+                "newPassword": {
+                    "type": "string",
+                    "minLength": 3
+                },
+                "otp": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
                 }
             }
         },

@@ -21,6 +21,16 @@ type ChangePasswordReq struct {
 	ConfirmNewPassword string `json:"confirmNewPassword" validate:"eqfield=NewPassword"`
 }
 
+type ForgotPasswordReq struct {
+	Phone           string `json:"phone" validate:"required,e164"`
+}
+
+type ResetPasswordReq struct {
+	Phone           string `json:"phone" validate:"required,e164"`
+	NewPassword string `json:"newPassword" validate:"gte=3"`
+	Otp         string `json:"otp" validate:"required,number"`
+}
+
 type UserVerifyOtpReq struct {
 	Otp string `json:"otp" validate:"required,number"`
 }

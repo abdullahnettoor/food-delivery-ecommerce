@@ -49,6 +49,25 @@ func (repo *UserRepository) FindByEmail(email string) (*entities.User, error) {
 	return &userDetails, nil
 }
 
+func (repo *UserRepository) FindByPhone(phone string) (*entities.User, error) {
+	var userDetails entities.User
+	query := repo.DB.Raw(`
+		SELECT * 
+		FROM users 
+		WHERE phone = ?`,
+		phone).Scan(&userDetails)
+
+	if query.RowsAffected == 0 {
+		return nil, e.ErrNotFound
+	}
+
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return &userDetails, nil
+}
+
 func (repo *UserRepository) FindByID(id string) (*entities.User, error) {
 	var userDetails entities.User
 	query := repo.DB.Raw(`

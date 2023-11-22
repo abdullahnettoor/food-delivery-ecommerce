@@ -118,7 +118,6 @@ func (uc *userUcase) UpdateUserDetails(id string, req *req.UpdateUserDetailsReq)
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		Email:     req.Email,
-		// Phone:     req.Phone,
 	}
 
 	return uc.userRepo.Update(id, &user)
@@ -141,6 +140,33 @@ func (uc *userUcase) ChangePassword(id string, req *req.ChangePasswordReq) error
 	}
 
 	return uc.userRepo.ChangePassword(id, newPassword)
+}
+
+func (uc *userUcase) ForgotPassword(req *req.ForgotPasswordReq) error {
+	user, err := uc.userRepo.FindByPhone(req.Phone)
+	if err != nil {
+		return err
+	}
+
+	return otphelper.SendOtp(user.Phone)
+}
+
+func (uc *userUcase) ResetPassword(req *req.ResetPasswordReq) error {
+	if ok, err := otphelper.VerifyOtp(req.Phone, req.Otp); !ok || err != nil {
+		return err
+	}
+
+	user, err := uc.userRepo.FindByPhone(req.Phone)
+	if err != nil {
+		return err
+	}
+
+	hashPwd, err := hashpassword.HashPassword(req.NewPassword)
+	if err != nil {
+		return err
+	}
+
+	return uc.userRepo.ChangePassword(fmt.Sprint(user.ID), hashPwd)
 }
 
 func (uc *userUcase) AddAddress(id string, req *req.NewAddressReq) error {

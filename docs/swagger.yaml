@@ -250,6 +250,13 @@ definitions:
     - offerTitle
     - status
     type: object
+  req.ForgotPasswordReq:
+    properties:
+      phone:
+        type: string
+    required:
+    - phone
+    type: object
   req.NewAddressReq:
     properties:
       district:
@@ -287,6 +294,19 @@ definitions:
     required:
     - addressId
     - paymentMethod
+    type: object
+  req.ResetPasswordReq:
+    properties:
+      newPassword:
+        minLength: 3
+        type: string
+      otp:
+        type: string
+      phone:
+        type: string
+    required:
+    - otp
+    - phone
     type: object
   req.SellerLoginReq:
     properties:
@@ -1237,6 +1257,36 @@ paths:
       summary: Get a dish
       tags:
       - User
+  /forgotPassword:
+    post:
+      consumes:
+      - application/json
+      description: Forgot user password
+      parameters:
+      - description: Forgot password request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.ForgotPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully sent otp to number related to the given email
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Forgot Password
+      tags:
+      - User
   /login:
     post:
       consumes:
@@ -1536,7 +1586,7 @@ paths:
         "200":
           description: Successfully changed user password details
           schema:
-            $ref: '#/definitions/res.UserDetailsRes'
+            $ref: '#/definitions/res.CommonRes'
         "400":
           description: Bad Request
           schema:
@@ -1588,6 +1638,36 @@ paths:
       security:
       - Bearer: []
       summary: Update User Details
+      tags:
+      - User
+  /resetPassword:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password
+      parameters:
+      - description: Reset password request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.ResetPasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reset Password Successfull
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Reset Password
       tags:
       - User
   /search/dishes:
