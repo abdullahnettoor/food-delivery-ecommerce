@@ -67,6 +67,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/addToFavourite/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Adds a dish to the user's favorites",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Favorites"
+                ],
+                "summary": "Add item to favorites",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dish ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Dish added to favorites successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Item already added / Failed to add to favorites",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/categories": {
             "get": {
                 "security": [
@@ -934,6 +983,55 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/favourites/{id}/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Deletes a dish from the user's favorites",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Favorites"
+                ],
+                "summary": "Delete item from favorites",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dish ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Dish deleted from favorites successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Item already deleted / Failed to delete from favorites",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid or expired token",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }

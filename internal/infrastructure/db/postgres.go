@@ -41,5 +41,6 @@ func syncDatabase(db *gorm.DB) error {
 		&entities.Order{},
 		&entities.OrderItem{},
 		&entities.CategoryOffer{},
+		&entities.Favourite{},
 	)
 }

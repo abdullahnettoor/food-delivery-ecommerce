@@ -13,6 +13,7 @@ func UserRoutes(
 	cart *handlers.CartHandler,
 	order *handlers.OrderHandler,
 	offer *handlers.OfferHandler,
+	fav *handlers.FavHandler,
 ) {
 
 	f.Post("/signup", user.SignUp)
@@ -46,6 +47,10 @@ func UserRoutes(
 	u.Get("/profile/address", user.ViewAllAddress)
 	u.Get("/profile/address/:id", user.ViewAddress)
 	u.Put("/profile/address/:id", user.EditAddress)
+
+	u.Post("/addToFavourite/:id", fav.AddFavItem)
+	u.Get("/favourites", fav.ViewFavItems)
+	u.Delete("/favourites/:id/delete", fav.DeleteFavItem)
 
 	u.Post("/addToCart/:id", cart.AddToCart)
 	u.Get("/cart", cart.ViewCart)

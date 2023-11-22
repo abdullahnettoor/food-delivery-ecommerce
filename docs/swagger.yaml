@@ -703,6 +703,37 @@ paths:
       summary: Add to Cart
       tags:
       - Cart
+  /addToFavourite/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Adds a dish to the user's favorites
+      parameters:
+      - description: Dish ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Dish added to favorites successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Item already added / Failed to add to favorites'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: 'Unauthorized: Invalid or expired token'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Add item to favorites
+      tags:
+      - User Favorites
   /admin/categories:
     get:
       consumes:
@@ -1257,6 +1288,38 @@ paths:
       summary: Get a dish
       tags:
       - User
+  /favourites/{id}/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a dish from the user's favorites
+      parameters:
+      - description: Dish ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Dish deleted from favorites successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Item already deleted / Failed to delete from
+            favorites'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: 'Unauthorized: Invalid or expired token'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Delete item from favorites
+      tags:
+      - User Favorites
   /forgotPassword:
     post:
       consumes:
