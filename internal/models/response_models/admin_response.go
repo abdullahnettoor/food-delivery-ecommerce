@@ -15,3 +15,10 @@ type AllCategoriesRes struct {
 	Error      string              `json:"error,omitempty"`
 	Message    string              `json:"message,omitempty"`
 }
+
+type GetCategoryRes struct {
+	Status     string              `json:"status,omitempty"`
+	Category entities.Category `json:"category,omitempty"`
+	Error      string              `json:"error,omitempty"`
+	Message    string              `json:"message,omitempty"`
+}

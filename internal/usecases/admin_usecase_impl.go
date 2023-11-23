@@ -94,10 +94,3 @@ func (uc *adminUcase) UpdateCategory(id string, req *req.UpdateCategoryReq) erro
 	return uc.CategoryRepo.Update(id, req.Name)
 }
 
-func (uc *adminUcase) GetCategory(id string) (*entities.Category, error) {
-	return uc.CategoryRepo.FindByID(id)
-}
-
-func (uc *adminUcase) GetAllCategory() (*[]entities.Category, error) {
-	return uc.CategoryRepo.FindAll()
-}

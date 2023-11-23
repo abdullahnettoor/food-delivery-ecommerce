@@ -21,7 +21,6 @@ func AdminRoutes(f *fiber.App, admin *handlers.AdminHandler) {
 	r.Patch("/users/:id/block", admin.BlockUser)
 	r.Patch("/users/:id/unblock", admin.UnblockUser)
 
-	r.Get("/categories", admin.GetAllCategories)
 	r.Post("/categories/addCategory", admin.AddCategory)
 	r.Patch("/categories/:id/edit", admin.EditCategory)
 

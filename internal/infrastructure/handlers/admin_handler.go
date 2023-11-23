@@ -381,32 +381,3 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 
 }
 
-// @Summary		Get all categories
-// @Description	Retrieve a list of all categories
-// @Security		Bearer
-// @Tags			Admin
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	res.AllCategoriesRes	"Successful operation"
-// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
-// @Router			/admin/categories [get]
-func (h *AdminHandler) GetAllCategories(c *fiber.Ctx) error {
-
-	categories, err := h.usecase.GetAllCategory()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Message: "failed to fetch categories",
-				Error:   err.Error(),
-			})
-	}
-
-	return c.Status(fiber.StatusOK).
-		JSON(res.AllCategoriesRes{
-			Status:     "success",
-			Message:    "successfully fetched categories",
-			Categories: *categories,
-		})
-}

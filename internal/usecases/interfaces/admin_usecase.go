@@ -19,6 +19,4 @@ type IAdminUseCase interface {
 
 	CreateCategory(req *req.CreateCategoryReq) error
 	UpdateCategory(id string, req *req.UpdateCategoryReq) error
-	GetCategory(id string) (*entities.Category, error)
-	GetAllCategory() (*[]entities.Category, error)
 }

@@ -18,6 +18,7 @@ func NewServerHttp(
 	adminHandler *handlers.AdminHandler,
 	sellerHandler *handlers.SellerHandler,
 	userHandler *handlers.UserHandler,
+	categoryHandler *handlers.CategoryHandler,
 	dishHandler *handlers.DishHandler,
 	cartHandler *handlers.CartHandler,
 	orderHandler *handlers.OrderHandler,
