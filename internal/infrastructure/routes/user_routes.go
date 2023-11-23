@@ -9,11 +9,13 @@ import (
 func UserRoutes(
 	f *fiber.App,
 	user *handlers.UserHandler,
+	category *handlers.CategoryHandler,
 	dish *handlers.DishHandler,
 	cart *handlers.CartHandler,
 	order *handlers.OrderHandler,
 	offer *handlers.OfferHandler,
 	fav *handlers.FavHandler,
+	coupon *handlers.CouponHandler,
 ) {
 
 	f.Post("/signup", user.SignUp)
@@ -25,6 +27,9 @@ func UserRoutes(
 
 	f.Get("/cart/checkout/online", order.PlaceOrderPayOnline)
 	f.Post("/cart/checkout/online", order.VerifyPayment)
+
+	f.Get("/categories", category.GetAllCategories)
+	f.Get("/categories/:id", category.GetCategory)
 
 	f.Get("/dishes", dish.GetDishesPage)
 	f.Get("/dishes/:id", dish.GetDish)
@@ -57,6 +62,9 @@ func UserRoutes(
 	u.Delete("/cart/:id/deleteItem", cart.DeleteCartItem)
 	u.Patch("/cart/:id/decrement", cart.DecrementCartItem)
 	u.Delete("/cart/empty", cart.EmptyCart)
+
+	u.Get("/coupons", coupon.GetAllCoupons)
+	u.Get("/coupons/redeemed", coupon.GetRedeemedByUser)
 
 	u.Post("/cart/checkout", order.PlaceOrder)
 	// u.Post("/cart/checkout/online", order.PlaceOrderPayOnline)

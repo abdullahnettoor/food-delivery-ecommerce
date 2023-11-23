@@ -10,4 +10,6 @@ var (
 	ErrInvalidPassword = errors.New("invalid password")
 	ErrNotAvailable    = errors.New("not available")
 	ErrQuantityExceeds = errors.New("selected quantity not available")
+	ErrInvalidCoupon = errors.New("invalid coupon")
+	ErrCouponNotApplicable = errors.New("coupon doesn't meet terms")
 )

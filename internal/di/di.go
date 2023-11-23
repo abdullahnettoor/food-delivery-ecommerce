@@ -42,6 +42,7 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 	favUcase := usecases.NewFavouriteUsecase(favRepo, dishUcase)
 	cartUcase := usecases.NewCartUsecase(cartRepo, dishUcase)
 	orderUcase := usecases.NewOrderUsecase(cartRepo, orderRepo, dishUcase, couponRepo)
+	couponUcase := usecases.NewCouponUsecase(couponRepo)
 
 	sellerHandler := handlers.NewSellerHandler(sellerUcase, dishUcase)
 	userHandler := handlers.NewUserHandler(userUcase)
@@ -52,6 +53,7 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 	cartHandler := handlers.NewCartHandler(cartUcase)
 	orderHandler := handlers.NewOrderHandler(orderUcase)
 	offerHandler := handlers.NewOfferHandler(offerUcase)
+	couponHandler := handlers.NewCouponHandler(couponUcase)
 
 	serverHttp := api.NewServerHttp(
 		adminHandler,
@@ -63,6 +65,7 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 		orderHandler,
 		offerHandler,
 		favHandler,
+		couponHandler,
 	)
 
 	return serverHttp, nil

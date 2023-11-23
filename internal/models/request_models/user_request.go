@@ -61,6 +61,7 @@ type UpdateAddressReq struct {
 }
 
 type NewOrderReq struct {
-	PaymentMethod string `query:"paymentMethod" json:"paymentMethod" validate:"required,oneof='COD' 'Online'"`
+	PaymentMethod string `query:"paymentMethod" json:"paymentMethod" validate:"required,oneof='COD' 'ONLINE'"`
 	AddressID     string `query:"addressId" json:"addressId" validate:"required,number"`
+	CouponCode     string `query:"couponCode" json:"couponCode" validate:""`
 }

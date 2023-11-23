@@ -15,17 +15,19 @@ import (
 )
 
 type orderUsecase struct {
-	cartRepo  interfaces.ICartRepository
-	orderRepo interfaces.IOrderRepository
-	dishUcase i.IDishUseCase
+	cartRepo   interfaces.ICartRepository
+	orderRepo  interfaces.IOrderRepository
+	dishUcase  i.IDishUseCase
+	couponRepo interfaces.ICouponRepository
 }
 
 func NewOrderUsecase(
 	cartRepo interfaces.ICartRepository,
 	orderRepo interfaces.IOrderRepository,
 	dishUcase i.IDishUseCase,
+	couponRepo interfaces.ICouponRepository,
 ) i.IOrderUseCase {
-	return &orderUsecase{cartRepo, orderRepo, dishUcase}
+	return &orderUsecase{cartRepo, orderRepo, dishUcase, couponRepo}
 }
 
 func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entities.Order, error) {
@@ -61,12 +63,33 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		orderItems = append(orderItems, o)
 	}
 
-	discount = 0
-	if totalPrice > 500 {
-		deliveryCharge = 0
-	} else {
+	if req.CouponCode != "" {
+		// Check if already Redeemed
+		_, err := uc.couponRepo.FindRedeemed(userId, req.CouponCode)
+		if err != nil {
+			return nil, err
+		}
+		// Check if Coupon is valid
+		coupon, err := uc.couponRepo.FindByCode(req.CouponCode)
+		if err != nil {
+			return nil, err
+		}
+		if coupon.Status != "ACTIVE" || coupon.EndDate.Before(time.Now()) {
+			return nil, e.ErrInvalidCoupon
+		}
+		if coupon.MinimumRequired > uint(totalPrice) {
+			return nil, e.ErrCouponNotApplicable
+		}
+		discount = float64(coupon.Discount)
+		if discount >= float64(coupon.MaximumAllowed) {
+			discount = float64(coupon.MaximumAllowed)
+		}
+	}
+
+	if totalPrice < 500 {
 		deliveryCharge = totalPrice * .1
 	}
+
 	totalPrice = totalPrice + deliveryCharge - discount
 
 	addressId, _ := strconv.ParseUint(req.AddressID, 10, 0)
@@ -78,6 +101,7 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		OrderDate:      time.Now(),
 		TransactionID:  uuid.New().String(),
 		PaymentMethod:  req.PaymentMethod,
+		CouponCode:     req.CouponCode,
 		PaymentStatus:  "Pending",
 		ItemCount:      uint(len(orderItems)),
 		Dishes:         orderItems,
@@ -99,6 +123,10 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 	}
 
 	if err := uc.orderRepo.CreateOrder(&order); err != nil {
+		return nil, err
+	}
+
+	if err := uc.couponRepo.CreateRedeemed(userId, req.CouponCode); err != nil {
 		return nil, err
 	}
 

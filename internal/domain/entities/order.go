@@ -8,9 +8,9 @@ type OrderItem struct {
 	DishID    uint    `json:"-"`
 	Quantity  uint    `json:"quantity"`
 	SalePrice float64 `json:"salePrice"`
-	Dish   `gorm:"-"`
+	Dish      `gorm:"-"`
 
-	FkDish Dish  `json:"-" gorm:"foreignkey:DishID;constraint:OnDelete:CASCADE"`
+	FkDish  Dish  `json:"-" gorm:"foreignkey:DishID;constraint:OnDelete:CASCADE"`
 	FkOrder Order `json:"-" gorm:"foreignkey:OrderID;constraint:OnDelete:CASCADE"`
 }
 
@@ -19,6 +19,7 @@ type Order struct {
 	UserID         uint        `json:"userId"`
 	AddressID      uint        `json:"addressId"`
 	SellerID       uint        `json:"sellerId"`
+	CouponCode     string      `json:"couponCode"`
 	OrderDate      time.Time   `json:"orderDate"`
 	DeliveryDate   time.Time   `json:"deliveryDate"`
 	PaymentMethod  string      `json:"paymentMethod"`
@@ -31,7 +32,8 @@ type Order struct {
 	Status         string      `json:"orderStatus"`
 	PaymentStatus  string      `json:"paymentStatus"`
 
-	FkUser  User `json:"-" gorm:"foreignkey:UserID;constraint:OnDelete:CASCADE"`
-	FkAddress  Address `json:"-" gorm:"foreignkey:AddressID;constraint:OnDelete:CASCADE"`
-	FkSeller  Seller `json:"-" gorm:"foreignkey:SellerID;constraint:OnDelete:CASCADE"`
+	FkUser    User    `json:"-" gorm:"foreignkey:UserID;constraint:OnDelete:CASCADE"`
+	FkAddress Address `json:"-" gorm:"foreignkey:AddressID"`
+	FkSeller  Seller  `json:"-" gorm:"foreignkey:SellerID"`
+	FkCoupon  Coupon  `json:"-" gorm:"foreignkey:CouponCode;constraint:OnDelete:CASCADE"`
 }

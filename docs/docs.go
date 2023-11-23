@@ -924,6 +924,86 @@ const docTemplate = `{
                 }
             }
         },
+        "/coupons": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches all available coupons for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Coupons"
+                ],
+                "summary": "Get all available coupons for the user",
+                "responses": {
+                    "200": {
+                        "description": "Success: No coupons are available",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access: User is not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch coupons",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/coupons/redeemed": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches the coupons redeemed by the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Coupons"
+                ],
+                "summary": "Get redeemed coupons by user",
+                "responses": {
+                    "200": {
+                        "description": "Success: No coupons are redeemed",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch redeemed coupons",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/dishes": {
             "get": {
                 "description": "Retrieve a paginated list of dishes for the user",
@@ -2932,6 +3012,41 @@ const docTemplate = `{
                 }
             }
         },
+        "entities.Coupon": {
+            "type": "object",
+            "properties": {
+                "couponCode": {
+                    "type": "string"
+                },
+                "couponId": {
+                    "type": "integer"
+                },
+                "couponType": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "maximumAmtAllowed": {
+                    "type": "integer"
+                },
+                "minimumAmtRequired": {
+                    "type": "integer"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.Dish": {
             "type": "object",
             "properties": {
@@ -3057,6 +3172,9 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        },
+        "entities.RedeemedCoupon": {
+            "type": "object"
         },
         "entities.Seller": {
             "type": "object",
@@ -3594,6 +3712,46 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.GetAllCouponsForUserRes": {
+            "type": "object",
+            "properties": {
+                "coupons": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.Coupon"
+                    }
+                },
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.GetRedeemedCouponsRes": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "redeemedCoupons": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.RedeemedCoupon"
+                    }
                 },
                 "status": {
                     "type": "string"
