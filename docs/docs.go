@@ -116,46 +116,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/categories": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Retrieve a list of all categories",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get all categories",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/res.AllCategoriesRes"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized Access",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/res.CommonRes"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/categories/addCategory": {
             "post": {
                 "security": [
@@ -886,6 +846,73 @@ const docTemplate = `{
                         "description": "Unauthorized Access",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "description": "Retrieve a list of all categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get all categories",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/res.AllCategoriesRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories/{id}": {
+            "get": {
+                "description": "Retrieve a list of all categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get all categories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/res.AllCategoriesRes"
                         }
                     },
                     "500": {
@@ -2949,6 +2976,9 @@ const docTemplate = `{
                 "addressId": {
                     "type": "integer"
                 },
+                "couponCode": {
+                    "type": "string"
+                },
                 "deliveryCharge": {
                     "type": "number"
                 },
@@ -3209,11 +3239,14 @@ const docTemplate = `{
                 "addressId": {
                     "type": "string"
                 },
+                "couponCode": {
+                    "type": "string"
+                },
                 "paymentMethod": {
                     "type": "string",
                     "enum": [
                         "COD",
-                        "Online"
+                        "ONLINE"
                     ]
                 }
             }
