@@ -47,16 +47,16 @@ type CreateOfferReq struct {
 	Title      string    `json:"offerTitle" validate:"required"`
 	CategoryID uint      `json:"categoryId" validate:"required,number"`
 	Percentage uint      `json:"offerPercentage" validate:"required,gt=0,lte=100"`
-	StartDate  time.Time `json:"startDate" validate:""`
-	EndDate    time.Time `json:"endDate" validate:""`
-	Status     string    `json:"status" validate:"required,oneof=Active Closed Deleted"`
+	StartDate  time.Time `json:"startDate" `
+	EndDate    time.Time `json:"endDate" `
+	Status     string    `json:"status" validate:"required,oneof=ACTIVE CLOSED"`
 }
 
 type UpdateOfferReq struct {
 	Title      string    `json:"offerTitle" validate:"required"`
 	CategoryID uint      `json:"categoryId" validate:"required,number"`
 	Percentage uint      `json:"offerPercentage" validate:"required,gt=0,lte=100"`
-	StartDate  time.Time `json:"startDate" validate:""`
-	EndDate    time.Time `json:"endDate" validate:""`
-	Status     string    `json:"status" validate:"required,oneof=Active Closed Deleted"`
+	StartDate  time.Time `json:"startDate" `
+	EndDate    time.Time `json:"endDate" `
+	Status     string    `json:"status" validate:"required,oneof=ACTIVE CLOSED DELETED"`
 }

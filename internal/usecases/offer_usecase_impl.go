@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
@@ -78,7 +79,11 @@ func (uc *offerUsecase) UpdateOffer(id, sellerId string, req *req.UpdateOfferReq
 }
 
 func (uc *offerUsecase) UpdateOfferStatus(id, status string) error {
-	return uc.repo.UpdateStatus(id, status)
+	switch status {
+	case "ACTIVE", "INACTIVE", "CLOSED":
+		return uc.repo.UpdateStatus(id, status)
+	}
+	return e.ErrInvalidStatusValue
 }
 
 func (uc *offerUsecase) GetAllOffer() (*[]entities.CategoryOffer, error) {

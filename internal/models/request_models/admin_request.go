@@ -15,13 +15,13 @@ type UpdateCategoryReq struct {
 }
 
 type CreateCouponReq struct {
-	Code            string    `json:"couponCode" validate:"regexp=^[A-Z]{5}\\d{3}$"`
-	Description     string    `json:"description"`
+	Code            string    `json:"couponCode" validate:"required"`
+	Description     string    `json:"description" `
 	Type            string    `json:"couponType" validate:"oneof=AMOUNT PERCENTAGE"`
 	Discount        uint      `json:"discount" validate:"number"`
-	MinimumRequired uint      `json:"minimumAmtRequired" validate:"gte=Discount"`
-	MaximumAllowed  uint      `json:"maximumAmtAllowed" validate:"gte=Discount"`
-	StartDate       time.Time `json:"startDate"`
-	EndDate         time.Time `json:"endDate"`
+	MinimumRequired uint      `json:"minimumAmtRequired" validate:"gtefield=Discount"`
+	MaximumAllowed  uint      `json:"maximumAmtAllowed" validate:"gtefield=Discount"`
+	StartDate       time.Time `json:"startDate" `
+	EndDate         time.Time `json:"endDate" `
 	Status          string    `json:"status" validate:"oneof=ACTIVE INACTIVE"`
 }

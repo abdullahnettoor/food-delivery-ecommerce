@@ -16,10 +16,9 @@ type Coupon struct {
 }
 
 type RedeemedCoupon struct {
-	ID         uint   `json:"-"`
-	CouponCode string `json:"-"`
-	UserID     uint   `json:"-"`
+	ID         uint   `json:"redeemedId"`
+	CouponCode string `json:"couponCode" gorm:"text;references:Coupon;constraint:OnDelete:CASCADE"`
+	UserID     uint   `json:"userId"`
 
 	FkUser   User   `json:"-" gorm:"foreignkey:UserID;constraint:OnDelete:CASCADE"`
-	FkCoupon Coupon `json:"-" gorm:"foreignkey:CouponCode;constraint:OnDelete:CASCADE"`
 }

@@ -22,11 +22,11 @@ type ChangePasswordReq struct {
 }
 
 type ForgotPasswordReq struct {
-	Phone           string `json:"phone" validate:"required,e164"`
+	Phone string `json:"phone" validate:"required,e164"`
 }
 
 type ResetPasswordReq struct {
-	Phone           string `json:"phone" validate:"required,e164"`
+	Phone       string `json:"phone" validate:"required,e164"`
 	NewPassword string `json:"newPassword" validate:"gte=3"`
 	Otp         string `json:"otp" validate:"required,number"`
 }
@@ -63,5 +63,5 @@ type UpdateAddressReq struct {
 type NewOrderReq struct {
 	PaymentMethod string `query:"paymentMethod" json:"paymentMethod" validate:"required,oneof='COD' 'ONLINE'"`
 	AddressID     string `query:"addressId" json:"addressId" validate:"required,number"`
-	CouponCode     string `query:"couponCode" json:"couponCode" validate:""`
+	CouponCode    string `query:"couponCode" json:"couponCode"`
 }

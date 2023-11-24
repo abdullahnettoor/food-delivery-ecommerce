@@ -252,6 +252,33 @@ definitions:
     required:
     - name
     type: object
+  req.CreateCouponReq:
+    properties:
+      couponCode:
+        type: string
+      couponType:
+        enum:
+        - AMOUNT
+        - PERCENTAGE
+        type: string
+      description:
+        type: string
+      discount:
+        type: integer
+      endDate:
+        type: string
+      maximumAmtAllowed:
+        type: integer
+      minimumAmtRequired:
+        type: integer
+      startDate:
+        type: string
+      status:
+        enum:
+        - ACTIVE
+        - INACTIVE
+        type: string
+    type: object
   req.CreateOfferReq:
     properties:
       categoryId:
@@ -762,7 +789,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Adds a dish to the user's favorites
+      description: Adds a dish to the user's favourites
       parameters:
       - description: Dish ID
         in: path
@@ -773,11 +800,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: 'Success: Dish added to favorites successfully'
+          description: 'Success: Dish added to favourites successfully'
           schema:
             $ref: '#/definitions/res.CommonRes'
         "400":
-          description: 'Bad Request: Item already added / Failed to add to favorites'
+          description: 'Bad Request: Item already added / Failed to add to favourites'
           schema:
             $ref: '#/definitions/res.CommonRes'
         "401":
@@ -786,9 +813,9 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       security:
       - Bearer: []
-      summary: Add item to favorites
+      summary: Add item to favourites
       tags:
-      - User Favorites
+      - User Favourites
   /admin/categories/{id}/edit:
     patch:
       consumes:
@@ -866,6 +893,115 @@ paths:
       summary: Add a category
       tags:
       - Admin
+  /admin/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Fetches all available coupons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: No coupons are available'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: 'Unauthorized Access: User is not authenticated'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Failed to fetch coupons'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get all coupons
+      tags:
+      - Admin Coupons
+  /admin/coupons/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the status of a coupon in the system
+      parameters:
+      - description: Coupon ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New status for the coupon
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Coupon status updated successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Invalid fields in the request'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "404":
+          description: 'Not Found: Coupon with the given ID not found'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Failed to update coupon status'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Update coupon status
+      tags:
+      - Admin Coupons
+  /admin/coupons/add:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new coupon to the system
+      parameters:
+      - description: Coupon creation request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateCouponReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Coupon created successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Invalid fields in the request'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "409":
+          description: 'Conflict: Coupon with the same code already exists'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Failed to create coupon'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Create a new coupon
+      tags:
+      - Admin Coupons
   /admin/login:
     post:
       consumes:
@@ -1416,11 +1552,32 @@ paths:
       summary: Get a dish
       tags:
       - User
+  /favourites:
+    get:
+      consumes:
+      - application/json
+      description: Fetches the list of user's favourite dishes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Favourites are empty'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: 'Unauthorized: Invalid or expired token'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: View favourite items
+      tags:
+      - User Favourites
   /favourites/{id}/delete:
     delete:
       consumes:
       - application/json
-      description: Deletes a dish from the user's favorites
+      description: Deletes a dish from the user's favourites
       parameters:
       - description: Dish ID
         in: path
@@ -1431,12 +1588,12 @@ paths:
       - application/json
       responses:
         "200":
-          description: 'Success: Dish deleted from favorites successfully'
+          description: 'Success: Dish deleted from favourites successfully'
           schema:
             $ref: '#/definitions/res.CommonRes'
         "400":
           description: 'Bad Request: Item already deleted / Failed to delete from
-            favorites'
+            favourites'
           schema:
             $ref: '#/definitions/res.CommonRes'
         "401":
@@ -1445,9 +1602,9 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       security:
       - Bearer: []
-      summary: Delete item from favorites
+      summary: Delete item from favourites
       tags:
-      - User Favorites
+      - User Favourites
   /forgotPassword:
     post:
       consumes:

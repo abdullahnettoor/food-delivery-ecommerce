@@ -63,7 +63,7 @@ func UserRoutes(
 	u.Patch("/cart/:id/decrement", cart.DecrementCartItem)
 	u.Delete("/cart/empty", cart.EmptyCart)
 
-	u.Get("/coupons", coupon.GetAllCoupons)
+	u.Get("/coupons", coupon.GetAllCouponsForUser)
 	u.Get("/coupons/redeemed", coupon.GetRedeemedByUser)
 
 	u.Post("/cart/checkout", order.PlaceOrder)

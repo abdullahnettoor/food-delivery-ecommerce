@@ -52,7 +52,6 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		if !dish.Availability {
 			return nil, e.ErrNotAvailable
 		}
-		fmt.Println("\nDish is", dish)
 		o := entities.OrderItem{
 			DishID:    item.DishID,
 			Dish:      *dish,
@@ -64,25 +63,27 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 	}
 
 	if req.CouponCode != "" {
-		// Check if already Redeemed
 		_, err := uc.couponRepo.FindRedeemed(userId, req.CouponCode)
-		if err != nil {
+		if err != nil && err != e.ErrNotFound {
 			return nil, err
 		}
-		// Check if Coupon is valid
-		coupon, err := uc.couponRepo.FindByCode(req.CouponCode)
-		if err != nil {
-			return nil, err
-		}
-		if coupon.Status != "ACTIVE" || coupon.EndDate.Before(time.Now()) {
-			return nil, e.ErrInvalidCoupon
-		}
-		if coupon.MinimumRequired > uint(totalPrice) {
-			return nil, e.ErrCouponNotApplicable
-		}
-		discount = float64(coupon.Discount)
-		if discount >= float64(coupon.MaximumAllowed) {
-			discount = float64(coupon.MaximumAllowed)
+		if err == e.ErrNotFound {
+			coupon, err := uc.couponRepo.FindByCode(req.CouponCode)
+			if err != nil {
+				return nil, err
+			}
+			if coupon.Status != "ACTIVE" {
+				return nil, e.ErrInvalidCoupon
+			}
+			if coupon.MinimumRequired > uint(totalPrice) {
+				return nil, e.ErrCouponNotApplicable
+			}
+			discount = float64(coupon.Discount)
+			if discount >= float64(coupon.MaximumAllowed) {
+				discount = float64(coupon.MaximumAllowed)
+			}
+		} else {
+			return nil, e.ErrCouponAlreadyRedeemed
 		}
 	}
 
@@ -101,7 +102,6 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		OrderDate:      time.Now(),
 		TransactionID:  uuid.New().String(),
 		PaymentMethod:  req.PaymentMethod,
-		CouponCode:     req.CouponCode,
 		PaymentStatus:  "Pending",
 		ItemCount:      uint(len(orderItems)),
 		Dishes:         orderItems,
@@ -111,8 +111,11 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		TotalPrice:     totalPrice,
 		Status:         "Ordered",
 	}
+	if req.CouponCode != "" {
+		order.CouponCode = req.CouponCode
+	}
 
-	if req.PaymentMethod == "Online" {
+	if req.PaymentMethod == "ONLINE" {
 		rzp := payment.PaymentService{}
 		rzpOrder, err := rzp.CreatePaymentOrder(order.TotalPrice)
 		if err != nil {
@@ -126,8 +129,10 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 		return nil, err
 	}
 
-	if err := uc.couponRepo.CreateRedeemed(userId, req.CouponCode); err != nil {
-		return nil, err
+	if req.CouponCode != "" {
+		if err := uc.couponRepo.CreateRedeemed(userId, req.CouponCode); err != nil {
+			return nil, err
+		}
 	}
 
 	for _, item := range orderItems {
@@ -136,7 +141,6 @@ func (uc *orderUsecase) PlaceOrder(userId string, req *req.NewOrderReq) (*entiti
 			return nil, err
 		}
 	}
-
 	if err := uc.cartRepo.DeleteCart(userId); err != nil {
 		return nil, err
 	}

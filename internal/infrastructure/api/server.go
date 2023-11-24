@@ -43,7 +43,7 @@ func NewServerHttp(
 		return c.SendString("OK")
 	})
 
-	routes.AdminRoutes(app, adminHandler)
+	routes.AdminRoutes(app, adminHandler, couponHandler)
 	routes.SellerRoutes(app, sellerHandler, orderHandler, dishHandler, offerHandler)
 	routes.UserRoutes(app, userHandler, categoryHandler, dishHandler, cartHandler, orderHandler, offerHandler, favHandler, couponHandler)
 

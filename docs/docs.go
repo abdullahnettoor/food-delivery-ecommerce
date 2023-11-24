@@ -74,7 +74,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Adds a dish to the user's favorites",
+                "description": "Adds a dish to the user's favourites",
                 "consumes": [
                     "application/json"
                 ],
@@ -82,9 +82,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User Favorites"
+                    "User Favourites"
                 ],
-                "summary": "Add item to favorites",
+                "summary": "Add item to favourites",
                 "parameters": [
                     {
                         "type": "string",
@@ -96,13 +96,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success: Dish added to favorites successfully",
+                        "description": "Success: Dish added to favourites successfully",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
                     },
                     "400": {
-                        "description": "Bad Request: Item already added / Failed to add to favorites",
+                        "description": "Bad Request: Item already added / Failed to add to favourites",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
@@ -230,6 +230,177 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupons": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches all available coupons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Coupons"
+                ],
+                "summary": "Get all coupons",
+                "responses": {
+                    "200": {
+                        "description": "Success: No coupons are available",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access: User is not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch coupons",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupons/add": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Adds a new coupon to the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Coupons"
+                ],
+                "summary": "Create a new coupon",
+                "parameters": [
+                    {
+                        "description": "Coupon creation request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateCouponReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Coupon created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Invalid fields in the request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict: Coupon with the same code already exists",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to create coupon",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupons/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the status of a coupon in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Coupons"
+                ],
+                "summary": "Update coupon status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Coupon ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "New status for the coupon",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Coupon status updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Invalid fields in the request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found: Coupon with the given ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to update coupon status",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
@@ -1103,14 +1274,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/favourites/{id}/delete": {
-            "delete": {
+        "/favourites": {
+            "get": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "Deletes a dish from the user's favorites",
+                "description": "Fetches the list of user's favourite dishes",
                 "consumes": [
                     "application/json"
                 ],
@@ -1118,9 +1289,43 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User Favorites"
+                    "User Favourites"
                 ],
-                "summary": "Delete item from favorites",
+                "summary": "View favourite items",
+                "responses": {
+                    "200": {
+                        "description": "Success: Favourites are empty",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid or expired token",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/favourites/{id}/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Deletes a dish from the user's favourites",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Favourites"
+                ],
+                "summary": "Delete item from favourites",
                 "parameters": [
                     {
                         "type": "string",
@@ -1132,13 +1337,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success: Dish deleted from favorites successfully",
+                        "description": "Success: Dish deleted from favourites successfully",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
                     },
                     "400": {
-                        "description": "Bad Request: Item already deleted / Failed to delete from favorites",
+                        "description": "Bad Request: Item already deleted / Failed to delete from favourites",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
@@ -3263,6 +3468,46 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "minLength": 3
+                }
+            }
+        },
+        "req.CreateCouponReq": {
+            "type": "object",
+            "properties": {
+                "couponCode": {
+                    "type": "string"
+                },
+                "couponType": {
+                    "type": "string",
+                    "enum": [
+                        "AMOUNT",
+                        "PERCENTAGE"
+                    ]
+                },
+                "description": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "maximumAmtAllowed": {
+                    "type": "integer"
+                },
+                "minimumAmtRequired": {
+                    "type": "integer"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "ACTIVE",
+                        "INACTIVE"
+                    ]
                 }
             }
         },

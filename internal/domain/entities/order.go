@@ -19,7 +19,7 @@ type Order struct {
 	UserID         uint        `json:"userId"`
 	AddressID      uint        `json:"addressId"`
 	SellerID       uint        `json:"sellerId"`
-	CouponCode     string      `json:"couponCode"`
+	CouponCode     string      `json:"couponCode" gorm:"text;references:Coupon"`
 	OrderDate      time.Time   `json:"orderDate"`
 	DeliveryDate   time.Time   `json:"deliveryDate"`
 	PaymentMethod  string      `json:"paymentMethod"`
@@ -35,5 +35,4 @@ type Order struct {
 	FkUser    User    `json:"-" gorm:"foreignkey:UserID;constraint:OnDelete:CASCADE"`
 	FkAddress Address `json:"-" gorm:"foreignkey:AddressID"`
 	FkSeller  Seller  `json:"-" gorm:"foreignkey:SellerID"`
-	FkCoupon  Coupon  `json:"-" gorm:"foreignkey:CouponCode;constraint:OnDelete:CASCADE"`
 }

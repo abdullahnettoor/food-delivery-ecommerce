@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"time"
-
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
@@ -76,9 +74,7 @@ func (repo *couponRepo) FindAllForUser() (*[]entities.Coupon, error) {
 	res := repo.DB.Raw(`
 	SELECT * 
 	FROM coupons
-	WHERE status = 'ACTIVE'
-	AND end_date > ?`,
-		time.Now()).Scan(&couponList)
+	WHERE status = 'ACTIVE'`).Scan(&couponList)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -106,7 +102,7 @@ func (repo *couponRepo) FindByCode(code string) (*entities.Coupon, error) {
 }
 
 func (repo *couponRepo) CreateRedeemed(userId, code string) error {
-	return repo.DB.Raw(`
+	return repo.DB.Exec(`
 	INSERT INTO redeemed_coupons
 	(user_id, coupon_code)
 	VALUES 

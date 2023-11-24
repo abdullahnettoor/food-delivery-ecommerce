@@ -24,7 +24,7 @@ func (uc *couponUseCase) CreateCoupon(req *req.CreateCouponReq) error {
 	var coupon = entities.Coupon{
 		Code:            req.Code,
 		Description:     req.Description,
-		Type:            "AMOUNT",
+		Type:            req.Type,
 		Discount:        req.Discount,
 		MinimumRequired: req.MinimumRequired,
 		MaximumAllowed:  req.MaximumAllowed,
@@ -32,20 +32,21 @@ func (uc *couponUseCase) CreateCoupon(req *req.CreateCouponReq) error {
 		Status:          "ACTIVE",
 	}
 
-	if c, err := uc.couponRepo.FindByCode(req.Code); err != nil {
-		if err != e.ErrNotFound {
-			return err
-		}
-		if c.Code == req.Code {
-			return e.ErrConflict
-		}
+	if c, err := uc.couponRepo.FindByCode(req.Code); err == nil && c.Code == req.Code {
+		return e.ErrConflict
 	}
 
 	return uc.couponRepo.Create(&coupon)
 }
 
 func (uc *couponUseCase) UpdateCouponStatus(id, status string) error {
-	return uc.couponRepo.UpdateStatus(id, status)
+	switch status {
+	case "ACTIVE":
+		return uc.couponRepo.UpdateStatus(id, status)
+	case "INACTIVE":
+		return uc.couponRepo.UpdateStatus(id, status)
+	}
+	return e.ErrInvalidStatusValue
 }
 
 func (uc *couponUseCase) DeleteCoupon(id string) error {
