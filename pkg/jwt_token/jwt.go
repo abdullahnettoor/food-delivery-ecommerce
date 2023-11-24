@@ -9,14 +9,16 @@ import (
 
 type CustomClaims struct {
 	Model interface{}
+	Role string
 	jwt.RegisteredClaims
 }
 
-func CreateToken(secretKey string, expireAfter time.Duration, claim interface{}) (tokenString string, customClaims interface{}, err error) {
+func CreateToken(secretKey, role string, expireAfter time.Duration, claim interface{}) (tokenString string, customClaims interface{}, err error) {
 
 	// Create the Custom Claims
 	claims := &CustomClaims{
 		claim,
+		role,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expireAfter)), // Token expires in 24 hours
 		},

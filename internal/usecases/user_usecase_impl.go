@@ -62,7 +62,7 @@ func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*string, error) {
 
 	secret := viper.GetString("KEY")
 	fmt.Println("Key is", secret)
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, *newUser)
+	token, _, err := jwttoken.CreateToken(secret, "user", time.Hour*24, *newUser)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (uc *userUcase) Login(req *req.UserLoginReq) (*string, error) {
 
 	secret := viper.GetString("KEY")
 	fmt.Println("Key is", secret)
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, *user)
+	token, _, err := jwttoken.CreateToken(secret, "user", time.Hour*24, *user)
 	if err != nil {
 		return nil, err
 	}

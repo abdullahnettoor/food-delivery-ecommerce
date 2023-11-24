@@ -46,7 +46,7 @@ func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 	}
 
 	secret := viper.GetString("KEY")
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, seller)
+	token, _, err := jwttoken.CreateToken(secret, "seller", time.Hour*24, seller)
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +77,7 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 
 	secret := viper.GetString("KEY")
 
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, seller)
+	token, _, err := jwttoken.CreateToken(secret, "seller", time.Hour*24, seller)
 	if err != nil {
 		return "", err
 	}

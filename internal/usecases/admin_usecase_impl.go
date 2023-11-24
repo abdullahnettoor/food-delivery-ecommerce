@@ -41,7 +41,7 @@ func (uc *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
 	}
 
 	secret := viper.GetString("KEY")
-	token, _, err := jwttoken.CreateToken(secret, time.Hour*24, admin)
+	token, _, err := jwttoken.CreateToken(secret, "admin", time.Hour*24, admin)
 	if err != nil {
 		return "", err
 	}
@@ -93,4 +93,3 @@ func (uc *adminUcase) CreateCategory(req *req.CreateCategoryReq) error {
 func (uc *adminUcase) UpdateCategory(id string, req *req.UpdateCategoryReq) error {
 	return uc.CategoryRepo.Update(id, req.Name)
 }
-

@@ -26,6 +26,11 @@ func AuthenticateAdmin(c *fiber.Ctx) error {
 	}
 
 	admin := claims.(*jwttoken.CustomClaims).Model
+	role := claims.(*jwttoken.CustomClaims).Role
+	if role != "admin" {
+		return c.Status(fiber.StatusForbidden).
+			JSON(res.UnauthorizedAccess)
+	}
 
 	c.Locals("AdminModel", admin)
 
@@ -48,6 +53,11 @@ func AuthenticateSeller(c *fiber.Ctx) error {
 			JSON(res.UnauthorizedAccess)
 	}
 	seller := claims.(*jwttoken.CustomClaims).Model
+	role := claims.(*jwttoken.CustomClaims).Role
+	if role != "seller" {
+		return c.Status(fiber.StatusForbidden).
+			JSON(res.UnauthorizedAccess)
+	}
 
 	fmt.Println("Seller is", seller)
 
@@ -72,6 +82,11 @@ func AuthenticateUser(c *fiber.Ctx) error {
 			JSON(res.UnauthorizedAccess)
 	}
 	user := claims.(*jwttoken.CustomClaims).Model
+	role := claims.(*jwttoken.CustomClaims).Role
+	if role != "user" {
+		return c.Status(fiber.StatusForbidden).
+			JSON(res.UnauthorizedAccess)
+	}
 
 	c.Locals("UserModel", user)
 
