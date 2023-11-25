@@ -16,7 +16,7 @@ func NewCategoryHandler(uCase interfaces.ICategoryUseCase) *CategoryHandler {
 
 // @Summary		Get all categories
 // @Description	Retrieve a list of all categories
-// @Tags			Category
+// @Tags			General
 // @Accept			json
 // @Produce		json
 // @Success		200	{object}	res.AllCategoriesRes	"Successful operation"
@@ -44,7 +44,7 @@ func (h *CategoryHandler) GetAllCategories(c *fiber.Ctx) error {
 
 // @Summary		Get all categories
 // @Description	Retrieve a list of all categories
-// @Tags			Category
+// @Tags			General
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Category ID"	int

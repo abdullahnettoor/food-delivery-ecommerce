@@ -26,7 +26,7 @@ func NewDishHandler(uc interfaces.IDishUseCase) *DishHandler {
 // @Summary		Create a dish
 // @Description	Add a new dish for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Dish
 // @Accept			multipart/form-data
 // @Produce		json
 // @Param			image	formData	file			true				"Image file for the dish"
@@ -140,7 +140,7 @@ func (h *DishHandler) CreateDish(c *fiber.Ctx) error {
 // @Summary		Update a dish
 // @Description	Modify an existing dish by ID for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Dish
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string				true	"Dish ID"	int
@@ -193,7 +193,7 @@ func (h *DishHandler) UpdateDish(c *fiber.Ctx) error {
 // @Summary		Get a dish
 // @Description	Retrieve a specific dish by ID for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Dish
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string				true	"Dish ID"	int
@@ -227,7 +227,7 @@ func (h *DishHandler) GetDishBySeller(c *fiber.Ctx) error {
 // @Summary		Get all dishes
 // @Description	Retrieve a list of all dishes for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Dish
 // @Accept			json
 // @Produce		json
 // @Param			category	query		int				false	"Category Id"
@@ -261,7 +261,7 @@ func (h *DishHandler) GetAllDishBySeller(c *fiber.Ctx) error {
 // @Summary		Delete a dish
 // @Description	Remove a specific dish by ID for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Dish
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Dish ID"	int
@@ -293,7 +293,7 @@ func (h *DishHandler) DeleteDish(c *fiber.Ctx) error {
 
 // @Summary		Get paginated list of dishes
 // @Description	Retrieve a paginated list of dishes for the user
-// @Tags			User
+// @Tags			Common
 // @Accept			json
 // @Produce		json
 // @Param			p			query		string			false	"Page number (default: 1)"
@@ -330,7 +330,7 @@ func (h *DishHandler) GetDishesPage(c *fiber.Ctx) error {
 
 // @Summary		Get a dish
 // @Description	Retrieve a specific dish by ID for the user
-// @Tags			User
+// @Tags			Common
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string				true	"Dish ID"	int
@@ -361,7 +361,7 @@ func (h *DishHandler) GetDish(c *fiber.Ctx) error {
 
 // @Summary		Search dishes
 // @Description	Search for dishes based on a query
-// @Tags			User
+// @Tags			Common
 // @Accept			json
 // @Produce		json
 // @Param			q	query		string			true	"Search query"

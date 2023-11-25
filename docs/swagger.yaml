@@ -191,6 +191,13 @@ definitions:
         type: integer
     type: object
   entities.RedeemedCoupon:
+    properties:
+      couponCode:
+        type: string
+      redeemedId:
+        type: integer
+      userId:
+        type: integer
     type: object
   entities.Seller:
     properties:
@@ -278,6 +285,8 @@ definitions:
         - ACTIVE
         - INACTIVE
         type: string
+    required:
+    - couponCode
     type: object
   req.CreateOfferReq:
     properties:
@@ -294,9 +303,8 @@ definitions:
         type: string
       status:
         enum:
-        - Active
-        - Closed
-        - Deleted
+        - ACTIVE
+        - CLOSED
         type: string
     required:
     - categoryId
@@ -474,9 +482,9 @@ definitions:
         type: string
       status:
         enum:
-        - Active
-        - Closed
-        - Deleted
+        - ACTIVE
+        - CLOSED
+        - DELETED
         type: string
     required:
     - categoryId
@@ -784,7 +792,7 @@ paths:
       - Bearer: []
       summary: Add to Cart
       tags:
-      - Cart
+      - User Cart
   /addToFavourite/{id}:
     post:
       consumes:
@@ -856,7 +864,7 @@ paths:
       - Bearer: []
       summary: Edit a category
       tags:
-      - Admin
+      - Admin Category
   /admin/categories/addCategory:
     post:
       consumes:
@@ -892,7 +900,7 @@ paths:
       - Bearer: []
       summary: Add a category
       tags:
-      - Admin
+      - Admin Category
   /admin/coupons:
     get:
       consumes:
@@ -1055,7 +1063,7 @@ paths:
       - Bearer: []
       summary: Get all sellers
       tags:
-      - Admin
+      - Admin Seller
   /admin/sellers/{id}/block:
     patch:
       consumes:
@@ -1086,7 +1094,7 @@ paths:
       - Bearer: []
       summary: Block a seller
       tags:
-      - Admin
+      - Admin Seller
   /admin/sellers/{id}/unblock:
     patch:
       consumes:
@@ -1117,7 +1125,7 @@ paths:
       - Bearer: []
       summary: Unblock a seller
       tags:
-      - Admin
+      - Admin Seller
   /admin/sellers/{id}/verify:
     patch:
       consumes:
@@ -1146,10 +1154,9 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       security:
       - Bearer: []
-      - Bearer: []
       summary: Verify a seller
       tags:
-      - Admin
+      - Admin Seller
   /admin/users:
     get:
       consumes:
@@ -1174,7 +1181,7 @@ paths:
       - Bearer: []
       summary: Get all users
       tags:
-      - Admin
+      - Admin User
   /admin/users/{id}/block:
     patch:
       consumes:
@@ -1205,7 +1212,7 @@ paths:
       - Bearer: []
       summary: Block a user
       tags:
-      - Admin
+      - Admin User
   /admin/users/{id}/unblock:
     patch:
       consumes:
@@ -1236,7 +1243,7 @@ paths:
       - Bearer: []
       summary: Unblock a user
       tags:
-      - Admin
+      - Admin User
   /cart:
     get:
       description: Fetch the user's cart
@@ -1263,7 +1270,7 @@ paths:
       - Bearer: []
       summary: View Cart
       tags:
-      - Cart
+      - User Cart
   /cart/{id}/decrement:
     patch:
       description: Decrement the quantity of a dish in the user's cart
@@ -1296,7 +1303,7 @@ paths:
       - Bearer: []
       summary: Decrement Cart Item
       tags:
-      - Cart
+      - User Cart
   /cart/{id}/deleteItem:
     delete:
       description: Delete a dish from the user's cart
@@ -1329,7 +1336,7 @@ paths:
       - Bearer: []
       summary: Delete Cart Item
       tags:
-      - Cart
+      - User Cart
   /cart/checkout:
     post:
       consumes:
@@ -1392,7 +1399,7 @@ paths:
       - Bearer: []
       summary: Empty Cart
       tags:
-      - Cart
+      - User Cart
   /categories:
     get:
       consumes:
@@ -1411,7 +1418,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get all categories
       tags:
-      - Category
+      - General
   /categories/{id}:
     get:
       consumes:
@@ -1436,7 +1443,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get all categories
       tags:
-      - Category
+      - General
   /coupons:
     get:
       consumes:
@@ -1522,7 +1529,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get paginated list of dishes
       tags:
-      - User
+      - Common
   /dishes/{id}:
     get:
       consumes:
@@ -1551,7 +1558,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get a dish
       tags:
-      - User
+      - Common
   /favourites:
     get:
       consumes:
@@ -1681,7 +1688,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get all offers
       tags:
-      - User
+      - Common
   /orders:
     get:
       consumes:
@@ -1775,7 +1782,7 @@ paths:
       - Bearer: []
       summary: View User Details
       tags:
-      - User
+      - User Profile
   /profile/addAddress:
     post:
       consumes:
@@ -1811,7 +1818,7 @@ paths:
       - Bearer: []
       summary: Add an address
       tags:
-      - User
+      - User Profile
   /profile/address:
     get:
       consumes:
@@ -1836,7 +1843,7 @@ paths:
       - Bearer: []
       summary: View all addresses
       tags:
-      - User
+      - User Profile
   /profile/address/{id}:
     get:
       consumes:
@@ -1875,7 +1882,7 @@ paths:
       - Bearer: []
       summary: View a specific address
       tags:
-      - User
+      - User Profile
     put:
       consumes:
       - application/json
@@ -1915,7 +1922,7 @@ paths:
       - Bearer: []
       summary: Update address
       tags:
-      - User
+      - User Profile
   /profile/changePassword:
     post:
       consumes:
@@ -1951,7 +1958,7 @@ paths:
       - Bearer: []
       summary: Change Password
       tags:
-      - User
+      - User Profile
   /profile/edit:
     patch:
       consumes:
@@ -1987,7 +1994,7 @@ paths:
       - Bearer: []
       summary: Update User Details
       tags:
-      - User
+      - User Profile
   /resetPassword:
     post:
       consumes:
@@ -2042,7 +2049,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Search dishes
       tags:
-      - User
+      - Common
   /search/sellers:
     get:
       consumes:
@@ -2067,7 +2074,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Search sellers
       tags:
-      - User
+      - Common
   /seller/addDish:
     post:
       consumes:
@@ -2133,7 +2140,7 @@ paths:
       - Bearer: []
       summary: Create a dish
       tags:
-      - Seller
+      - Seller Dish
   /seller/dishes:
     get:
       consumes:
@@ -2163,7 +2170,7 @@ paths:
       - Bearer: []
       summary: Get all dishes
       tags:
-      - Seller
+      - Seller Dish
   /seller/dishes/{id}:
     delete:
       consumes:
@@ -2198,7 +2205,7 @@ paths:
       - Bearer: []
       summary: Delete a dish
       tags:
-      - Seller
+      - Seller Dish
     get:
       consumes:
       - application/json
@@ -2232,7 +2239,7 @@ paths:
       - Bearer: []
       summary: Get a dish
       tags:
-      - Seller
+      - Seller Dish
     put:
       consumes:
       - application/json
@@ -2272,7 +2279,7 @@ paths:
       - Bearer: []
       summary: Update a dish
       tags:
-      - Seller
+      - Seller Dish
   /seller/login:
     post:
       consumes:
@@ -2321,7 +2328,7 @@ paths:
       - Bearer: []
       summary: Get offers by seller
       tags:
-      - Seller
+      - Seller Offer
   /seller/offers/{id}:
     patch:
       consumes:
@@ -2354,7 +2361,7 @@ paths:
       - Bearer: []
       summary: Update offer status
       tags:
-      - Seller
+      - Seller Order
     put:
       consumes:
       - application/json
@@ -2390,7 +2397,7 @@ paths:
       - Bearer: []
       summary: Update an offer
       tags:
-      - Seller
+      - Seller Offer
   /seller/offers/addOffer:
     post:
       consumes:
@@ -2422,7 +2429,7 @@ paths:
       - Bearer: []
       summary: Create an offer
       tags:
-      - Seller
+      - Seller Offer
   /seller/orders:
     get:
       consumes:
@@ -2648,7 +2655,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get paginated list of sellers
       tags:
-      - User
+      - Common
   /user/sellers/{id}:
     get:
       consumes:
@@ -2677,7 +2684,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get a seller
       tags:
-      - User
+      - Common
   /verifyOtp:
     post:
       consumes:

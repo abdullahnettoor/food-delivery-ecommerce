@@ -17,15 +17,15 @@ func NewFavHandler(uc interfaces.IFavouriteUseCase) *FavHandler {
 	return &FavHandler{uc}
 }
 
-// @Summary		Add item to favorites
-// @Description	Adds a dish to the user's favorites
+// @Summary		Add item to favourites
+// @Description	Adds a dish to the user's favourites
 // @Security		Bearer
-// @Tags			User Favorites
+// @Tags			User Favourites
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Dish ID"
-// @Success		200	{object}	res.CommonRes	"Success: Dish added to favorites successfully"
-// @Failure		400	{object}	res.CommonRes	"Bad Request: Item already added / Failed to add to favorites"
+// @Success		200	{object}	res.CommonRes	"Success: Dish added to favourites successfully"
+// @Failure		400	{object}	res.CommonRes	"Bad Request: Item already added / Failed to add to favourites"
 // @Failure		401	{object}	res.CommonRes	"Unauthorized: Invalid or expired token"
 // @Router			/addToFavourite/{id} [post]
 func (h *FavHandler) AddFavItem(c *fiber.Ctx) error {
@@ -60,15 +60,15 @@ func (h *FavHandler) AddFavItem(c *fiber.Ctx) error {
 
 }
 
-// @Summary		Delete item from favorites
-// @Description	Deletes a dish from the user's favorites
+// @Summary		Delete item from favourites
+// @Description	Deletes a dish from the user's favourites
 // @Security		Bearer
-// @Tags			User Favorites
+// @Tags			User Favourites
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Dish ID"
-// @Success		200	{object}	res.CommonRes	"Success: Dish deleted from favorites successfully"
-// @Failure		400	{object}	res.CommonRes	"Bad Request: Item already deleted / Failed to delete from favorites"
+// @Success		200	{object}	res.CommonRes	"Success: Dish deleted from favourites successfully"
+// @Failure		400	{object}	res.CommonRes	"Bad Request: Item already deleted / Failed to delete from favourites"
 // @Failure		401	{object}	res.CommonRes	"Unauthorized: Invalid or expired token"
 // @Router			/favourites/{id}/delete [delete]
 func (h *FavHandler) DeleteFavItem(c *fiber.Ctx) error {
@@ -102,17 +102,16 @@ func (h *FavHandler) DeleteFavItem(c *fiber.Ctx) error {
 	}
 }
 
-//	@Summary		View favorite items
-//	@Description	Fetches the list of user's favorite dishes
-//	@Security		Bearer
-//	@Tags			User Favorites
-//	@Accept			json
-//	@Produce		json
-//	@Success		200	{object}	res.CommonRes	"Success: Favorites fetched successfully"
-//	@Failure		200	{object}	res.CommonRes	"Success: Favorites are empty"
-//	@Failure		401	{object}	res.CommonRes	"Unauthorized: Invalid or expired token"
-//	@Router			/favourites [get]
-
+// @Summary		View favourite items
+// @Description	Fetches the list of user's favourite dishes
+// @Security		Bearer
+// @Tags			User Favourites
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	res.CommonRes	"Success: Favourites fetched successfully"
+// @Failure		200	{object}	res.CommonRes	"Success: Favourites are empty"
+// @Failure		401	{object}	res.CommonRes	"Unauthorized: Invalid or expired token"
+// @Router			/favourites [get]
 func (h *FavHandler) ViewFavItems(c *fiber.Ctx) error {
 	user := c.Locals("UserModel").(map[string]any)
 	userId := fmt.Sprint(user["userId"])
@@ -124,7 +123,7 @@ func (h *FavHandler) ViewFavItems(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).
 			JSON(res.CommonRes{
 				Status:  "success",
-				Message: "successfully fetched favorites",
+				Message: "successfully fetched favourites",
 				Result:  favList,
 			})
 	case e.ErrIsEmpty:

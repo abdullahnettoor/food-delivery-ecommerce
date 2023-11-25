@@ -201,7 +201,7 @@ func (h *UserHandler) Login(c *fiber.Ctx) error {
 // @Summary		View User Details
 // @Description	Get user details
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Success		200	{object}	res.UserDetailsRes	"Successfully fetched user details"
@@ -234,7 +234,7 @@ func (h *UserHandler) ViewUserDetails(c *fiber.Ctx) error {
 // @Summary		Update User Details
 // @Description	Update user name, email details
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.UpdateUserDetailsReq	true	"Edit user details request"
@@ -287,7 +287,7 @@ func (h *UserHandler) EditUserDetails(c *fiber.Ctx) error {
 // @Summary		Change Password
 // @Description	Change existing password of user
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.ChangePasswordReq	true	"Change user password request"
@@ -432,7 +432,7 @@ func (h *UserHandler) ResetPassword(c *fiber.Ctx) error {
 // @Summary		Add an address
 // @Description	Add a new address for the user
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.NewAddressReq	true	"New address request"
@@ -485,7 +485,7 @@ func (h *UserHandler) AddAddress(c *fiber.Ctx) error {
 // @Summary		Update address
 // @Description	Update existing address for the user
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.UpdateAddressReq	true	"Update address request"
@@ -540,7 +540,7 @@ func (h *UserHandler) EditAddress(c *fiber.Ctx) error {
 // @Summary		View a specific address
 // @Description	View details of a specific address for the user
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string				true	"Address ID"
@@ -577,7 +577,7 @@ func (h *UserHandler) ViewAddress(c *fiber.Ctx) error {
 // @Summary		View all addresses
 // @Description	View details of all addresses for the user
 // @Security		Bearer
-// @Tags			User
+// @Tags			User Profile
 // @Accept			json
 // @Produce		json
 // @Success		200	{object}	res.ViewAddressListRes	"Successfully fetched addresses"
@@ -609,7 +609,7 @@ func (h *UserHandler) ViewAllAddress(c *fiber.Ctx) error {
 
 // @Summary		Get paginated list of sellers
 // @Description	Retrieve a paginated list of sellers for the user
-// @Tags			User
+// @Tags			Common
 // @Accept			json
 // @Produce		json
 // @Param			p	query		string				false	"Page number (default: 1)"
@@ -642,7 +642,7 @@ func (h *UserHandler) GetSellersPage(c *fiber.Ctx) error {
 
 // @Summary		Get a seller
 // @Description	Retrieve a specific seller by ID for the user
-// @Tags			User
+// @Tags			Common
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string				true	"Seller ID"	int
@@ -673,7 +673,7 @@ func (h *UserHandler) GetSeller(c *fiber.Ctx) error {
 
 // @Summary		Search sellers
 // @Description	Search for sellers based on a query
-// @Tags			User
+// @Tags			Common
 // @Accept			json
 // @Produce		json
 // @Param			q	query		string				true	"Search query"

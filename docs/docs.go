@@ -27,7 +27,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
                 "summary": "Add to Cart",
                 "parameters": [
@@ -131,7 +131,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Category"
                 ],
                 "summary": "Add a category",
                 "parameters": [
@@ -188,7 +188,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Category"
                 ],
                 "summary": "Edit a category",
                 "parameters": [
@@ -468,7 +468,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Seller"
                 ],
                 "summary": "Get all sellers",
                 "responses": {
@@ -508,7 +508,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Seller"
                 ],
                 "summary": "Block a seller",
                 "parameters": [
@@ -557,7 +557,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Seller"
                 ],
                 "summary": "Unblock a seller",
                 "parameters": [
@@ -596,9 +596,6 @@ const docTemplate = `{
                 "security": [
                     {
                         "Bearer": []
-                    },
-                    {
-                        "Bearer": []
                     }
                 ],
                 "description": "Verify a specific seller by ID",
@@ -609,7 +606,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Seller"
                 ],
                 "summary": "Verify a seller",
                 "parameters": [
@@ -658,7 +655,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User"
                 ],
                 "summary": "Get all users",
                 "responses": {
@@ -698,7 +695,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User"
                 ],
                 "summary": "Block a user",
                 "parameters": [
@@ -747,7 +744,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin User"
                 ],
                 "summary": "Unblock a user",
                 "parameters": [
@@ -793,7 +790,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
                 "summary": "View Cart",
                 "responses": {
@@ -893,7 +890,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
                 "summary": "Empty Cart",
                 "responses": {
@@ -936,7 +933,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
                 "summary": "Decrement Cart Item",
                 "parameters": [
@@ -988,7 +985,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart"
                 ],
                 "summary": "Delete Cart Item",
                 "parameters": [
@@ -1038,7 +1035,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "General"
                 ],
                 "summary": "Get all categories",
                 "responses": {
@@ -1067,7 +1064,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "General"
                 ],
                 "summary": "Get all categories",
                 "parameters": [
@@ -1185,7 +1182,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Get paginated list of dishes",
                 "parameters": [
@@ -1240,7 +1237,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Get a dish",
                 "parameters": [
@@ -1456,7 +1453,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Get all offers",
                 "responses": {
@@ -1592,7 +1589,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "View User Details",
                 "responses": {
@@ -1638,7 +1635,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "Add an address",
                 "parameters": [
@@ -1695,7 +1692,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "View all addresses",
                 "responses": {
@@ -1735,7 +1732,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "View a specific address",
                 "parameters": [
@@ -1794,7 +1791,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "Update address",
                 "parameters": [
@@ -1858,7 +1855,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "Change Password",
                 "parameters": [
@@ -1915,7 +1912,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "User Profile"
                 ],
                 "summary": "Update User Details",
                 "parameters": [
@@ -2013,7 +2010,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Search dishes",
                 "parameters": [
@@ -2051,7 +2048,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Search sellers",
                 "parameters": [
@@ -2094,7 +2091,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Dish"
                 ],
                 "summary": "Create a dish",
                 "parameters": [
@@ -2196,7 +2193,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Dish"
                 ],
                 "summary": "Get all dishes",
                 "parameters": [
@@ -2244,7 +2241,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Dish"
                 ],
                 "summary": "Get a dish",
                 "parameters": [
@@ -2297,7 +2294,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Dish"
                 ],
                 "summary": "Update a dish",
                 "parameters": [
@@ -2359,7 +2356,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Dish"
                 ],
                 "summary": "Delete a dish",
                 "parameters": [
@@ -2457,7 +2454,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Offer"
                 ],
                 "summary": "Get offers by seller",
                 "responses": {
@@ -2491,7 +2488,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Offer"
                 ],
                 "summary": "Create an offer",
                 "parameters": [
@@ -2542,7 +2539,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Offer"
                 ],
                 "summary": "Update an offer",
                 "parameters": [
@@ -2598,7 +2595,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller"
+                    "Seller Order"
                 ],
                 "summary": "Update offer status",
                 "parameters": [
@@ -2951,7 +2948,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Get paginated list of sellers",
                 "parameters": [
@@ -2994,7 +2991,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Common"
                 ],
                 "summary": "Get a seller",
                 "parameters": [
@@ -3379,7 +3376,18 @@ const docTemplate = `{
             }
         },
         "entities.RedeemedCoupon": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "couponCode": {
+                    "type": "string"
+                },
+                "redeemedId": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
         },
         "entities.Seller": {
             "type": "object",
@@ -3473,6 +3481,9 @@ const docTemplate = `{
         },
         "req.CreateCouponReq": {
             "type": "object",
+            "required": [
+                "couponCode"
+            ],
             "properties": {
                 "couponCode": {
                     "type": "string"
@@ -3539,9 +3550,8 @@ const docTemplate = `{
                 "status": {
                     "type": "string",
                     "enum": [
-                        "Active",
-                        "Closed",
-                        "Deleted"
+                        "ACTIVE",
+                        "CLOSED"
                     ]
                 }
             }
@@ -3795,9 +3805,9 @@ const docTemplate = `{
                 "status": {
                     "type": "string",
                     "enum": [
-                        "Active",
-                        "Closed",
-                        "Deleted"
+                        "ACTIVE",
+                        "CLOSED",
+                        "DELETED"
                     ]
                 }
             }

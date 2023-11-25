@@ -20,7 +20,7 @@ func NewCartHandler(uc interfaces.ICartUseCase) *CartHandler {
 //	@Summary		View Cart
 //	@Description	Fetch the user's cart
 //	@Security		Bearer
-//	@Tags			Cart
+//	@Tags			User Cart
 //	@Produce		json
 //	@Success		200	{object}	res.ViewCartRes	"Successfully fetched cart"
 //	@Success		200	{object}	res.CommonRes	"Cart is empty"
@@ -61,7 +61,7 @@ func (h *CartHandler) ViewCart(c *fiber.Ctx) error {
 //	@Summary		Add to Cart
 //	@Description	Add a dish to the user's cart
 //	@Security		Bearer
-//	@Tags			Cart
+//	@Tags			User Cart
 //	@Produce		json
 //	@Param			id	path		string			true	"Dish ID"
 //	@Success		200	{object}	res.CommonRes	"Successfully added to cart"
@@ -104,7 +104,7 @@ func (h *CartHandler) AddToCart(c *fiber.Ctx) error {
 //	@Summary		Decrement Cart Item
 //	@Description	Decrement the quantity of a dish in the user's cart
 //	@Security		Bearer
-//	@Tags			Cart
+//	@Tags			User Cart
 //	@Produce		json
 //	@Param			id	path		string			true	"Dish ID"
 //	@Success		200	{object}	res.CommonRes	"Successfully decremented cart item"
@@ -138,7 +138,7 @@ func (h *CartHandler) DecrementCartItem(c *fiber.Ctx) error {
 //	@Summary		Delete Cart Item
 //	@Description	Delete a dish from the user's cart
 //	@Security		Bearer
-//	@Tags			Cart
+//	@Tags			User Cart
 //	@Produce		json
 //	@Param			id	path		string			true	"Dish ID"
 //	@Success		200	{object}	res.CommonRes	"Successfully deleted cart item"
@@ -172,7 +172,7 @@ func (h *CartHandler) DeleteCartItem(c *fiber.Ctx) error {
 //	@Summary		Empty Cart
 //	@Description	Empty the user's cart
 //	@Security		Bearer
-//	@Tags			Cart
+//	@Tags			User Cart
 //	@Produce		json
 //	@Success		200	{object}	res.CommonRes	"Successfully emptied cart"
 //	@Failure		400	{object}	res.CommonRes	"Bad Request"

@@ -68,7 +68,7 @@ func (h *AdminHandler) Login(c *fiber.Ctx) error {
 // @Summary		Get all sellers
 // @Description	Get a list of all sellers
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin Seller
 // @Accept			json
 // @Produce		json
 // @Success		200	{object}	res.SellerListRes	"Successful operation"
@@ -97,8 +97,7 @@ func (h *AdminHandler) GetAllSellers(c *fiber.Ctx) error {
 // @Summary		Verify a seller
 // @Description	Verify a specific seller by ID
 // @Security		Bearer
-// @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin Seller
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Seller ID"	int
@@ -129,7 +128,7 @@ func (h *AdminHandler) VerifySeller(c *fiber.Ctx) error {
 // @Summary		Block a seller
 // @Description	Block a specific seller by ID
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin Seller
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Seller ID"	int
@@ -160,7 +159,7 @@ func (h *AdminHandler) BlockSeller(c *fiber.Ctx) error {
 // @Summary		Unblock a seller
 // @Description	Unblock a specific seller by ID
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin Seller
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"Seller ID"	int
@@ -191,7 +190,7 @@ func (h *AdminHandler) UnblockSeller(c *fiber.Ctx) error {
 // @Summary		Get all users
 // @Description	Get a list of all users
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin User
 // @Accept			json
 // @Produce		json
 // @Success		200	{object}	res.UserListRes	"Successful operation"
@@ -221,7 +220,7 @@ func (h *AdminHandler) GetAllUsers(c *fiber.Ctx) error {
 // @Summary		Block a user
 // @Description	Block a specific user by ID
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin User
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"User ID"	int
@@ -252,7 +251,7 @@ func (h *AdminHandler) BlockUser(c *fiber.Ctx) error {
 // @Summary		Unblock a user
 // @Description	Unblock a specific user by ID
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin User
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string			true	"User ID"	int
@@ -283,7 +282,7 @@ func (h *AdminHandler) UnblockUser(c *fiber.Ctx) error {
 // @Summary		Add a category
 // @Description	Create a new category
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin Category
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.CreateCategoryReq	true	"Category creation request"
@@ -332,7 +331,7 @@ func (h *AdminHandler) AddCategory(c *fiber.Ctx) error {
 // @Summary		Edit a category
 // @Description	Update an existing category by ID
 // @Security		Bearer
-// @Tags			Admin
+// @Tags			Admin Category
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string					true	"Category ID"	int
@@ -378,6 +377,5 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 			Status:  "success",
 			Message: "successfully updated category",
 		})
-
 }
 

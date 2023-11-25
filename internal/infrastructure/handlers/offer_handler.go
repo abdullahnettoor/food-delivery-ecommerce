@@ -21,7 +21,7 @@ func NewOfferHandler(uc interfaces.IOfferUseCase) *OfferHandler {
 
 // @Summary		Get all offers
 // @Description	Fetches a list of all offers
-// @Tags			User
+// @Tags			Common
 // @Produce		json
 // @Success		200	{object}	res.OfferListRes	"Success: List of offers fetched successfully"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error: Failed to fetch offers"
@@ -57,7 +57,7 @@ func (h *OfferHandler) GetAllOffers(c *fiber.Ctx) error {
 // @Summary		Get offers by seller
 // @Description	Fetches a list of offers associated with the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Offer
 // @Produce		json
 // @Success		200	{object}	res.OfferListRes	"Success: List of offers fetched successfully"
 // @Failure		500	{object}	res.CommonRes		"Internal Server Error: Failed to fetch offers"
@@ -87,7 +87,7 @@ func (h *OfferHandler) GetOffersBySeller(c *fiber.Ctx) error {
 // @Summary		Create an offer
 // @Description	Create new offer for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Offer
 // @Accept			json
 // @Produce		json
 // @Param			req	body		req.CreateOfferReq	true	"Create Offer Request"
@@ -136,7 +136,7 @@ func (h *OfferHandler) CreateOffer(c *fiber.Ctx) error {
 // @Summary		Update an offer
 // @Description	Updates details of a specific offer for the seller
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Offer
 // @Accept			json
 // @Produce		json
 // @Param			id	path		string				true	"Offer ID"
@@ -187,7 +187,7 @@ func (h *OfferHandler) UpdateOffer(c *fiber.Ctx) error {
 // @Summary		Update offer status
 // @Description	Updates the status of a specific offer
 // @Security		Bearer
-// @Tags			Seller
+// @Tags			Seller Order
 // @Accept			json
 // @Produce		json
 // @Param			id		path		string			true	"Offer ID"
