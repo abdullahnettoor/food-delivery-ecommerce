@@ -1418,7 +1418,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get all categories
       tags:
-      - General
+      - Common
   /categories/{id}:
     get:
       consumes:
@@ -1443,7 +1443,7 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       summary: Get all categories
       tags:
-      - General
+      - Common
   /coupons:
     get:
       consumes:

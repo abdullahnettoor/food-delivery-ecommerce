@@ -1035,7 +1035,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "General"
+                    "Common"
                 ],
                 "summary": "Get all categories",
                 "responses": {
@@ -1064,7 +1064,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "General"
+                    "Common"
                 ],
                 "summary": "Get all categories",
                 "parameters": [

@@ -1024,7 +1024,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "General"
+                    "Common"
                 ],
                 "summary": "Get all categories",
                 "responses": {
@@ -1053,7 +1053,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "General"
+                    "Common"
                 ],
                 "summary": "Get all categories",
                 "parameters": [

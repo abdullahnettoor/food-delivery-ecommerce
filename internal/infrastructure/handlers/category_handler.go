@@ -14,14 +14,14 @@ func NewCategoryHandler(uCase interfaces.ICategoryUseCase) *CategoryHandler {
 	return &CategoryHandler{uCase}
 }
 
-// @Summary		Get all categories
-// @Description	Retrieve a list of all categories
-// @Tags			General
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	res.AllCategoriesRes	"Successful operation"
-// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
-// @Router			/categories [get]
+//	@Summary		Get all categories
+//	@Description	Retrieve a list of all categories
+//	@Tags			Common
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.AllCategoriesRes	"Successful operation"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/categories [get]
 func (h *CategoryHandler) GetAllCategories(c *fiber.Ctx) error {
 
 	categories, err := h.uc.GetAllCategory()
@@ -42,15 +42,15 @@ func (h *CategoryHandler) GetAllCategories(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary		Get all categories
-// @Description	Retrieve a list of all categories
-// @Tags			General
-// @Accept			json
-// @Produce		json
-// @Param			id	path		string			true	"Category ID"	int
-// @Success		200	{object}	res.AllCategoriesRes	"Successful operation"
-// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
-// @Router			/categories/{id} [get]
+//	@Summary		Get all categories
+//	@Description	Retrieve a list of all categories
+//	@Tags			Common
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string					true	"Category ID"	int
+//	@Success		200	{object}	res.AllCategoriesRes	"Successful operation"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/categories/{id} [get]
 func (h *CategoryHandler) GetCategory(c *fiber.Ctx) error {
 	categoryId := c.Params("id")
 
