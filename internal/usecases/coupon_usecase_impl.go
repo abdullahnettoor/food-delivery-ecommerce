@@ -63,6 +63,11 @@ func (uc *couponUseCase) GetCouponsForUser() (*[]entities.Coupon, error) {
 
 }
 
+func (uc *couponUseCase) GetAvailableCouponsForUser(userId string) (*[]entities.Coupon, error) {
+	return uc.couponRepo.FindAllAvailableForUser(userId)
+
+}
+
 func (uc *couponUseCase) GetRedeemedByUser(userId string) (*[]entities.RedeemedCoupon, error) {
 	return uc.couponRepo.FindRedeemedByUser(userId)
 }

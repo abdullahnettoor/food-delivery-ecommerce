@@ -9,8 +9,10 @@ type ICouponRepository interface {
 	Delete(id string) error
 	Find(id string) (*entities.Coupon, error)
 	FindAll() (*[]entities.Coupon, error)
-	FindAllForUser() (*[]entities.Coupon, error)
 	FindByCode(code string) (*entities.Coupon, error)
+
+	FindAllForUser() (*[]entities.Coupon, error)
+	FindAllAvailableForUser(userId string) (*[]entities.Coupon, error) 
 
 	CreateRedeemed(userId, code string) error
 	FindRedeemed(userId, code string) (*entities.RedeemedCoupon, error)

@@ -64,6 +64,7 @@ func UserRoutes(
 	u.Delete("/cart/empty", cart.EmptyCart)
 
 	u.Get("/coupons", coupon.GetAllCouponsForUser)
+	u.Get("/coupons/available", coupon.GetAvailableCouponsForUser)
 	u.Get("/coupons/redeemed", coupon.GetRedeemedByUser)
 
 	u.Post("/cart/checkout", order.PlaceOrder)

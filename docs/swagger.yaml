@@ -1466,7 +1466,32 @@ paths:
             $ref: '#/definitions/res.CommonRes'
       security:
       - Bearer: []
-      summary: Get all available coupons for the user
+      summary: Get all coupons for the user
+      tags:
+      - User Coupons
+  /coupons/available:
+    get:
+      consumes:
+      - application/json
+      description: Fetches the coupons available for the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: No coupons available'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Failed to fetch available coupons'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get available coupons for user
       tags:
       - User Coupons
   /coupons/redeemed:

@@ -12,5 +12,6 @@ type ICouponUseCase interface {
 	GetAllCoupons() (*[]entities.Coupon, error)
 	
 	GetCouponsForUser() (*[]entities.Coupon, error)
+	GetAvailableCouponsForUser(userId string) (*[]entities.Coupon, error)
 	GetRedeemedByUser(userId string) (*[]entities.RedeemedCoupon, error)
 }

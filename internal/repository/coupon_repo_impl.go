@@ -84,6 +84,25 @@ func (repo *couponRepo) FindAllForUser() (*[]entities.Coupon, error) {
 	return &couponList, nil
 }
 
+func (repo *couponRepo) FindAllAvailableForUser(userId string) (*[]entities.Coupon, error) {
+	var couponList []entities.Coupon
+	res := repo.DB.Raw(`
+	SELECT * 
+	FROM coupons
+	WHERE status = 'ACTIVE'
+	AND code NOT IN (
+		SELECT coupon_code 
+		FROM redeemed_coupons
+		WHERE user_id = ?)`, userId).Scan(&couponList)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, e.ErrIsEmpty
+	}
+	return &couponList, nil
+}
+
 func (repo *couponRepo) FindByCode(code string) (*entities.Coupon, error) {
 	var coupon entities.Coupon
 	res := repo.DB.Raw(`

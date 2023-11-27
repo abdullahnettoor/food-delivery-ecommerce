@@ -1098,7 +1098,7 @@
                 "tags": [
                     "User Coupons"
                 ],
-                "summary": "Get all available coupons for the user",
+                "summary": "Get all coupons for the user",
                 "responses": {
                     "200": {
                         "description": "Success: No coupons are available",
@@ -1114,6 +1114,46 @@
                     },
                     "500": {
                         "description": "Internal Server Error: Failed to fetch coupons",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/coupons/available": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches the coupons available for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Coupons"
+                ],
+                "summary": "Get available coupons for user",
+                "responses": {
+                    "200": {
+                        "description": "Success: No coupons available",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch available coupons",
                         "schema": {
                             "$ref": "#/definitions/res.CommonRes"
                         }
