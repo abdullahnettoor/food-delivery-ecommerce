@@ -153,6 +153,7 @@ func (h *DishHandler) CreateDish(c *fiber.Ctx) error {
 func (h *DishHandler) UpdateDish(c *fiber.Ctx) error {
 	dishId := c.Params("id")
 	seller := c.Locals("SellerModel").(map[string]any)
+	sellerId := fmt.Sprint(seller["sellerId"])
 	var req req.UpdateDishReq
 
 	if err := c.BodyParser(&req); err != nil {
@@ -172,20 +173,20 @@ func (h *DishHandler) UpdateDish(c *fiber.Ctx) error {
 			})
 	}
 
-	dish, err := h.dishUc.UpdateDish(dishId, fmt.Sprint(seller["sellerId"]), &req)
+	dish, err := h.dishUc.UpdateDish(dishId, sellerId, &req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
 				Error:   err.Error(),
-				Message: "failed to add new dish",
+				Message: "failed to update dish",
 			})
 	}
 
 	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
-			Message: "successfully created new dish",
+			Message: "successfully updated dish",
 			Result:  dish,
 		})
 }

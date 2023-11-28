@@ -40,7 +40,7 @@ type UpdateDishReq struct {
 }
 
 type UpdateOrderStatusReq struct {
-	OrderStatus string `json:"orderStatus" validate:"required,oneof='Cooking' 'Food Ready' 'Delivered'"`
+	OrderStatus string `json:"orderStatus" validate:"required,oneof='COOKING' 'FOOD READY' 'DELIVERED'"`
 }
 
 type CreateOfferReq struct {

@@ -314,6 +314,15 @@ func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 			})
 	}
 
+	if errs := requestvalidation.ValidateRequest(req); errs != nil {
+		return c.Status(fiber.StatusBadRequest).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   errs,
+				Message: "failed. invalid fields",
+			})
+	}
+
 	if err := h.usecase.UpdateOrderStatus(id, req.OrderStatus); err != nil {
 		if err == e.ErrNotFound {
 			return c.Status(fiber.StatusBadRequest).
