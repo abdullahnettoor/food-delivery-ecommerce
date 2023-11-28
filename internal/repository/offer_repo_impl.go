@@ -55,7 +55,8 @@ func (repo *offerRepository) FindAll() (*[]entities.CategoryOffer, error) {
 	SELECT * 
 	FROM category_offers
 	WHERE start_date < ?
-	AND end_date > ?`,
+	AND end_date > ?
+	AND status = 'ACTIVE'`,
 		time.Now(), time.Now()).Scan(&offerList)
 	if res.Error != nil {
 		return nil, res.Error
