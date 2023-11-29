@@ -33,6 +33,9 @@ func NewServerHttp(
 
 	app.Use(logger.New(logger.Config{TimeFormat: "2006/01/02 15:04:05"}))
 
+	// @title FoodieBuddie API
+	// @description API for managing and interacting with FoodieBuddie services.
+
 	//	@securityDefinitions.apikey	Bearer
 	//	@in							header
 	//	@name						Authorization

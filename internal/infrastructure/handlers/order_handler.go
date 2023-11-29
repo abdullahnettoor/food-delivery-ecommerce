@@ -347,3 +347,36 @@ func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 			Message: "successfully updated order",
 		})
 }
+
+// @Summary Get daily sales report
+// @Description Fetches the daily sales report for the seller
+// @Security Bearer
+// @Tags Seller Sales
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.CommonRes "Success: Daily sales fetched successfully"
+// @Failure 401 {object} res.CommonRes "Unauthorized Access"
+// @Failure 500 {object} res.CommonRes "Internal Server Error: Failed to fetch daily sales"
+// @Router /seller/sales/daily [get]
+func (h *OrderHandler) GetDailySales(c *fiber.Ctx) error {
+
+	seller := c.Locals("SellerModel").(map[string]any)
+	id := fmt.Sprint(seller["sellerId"])
+
+	dailySales, err := h.usecase.GetDailySalesReport(id)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Error:   err.Error(),
+				Message: "failed to fetch daily sales",
+			})
+	}
+
+	return c.Status(fiber.StatusInternalServerError).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully fetched daily sales",
+			Result:  *dailySales,
+		})
+}

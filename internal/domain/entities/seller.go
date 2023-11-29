@@ -9,3 +9,8 @@ type Seller struct {
 	PinCode     string `json:"pinCode"`
 	Status      string `json:"status" gorm:"default:Pending"`
 }
+
+type Sales struct {
+	Count    uint    `json:"saleCount"`
+	TotalAmt float64 `json:"totalSales"`
+}

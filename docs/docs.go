@@ -2886,6 +2886,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/seller/sales/daily": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches the daily sales report for the seller",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller Sales"
+                ],
+                "summary": "Get daily sales report",
+                "responses": {
+                    "200": {
+                        "description": "Success: Daily sales fetched successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch daily sales",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/sendOtp": {
             "post": {
                 "security": [
@@ -3861,9 +3901,9 @@ const docTemplate = `{
                 "orderStatus": {
                     "type": "string",
                     "enum": [
-                        "Cooking",
-                        "Food Ready",
-                        "Delivered"
+                        "COOKING",
+                        "FOOD READY",
+                        "DELIVERED"
                     ]
                 }
             }
@@ -3984,9 +4024,7 @@ const docTemplate = `{
         "res.CommonRes": {
             "type": "object",
             "properties": {
-                "error": {
-                    "type": "string"
-                },
+                "error": {},
                 "message": {
                     "type": "string"
                 },
@@ -4273,8 +4311,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "FoodieBuddie API",
+	Description:      "API for managing and interacting with FoodieBuddie services.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -1,6 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
+        "description": "API for managing and interacting with FoodieBuddie services.",
+        "title": "FoodieBuddie API",
         "contact": {}
     },
     "paths": {
@@ -2875,6 +2877,46 @@
                 }
             }
         },
+        "/seller/sales/daily": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches the daily sales report for the seller",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller Sales"
+                ],
+                "summary": "Get daily sales report",
+                "responses": {
+                    "200": {
+                        "description": "Success: Daily sales fetched successfully",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to fetch daily sales",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/sendOtp": {
             "post": {
                 "security": [
@@ -3850,9 +3892,9 @@
                 "orderStatus": {
                     "type": "string",
                     "enum": [
-                        "Cooking",
-                        "Food Ready",
-                        "Delivered"
+                        "COOKING",
+                        "FOOD READY",
+                        "DELIVERED"
                     ]
                 }
             }
@@ -3973,9 +4015,7 @@
         "res.CommonRes": {
             "type": "object",
             "properties": {
-                "error": {
-                    "type": "string"
-                },
+                "error": {},
                 "message": {
                     "type": "string"
                 },

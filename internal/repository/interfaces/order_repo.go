@@ -1,6 +1,10 @@
 package interfaces
 
-import "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+import (
+	"time"
+
+	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+)
 
 type IOrderRepository interface {
 	CreateOrder(order *entities.Order) error
@@ -15,4 +19,6 @@ type IOrderRepository interface {
 	UpdateOrderPaymentStatus(id, status string) error
 
 	CancelOrder(id string) error
+
+	FindSales(sellerId string, startDate, endDate time.Time) (*entities.Sales, error)
 }

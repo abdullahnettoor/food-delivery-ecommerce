@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
@@ -156,4 +158,30 @@ func (repo *orderRepository) CancelOrder(id string) error {
 	}
 
 	return nil
+}
+
+func (repo *orderRepository) FindSales(sellerId string, startDate, endDate time.Time) (*entities.Sales, error) {
+
+	var sales entities.Sales
+
+	startDate,_ = time.Parse("2006-01-02 15:04:05.999999-07:00", startDate.GoString())
+	endDate,_ = time.Parse("2006-01-02 15:04:05.999999-07:00", endDate.GoString())
+
+	query := `SELECT
+	COUNT(*) as count,
+	COALESCE(SUM(total_price), 0) as total_amt 
+	FROM orders`
+	query += fmt.Sprintf(" WHERE seller_id = %v AND status ILIKE 'DELIVERED' ", sellerId)
+
+	if !startDate.IsZero() && !endDate.IsZero() {
+		query += fmt.Sprintf(" AND order_date BETWEEN '%v' AND '%v' ", startDate, endDate)
+	}
+
+	err := repo.DB.Raw(query).Scan(&sales).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &sales, nil
 }

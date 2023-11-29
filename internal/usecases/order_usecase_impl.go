@@ -203,3 +203,20 @@ func (uc *orderUsecase) UpdateOrderStatus(id, status string) error {
 func (uc *orderUsecase) CancelOrder(id string) error {
 	return uc.orderRepo.CancelOrder(id)
 }
+
+func (uc *orderUsecase) GetDailySalesReport(sellerId string) (*entities.Sales, error) {
+
+	now := time.Now()
+	startDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	endDate := startDate.Add(time.Hour * 24)
+
+	return uc.orderRepo.FindSales(sellerId, startDate, endDate)
+}
+
+func (uc *orderUsecase) GetSalesReportByRange(sellerId string, startDate, endDate time.Time) (*entities.Sales, error) {
+
+	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, endDate.Location())
+
+	return uc.orderRepo.FindSales(sellerId,startDate, endDate)
+}

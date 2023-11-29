@@ -496,9 +496,9 @@ definitions:
     properties:
       orderStatus:
         enum:
-        - Cooking
-        - Food Ready
-        - Delivered
+        - COOKING
+        - FOOD READY
+        - DELIVERED
         type: string
     required:
     - orderStatus
@@ -581,8 +581,7 @@ definitions:
     type: object
   res.CommonRes:
     properties:
-      error:
-        type: string
+      error: {}
       message:
         type: string
       result: {}
@@ -759,6 +758,8 @@ definitions:
     type: object
 info:
   contact: {}
+  description: API for managing and interacting with FoodieBuddie services.
+  title: FoodieBuddie API
 paths:
   /addToCart/{id}:
     post:
@@ -2594,6 +2595,31 @@ paths:
       summary: Seller Sign Up
       tags:
       - Seller
+  /seller/sales/daily:
+    get:
+      consumes:
+      - application/json
+      description: Fetches the daily sales report for the seller
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Daily sales fetched successfully'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Failed to fetch daily sales'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Get daily sales report
+      tags:
+      - Seller Sales
   /sendOtp:
     post:
       consumes:
