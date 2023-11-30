@@ -164,8 +164,8 @@ func (repo *orderRepository) FindSales(sellerId string, startDate, endDate time.
 
 	var sales entities.Sales
 
-	startDate,_ = time.Parse("2006-01-02 15:04:05.999999-07:00", startDate.GoString())
-	endDate,_ = time.Parse("2006-01-02 15:04:05.999999-07:00", endDate.GoString())
+	startDate,_ = time.Parse(time.RFC3339, startDate.GoString())
+	endDate,_ = time.Parse(time.RFC3339, endDate.GoString())
 
 	query := `SELECT
 	COUNT(*) as count,
