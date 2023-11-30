@@ -12,11 +12,10 @@ import (
 
 type SellerHandler struct {
 	usecase   interfaces.ISellerUseCase
-	dishUcase interfaces.IDishUseCase
 }
 
-func NewSellerHandler(uCase interfaces.ISellerUseCase, dishUcase interfaces.IDishUseCase) *SellerHandler {
-	return &SellerHandler{uCase, dishUcase}
+func NewSellerHandler(uCase interfaces.ISellerUseCase) *SellerHandler {
+	return &SellerHandler{uCase}
 }
 
 // @Summary		Seller Sign Up
@@ -112,5 +111,100 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 			Status:  "success",
 			Message: "successfully logged in",
 			Token:   token,
+		})
+}
+
+
+// @Summary		Get paginated list of sellers
+// @Description	Retrieve a paginated list of sellers for the user
+// @Tags			Common
+// @Accept			json
+// @Produce		json
+// @Param			p	query		string				false	"Page number (default: 1)"
+// @Param			l	query		string				false	"Number of items per page"
+// @Success		200	{object}	res.SellerListRes	"Successfully fetched sellers"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/user/sellers [get]
+func (h *SellerHandler) GetSellersPage(c *fiber.Ctx) error {
+	page := c.Query("p", "1")
+	limit := c.Query("l", "10")
+
+	sellerList, err := h.usecase.GetSellersPage(page, limit)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch sellers",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SellerListRes{
+			Status:     "success",
+			Message:    "successfully fetched seller",
+			SellerList: *sellerList,
+		})
+
+}
+
+// @Summary		Get a seller
+// @Description	Retrieve a specific seller by ID for the user
+// @Tags			Common
+// @Accept			json
+// @Produce		json
+// @Param			id	path		string				true	"Seller ID"	int
+// @Success		200	{object}	res.SingleSellerRes	"Successfully fetched seller"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/user/sellers/{id} [get]
+func (h *SellerHandler) GetSeller(c *fiber.Ctx) error {
+	sellerId := c.Params("id")
+
+	seller, err := h.usecase.GetSeller(sellerId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch seller",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SingleSellerRes{
+			Status:  "success",
+			Message: "successfully fetched seller",
+			Seller:  *seller,
+		})
+}
+
+// @Summary		Search sellers
+// @Description	Search for sellers based on a query
+// @Tags			Common
+// @Accept			json
+// @Produce		json
+// @Param			q	query		string				true	"Search query"
+// @Success		200	{object}	res.SellerListRes	"Successfully fetched sellers"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/search/sellers [get]
+func (h *SellerHandler) SearchSeller(c *fiber.Ctx) error {
+	searchQuery := c.Query("q")
+
+	sellersList, err := h.usecase.SearchSeller(searchQuery)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch sellers",
+				Error:   err.Error(),
+			})
+	}
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.SellerListRes{
+			Status:     "success",
+			Message:    "successfully fetched sellers",
+			SellerList: *sellersList,
 		})
 }

@@ -35,7 +35,7 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 
 	adminUcase := usecases.NewAdminUsecase(adminRepo, userRepo, sellerRepo, categoryRepo)
 	sellerUcase := usecases.NewSellerUsecase(sellerRepo)
-	userUcase := usecases.NewUserUsecase(userRepo, sellerRepo)
+	userUcase := usecases.NewUserUsecase(userRepo)
 	categoryUcase := usecases.NewCategoryUsecase(categoryRepo)
 	offerUcase := usecases.NewOfferUsecase(offerRepo)
 	dishUcase := usecases.NewDishUsecase(dishRepo, offerUcase)
@@ -44,7 +44,7 @@ func InitializeAPI(c *config.DbConfig, imgUploaderCfg *config.ImgUploaderCfg) (*
 	orderUcase := usecases.NewOrderUsecase(cartRepo, orderRepo, dishUcase, couponRepo)
 	couponUcase := usecases.NewCouponUsecase(couponRepo)
 
-	sellerHandler := handlers.NewSellerHandler(sellerUcase, dishUcase)
+	sellerHandler := handlers.NewSellerHandler(sellerUcase)
 	userHandler := handlers.NewUserHandler(userUcase)
 	adminHandler := handlers.NewAdminHandler(adminUcase)
 	categoryHandler := handlers.NewCategoryHandler(categoryUcase)

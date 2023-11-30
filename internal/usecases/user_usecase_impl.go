@@ -19,11 +19,10 @@ import (
 
 type userUcase struct {
 	userRepo   interfaces.IUserRepository
-	sellerRepo interfaces.ISellerRepository
 }
 
-func NewUserUsecase(userRepo interfaces.IUserRepository, sellerRepo interfaces.ISellerRepository) i.IUserUseCase {
-	return &userUcase{userRepo, sellerRepo}
+func NewUserUsecase(userRepo interfaces.IUserRepository) i.IUserUseCase {
+	return &userUcase{userRepo}
 }
 
 func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*string, error) {
@@ -230,25 +229,4 @@ func (uc *userUcase) ViewAddress(id, userId string) (*entities.Address, error) {
 
 func (uc *userUcase) ViewAllAddresses(userId string) (*[]entities.Address, error) {
 	return uc.userRepo.FindAllAddressByUserID(userId)
-}
-
-func (uc *userUcase) SearchSeller(search string) (*[]entities.Seller, error) {
-	return uc.sellerRepo.SearchVerified(search)
-}
-
-func (uc *userUcase) GetSellersPage(page, limit string) (*[]entities.Seller, error) {
-	p, err := strconv.ParseUint(page, 10, 0)
-	if err != nil {
-		return nil, err
-	}
-	l, err := strconv.ParseUint(limit, 10, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	return uc.sellerRepo.FindPageWise(uint(p), uint(l))
-}
-
-func (uc *userUcase) GetSeller(id string) (*entities.Seller, error) {
-	return uc.sellerRepo.FindVerifiedByID(id)
 }

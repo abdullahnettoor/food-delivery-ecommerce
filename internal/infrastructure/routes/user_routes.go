@@ -9,6 +9,7 @@ import (
 func UserRoutes(
 	f *fiber.App,
 	user *handlers.UserHandler,
+	seller *handlers.SellerHandler,
 	category *handlers.CategoryHandler,
 	dish *handlers.DishHandler,
 	cart *handlers.CartHandler,
@@ -36,11 +37,11 @@ func UserRoutes(
 
 	f.Get("/offers", offer.GetAllOffers)
 
-	f.Get("user/sellers", user.GetSellersPage)
-	f.Get("user/sellers/:id", user.GetSeller)
+	f.Get("user/sellers", seller.GetSellersPage)
+	f.Get("user/sellers/:id", seller.GetSeller)
 
 	f.Get("/search/dishes", dish.SearchDish)
-	f.Get("/search/sellers", user.SearchSeller)
+	f.Get("/search/sellers", seller.SearchSeller)
 
 	u := f.Group("/", middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 

@@ -21,18 +21,18 @@ func NewOrderHandler(uc interfaces.IOrderUseCase) *OrderHandler {
 	return &OrderHandler{uc}
 }
 
-// @Summary		Place an order
-// @Description	Place a new order for the user
-// @Security		Bearer
-// @Tags			User Order
-// @Accept			json
-// @Produce		json
-// @Param			req	body		req.NewOrderReq	true	"New order request"
-// @Success		200	{object}	res.CommonRes	"Successfully placed order"
-// @Failure		400	{object}	res.CommonRes	"Bad Request"
-// @Failure		401	{object}	res.CommonRes	"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes	"Internal Server Error"
-// @Router			/cart/checkout [post]
+//	@Summary		Place an order
+//	@Description	Place a new order for the user
+//	@Security		Bearer
+//	@Tags			User Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			req	body		req.NewOrderReq	true	"New order request"
+//	@Success		200	{object}	res.CommonRes	"Successfully placed order"
+//	@Failure		400	{object}	res.CommonRes	"Bad Request"
+//	@Failure		401	{object}	res.CommonRes	"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error"
+//	@Router			/cart/checkout [post]
 func (h *OrderHandler) PlaceOrder(c *fiber.Ctx) error {
 	var req req.NewOrderReq
 
@@ -180,21 +180,21 @@ func (h *OrderHandler) VerifyPayment(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary		View a specific order
-// @Description	View details of a specific order for the user
-// @Security		Bearer
-// @Tags			User Order
-// @Tags			Seller Order
-// @Accept			json
-// @Produce		json
-// @Param			id	path		string				true	"Order ID"
-// @Success		200	{object}	res.ViewOrderRes	"Successfully fetched order"
-// @Failure		400	{object}	res.CommonRes		"Bad Request"
-// @Failure		401	{object}	res.CommonRes		"Unauthorized Access"
-// @Failure		404	{object}	res.CommonRes		"Order not found"
-// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
-// @Router			/orders/{id} [get]
-// @Router			/seller/orders/{id} [get]
+//	@Summary		View a specific order
+//	@Description	View details of a specific order for the user
+//	@Security		Bearer
+//	@Tags			User Order
+//	@Tags			Seller Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string				true	"Order ID"
+//	@Success		200	{object}	res.ViewOrderRes	"Successfully fetched order"
+//	@Failure		400	{object}	res.CommonRes		"Bad Request"
+//	@Failure		401	{object}	res.CommonRes		"Unauthorized Access"
+//	@Failure		404	{object}	res.CommonRes		"Order not found"
+//	@Failure		500	{object}	res.CommonRes		"Internal Server Error"
+//	@Router			/orders/{id} [get]
+//	@Router			/seller/orders/{id} [get]
 func (h *OrderHandler) ViewOrder(c *fiber.Ctx) error {
 
 	id := c.Params("id")
@@ -219,16 +219,16 @@ func (h *OrderHandler) ViewOrder(c *fiber.Ctx) error {
 
 }
 
-// @Summary		View all orders for the user
-// @Description	View details of all orders for the user
-// @Security		Bearer
-// @Tags			User Order
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	res.ViewAllOrdersRes	"Successfully fetched orders"
-// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
-// @Router			/orders [get]
+//	@Summary		View all orders for the user
+//	@Description	View details of all orders for the user
+//	@Security		Bearer
+//	@Tags			User Order
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.ViewAllOrdersRes	"Successfully fetched orders"
+//	@Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/orders [get]
 func (h *OrderHandler) ViewOrdersForUser(c *fiber.Ctx) error {
 
 	user := c.Locals("UserModel").(map[string]any)
@@ -253,16 +253,16 @@ func (h *OrderHandler) ViewOrdersForUser(c *fiber.Ctx) error {
 
 }
 
-// @Summary		View all orders for the seller
-// @Description	View details of all orders for the seller
-// @Security		Bearer
-// @Tags			Seller Order
-// @Accept			json
-// @Produce		json
-// @Success		200	{object}	res.ViewAllOrdersRes	"Successfully fetched orders"
-// @Failure		401	{object}	res.CommonRes			"Unauthorized Access"
-// @Failure		500	{object}	res.CommonRes			"Internal Server Error"
-// @Router			/seller/orders [get]
+//	@Summary		View all orders for the seller
+//	@Description	View details of all orders for the seller
+//	@Security		Bearer
+//	@Tags			Seller Order
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.ViewAllOrdersRes	"Successfully fetched orders"
+//	@Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error"
+//	@Router			/seller/orders [get]
 func (h *OrderHandler) ViewOrdersForSeller(c *fiber.Ctx) error {
 
 	seller := c.Locals("SellerModel").(map[string]any)
@@ -286,20 +286,20 @@ func (h *OrderHandler) ViewOrdersForSeller(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary		Update order status
-// @Description	Update the status of a specific order
-// @Security		Bearer
-// @Tags			Seller Order
-// @Accept			json
-// @Produce		json
-// @Param			id	path		string						true	"Order ID"
-// @Param			req	body		req.UpdateOrderStatusReq	true	"Update order status request"
-// @Success		200	{object}	res.CommonRes				"Successfully updated order"
-// @Failure		400	{object}	res.CommonRes				"Bad Request"
-// @Failure		401	{object}	res.CommonRes				"Unauthorized Access"
-// @Failure		404	{object}	res.CommonRes				"Order not found"
-// @Failure		500	{object}	res.CommonRes				"Internal Server Error"
-// @Router			/seller/orders/{id} [patch]
+//	@Summary		Update order status
+//	@Description	Update the status of a specific order
+//	@Security		Bearer
+//	@Tags			Seller Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string						true	"Order ID"
+//	@Param			req	body		req.UpdateOrderStatusReq	true	"Update order status request"
+//	@Success		200	{object}	res.CommonRes				"Successfully updated order"
+//	@Failure		400	{object}	res.CommonRes				"Bad Request"
+//	@Failure		401	{object}	res.CommonRes				"Unauthorized Access"
+//	@Failure		404	{object}	res.CommonRes				"Order not found"
+//	@Failure		500	{object}	res.CommonRes				"Internal Server Error"
+//	@Router			/seller/orders/{id} [patch]
 func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 	var req req.UpdateOrderStatusReq
 
@@ -348,16 +348,16 @@ func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 		})
 }
 
-// @Summary Get daily sales report
-// @Description Fetches the daily sales report for the seller
-// @Security Bearer
-// @Tags Seller Sales
-// @Accept json
-// @Produce json
-// @Success 200 {object} res.CommonRes "Success: Daily sales fetched successfully"
-// @Failure 401 {object} res.CommonRes "Unauthorized Access"
-// @Failure 500 {object} res.CommonRes "Internal Server Error: Failed to fetch daily sales"
-// @Router /seller/sales/daily [get]
+//	@Summary		Get daily sales report
+//	@Description	Fetches the daily sales report for the seller
+//	@Security		Bearer
+//	@Tags			Seller Sales
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	res.CommonRes	"Success: Daily sales fetched successfully"
+//	@Failure		401	{object}	res.CommonRes	"Unauthorized Access"
+//	@Failure		500	{object}	res.CommonRes	"Internal Server Error: Failed to fetch daily sales"
+//	@Router			/seller/sales/daily [get]
 func (h *OrderHandler) GetDailySales(c *fiber.Ctx) error {
 
 	seller := c.Locals("SellerModel").(map[string]any)

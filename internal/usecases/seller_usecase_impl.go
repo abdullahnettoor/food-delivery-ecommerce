@@ -3,6 +3,7 @@ package usecases
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -15,15 +16,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-type sellerUsecase struct {
+type sellerUcase struct {
 	repo interfaces.ISellerRepository
 }
 
 func NewSellerUsecase(repo interfaces.ISellerRepository) i.ISellerUseCase {
-	return &sellerUsecase{repo}
+	return &sellerUcase{repo}
 }
 
-func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
+func (uc *sellerUcase) Login(req *req.SellerLoginReq) (string, error) {
 
 	seller, err := uc.repo.FindByEmail(req.Email)
 	if err != nil {
@@ -54,7 +55,7 @@ func (uc *sellerUsecase) Login(req *req.SellerLoginReq) (string, error) {
 	return token, nil
 }
 
-func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
+func (uc *sellerUcase) SignUp(req *req.SellerSignUpReq) (string, error) {
 
 	_, err := uc.repo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
@@ -83,4 +84,25 @@ func (uc *sellerUsecase) SignUp(req *req.SellerSignUpReq) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (uc *sellerUcase) SearchSeller(search string) (*[]entities.Seller, error) {
+	return uc.repo.SearchVerified(search)
+}
+
+func (uc *sellerUcase) GetSellersPage(page, limit string) (*[]entities.Seller, error) {
+	p, err := strconv.ParseUint(page, 10, 0)
+	if err != nil {
+		return nil, err
+	}
+	l, err := strconv.ParseUint(limit, 10, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.repo.FindPageWise(uint(p), uint(l))
+}
+
+func (uc *sellerUcase) GetSeller(id string) (*entities.Seller, error) {
+	return uc.repo.FindVerifiedByID(id)
 }
