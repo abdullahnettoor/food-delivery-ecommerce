@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -92,36 +91,4 @@ func (uc *offerUsecase) GetAllOffer() (*[]entities.CategoryOffer, error) {
 
 func (uc *offerUsecase) GetOffersBySeller(sellerId string) (*[]entities.CategoryOffer, error) {
 	return uc.repo.FindAllForSeller(sellerId)
-}
-
-func (uc *offerUsecase) ApplyOfferToDishList(dishList *[]entities.Dish) (*[]entities.Dish, error) {
-	list := *dishList
-
-	for i := range list {
-		cId := fmt.Sprint(list[i].CategoryID)
-		sId := fmt.Sprint(list[i].SellerID)
-
-		offer, err := uc.repo.FindBySellerAndCategory(sId, cId)
-		if err != nil {
-			return nil, err
-		}
-		list[i].SalePrice = list[i].Price - (list[i].Price * float64(offer.Percentage) / 100)
-	}
-
-	return &list, nil
-}
-
-func (uc *offerUsecase) ApplyOfferToDish(dish *entities.Dish) (*entities.Dish, error) {
-
-	sId := fmt.Sprint(dish.SellerID)
-	cId := fmt.Sprint(dish.CategoryID)
-	offer, err := uc.repo.FindBySellerAndCategory(sId, cId)
-	if err != nil {
-		return nil, err
-	}
-
-	dish.SalePrice = dish.Price - (dish.Price * float64(offer.Percentage) / 100)
-	fmt.Printf("Offer Applied for %v \nRegular Price: %v\nSale Price: %v", dish.Name, dish.Price, dish.SalePrice)
-
-	return dish, nil
 }

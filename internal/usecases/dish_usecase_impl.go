@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -11,11 +12,43 @@ import (
 
 type dishUsecase struct {
 	dishRepo   interfaces.IDishRepository
-	offerUcase i.IOfferUseCase
+	offerRepo interfaces.IOfferRepository
 }
 
-func NewDishUsecase(dishRepo interfaces.IDishRepository, offerUcase i.IOfferUseCase) i.IDishUseCase {
-	return &dishUsecase{dishRepo, offerUcase}
+func NewDishUsecase(dishRepo interfaces.IDishRepository, offerRepo interfaces.IOfferRepository) i.IDishUseCase {
+	return &dishUsecase{dishRepo, offerRepo}
+}
+
+func (uc *dishUsecase) ApplyOfferToDishList(dishList *[]entities.Dish) (*[]entities.Dish, error) {
+	list := *dishList
+
+	for i := range list {
+		cId := fmt.Sprint(list[i].CategoryID)
+		sId := fmt.Sprint(list[i].SellerID)
+
+		offer, err := uc.offerRepo.FindBySellerAndCategory(sId, cId)
+		if err != nil {
+			return nil, err
+		}
+		list[i].SalePrice = list[i].Price - (list[i].Price * float64(offer.Percentage) / 100)
+	}
+
+	return &list, nil
+}
+
+func (uc *dishUsecase) ApplyOfferToDish(dish *entities.Dish) (*entities.Dish, error) {
+
+	sId := fmt.Sprint(dish.SellerID)
+	cId := fmt.Sprint(dish.CategoryID)
+	offer, err := uc.offerRepo.FindBySellerAndCategory(sId, cId)
+	if err != nil {
+		return nil, err
+	}
+
+	dish.SalePrice = dish.Price - (dish.Price * float64(offer.Percentage) / 100)
+	fmt.Printf("Offer Applied for %v \nRegular Price: %v\nSale Price: %v", dish.Name, dish.Price, dish.SalePrice)
+
+	return dish, nil
 }
 
 func (uc *dishUsecase) AddDish(sellerId string, req *req.CreateDishReq) error {
@@ -72,7 +105,7 @@ func (uc *dishUsecase) GetAllDishesBySeller(sellerId, category_id string) (*[]en
 	if err != nil {
 		return nil, err
 	}
-	return uc.offerUcase.ApplyOfferToDishList(dishList)
+	return uc.ApplyOfferToDishList(dishList)
 }
 
 func (uc *dishUsecase) GetDishBySeller(id, sellerId string) (*entities.Dish, error) {
@@ -80,7 +113,7 @@ func (uc *dishUsecase) GetDishBySeller(id, sellerId string) (*entities.Dish, err
 	if err != nil {
 		return nil, err
 	}
-	return uc.offerUcase.ApplyOfferToDish(dish)
+	return uc.ApplyOfferToDish(dish)
 }
 
 func (uc *dishUsecase) DeleteDish(id, sellerId string) error {
@@ -92,7 +125,7 @@ func (uc *dishUsecase) SearchDish(search string) (*[]entities.Dish, error) {
 	if err != nil {
 		return nil, err
 	}
-	return uc.offerUcase.ApplyOfferToDishList(dishList)
+	return uc.ApplyOfferToDishList(dishList)
 }
 
 func (uc *dishUsecase) GetDishesPage(sellerId, categoryId string, page, limit string) (*[]entities.Dish, error) {
@@ -110,7 +143,7 @@ func (uc *dishUsecase) GetDishesPage(sellerId, categoryId string, page, limit st
 		return nil, err
 	}
 
-	return uc.offerUcase.ApplyOfferToDishList(dishList)
+	return uc.ApplyOfferToDishList(dishList)
 }
 
 func (uc *dishUsecase) GetDish(id string) (*entities.Dish, error) {
@@ -118,7 +151,7 @@ func (uc *dishUsecase) GetDish(id string) (*entities.Dish, error) {
 	if err != nil {
 		return nil, err
 	}
-	return uc.offerUcase.ApplyOfferToDish(dish)
+	return uc.ApplyOfferToDish(dish)
 }
 
 func (uc *dishUsecase) ReduceStock(id string, quantity uint) error {

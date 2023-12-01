@@ -17,4 +17,7 @@ type IDishUseCase interface {
 	GetDish(id string) (*entities.Dish, error)
 
 	ReduceStock(id string, quantity uint) error
+
+	ApplyOfferToDishList(dishList *[]entities.Dish) (*[]entities.Dish, error)
+	ApplyOfferToDish(dish *entities.Dish) (*entities.Dish, error)
 }
