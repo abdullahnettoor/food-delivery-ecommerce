@@ -555,6 +555,15 @@ definitions:
     required:
     - otp
     type: object
+  req.VerifyPaymentReq:
+    properties:
+      razorpay_order_id:
+        type: string
+      razorpay_payment_id:
+        type: string
+      razorpay_signature:
+        type: string
+    type: object
   res.AdminLoginRes:
     properties:
       error:
@@ -1715,6 +1724,42 @@ paths:
       summary: Get all offers
       tags:
       - Common
+  /order/verifyPayment:
+    post:
+      consumes:
+      - application/json
+      description: Verifies a payment using Razorpay details
+      parameters:
+      - description: Payment verification details
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/req.VerifyPaymentReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Payment successfully verified'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: 'Bad Request: Failed to verify payment'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "401":
+          description: Unauthorized Access
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: 'Internal Server Error: Failed to process payment verification'
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
+      summary: Verify payment
+      tags:
+      - User Order
   /orders:
     get:
       consumes:
@@ -2595,11 +2640,16 @@ paths:
       summary: Seller Sign Up
       tags:
       - Seller
-  /seller/sales/daily:
+  /seller/sales:
     get:
       consumes:
       - application/json
       description: Fetches the daily sales report for the seller
+      parameters:
+      - description: Time intervals
+        in: query
+        name: status
+        type: string
       produces:
       - application/json
       responses:

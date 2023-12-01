@@ -69,7 +69,7 @@ func UserRoutes(
 	u.Get("/coupons/redeemed", coupon.GetRedeemedByUser)
 
 	u.Post("/cart/checkout", order.PlaceOrder)
-	// u.Post("/cart/checkout/online", order.PlaceOrderPayOnline)
+	u.Post("/order/verifyPayment", order.VerifyPayment)
 	u.Get("/orders", order.ViewOrdersForUser)
 	u.Get("/orders/:id", order.ViewOrder)
 }

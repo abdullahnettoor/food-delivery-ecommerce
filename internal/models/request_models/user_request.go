@@ -65,3 +65,9 @@ type NewOrderReq struct {
 	AddressID     string `query:"addressId" json:"addressId" validate:"required,number"`
 	CouponCode    string `query:"couponCode" json:"couponCode"`
 }
+
+type VerifyPaymentReq struct {
+	PaymentID    string `form:"razorpay_payment_id" json:"razorpay_payment_id"`
+	OrderID      string `form:"razorpay_order_id" json:"razorpay_order_id"`
+	RzpSignature string `form:"razorpay_signature" json:"razorpay_signature"`
+}

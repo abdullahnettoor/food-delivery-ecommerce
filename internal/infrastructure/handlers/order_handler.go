@@ -57,7 +57,7 @@ func (h *OrderHandler) PlaceOrder(c *fiber.Ctx) error {
 			})
 	}
 
-	_, err := h.usecase.PlaceOrder(id, &req)
+	order, err := h.usecase.PlaceOrder(id, &req)
 	if err == e.ErrNotAvailable || err == e.ErrQuantityExceeds {
 		return c.Status(fiber.StatusBadRequest).
 			JSON(res.CommonRes{
@@ -75,12 +75,28 @@ func (h *OrderHandler) PlaceOrder(c *fiber.Ctx) error {
 			})
 	}
 
-	return c.Status(fiber.StatusOK).
-		JSON(res.CommonRes{
-			Status:  "success",
-			Message: "successfully placed order",
-		})
-
+	if strings.ToUpper(req.PaymentMethod) == "COD" {
+		return c.Status(fiber.StatusOK).
+			JSON(res.CommonRes{
+				Status:  "success",
+				Message: "successfully placed order",
+			})
+	} else {
+		return c.Status(fiber.StatusOK).
+			JSON(res.CommonRes{
+				Status:  "success",
+				Message: "successfully placed order",
+				Result: fiber.Map{
+					"key":             viper.GetString("PAYMENT_KEY_ID"),
+					"orderId":        order.TransactionID,
+					"totalPrice":     order.TotalPrice,
+					"deliveryCharge": order.DeliveryCharge,
+					"firstName":      fmt.Sprint(user["firstName"]),
+					"email":          fmt.Sprint(user["email"]),
+					"phone":          fmt.Sprint(user["phone"]),
+				},
+			})
+	}
 }
 
 func (h *OrderHandler) PlaceOrderPayOnline(c *fiber.Ctx) error {
@@ -147,12 +163,20 @@ func (h *OrderHandler) PlaceOrderPayOnline(c *fiber.Ctx) error {
 
 }
 
+//	@Summary		Verify payment
+//	@Description	Verifies a payment using Razorpay details
+//	@Security		Bearer
+//	@Tags			User Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			req	body		req.VerifyPaymentReq	true	"Payment verification details"
+//	@Success		200	{object}	res.CommonRes			"Success: Payment successfully verified"
+//	@Failure		401	{object}	res.CommonRes			"Unauthorized Access"
+//	@Failure		400	{object}	res.CommonRes			"Bad Request: Failed to verify payment"
+//	@Failure		500	{object}	res.CommonRes			"Internal Server Error: Failed to process payment verification"
+//	@Router			/order/verifyPayment [post]
 func (h *OrderHandler) VerifyPayment(c *fiber.Ctx) error {
-	var req = struct {
-		PaymentID    string `form:"razorpay_payment_id"`
-		OrderID      string `form:"razorpay_order_id"`
-		RzpSignature string `form:"razorpay_signature"`
-	}{}
+	var req req.VerifyPaymentReq
 
 	fmt.Println("Content type is", string(c.Request().Header.ContentType()))
 	if err := c.BodyParser(&req); err != nil {

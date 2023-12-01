@@ -1512,6 +1512,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/order/verifyPayment": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Verifies a payment using Razorpay details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Order"
+                ],
+                "summary": "Verify payment",
+                "parameters": [
+                    {
+                        "description": "Payment verification details",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.VerifyPaymentReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Payment successfully verified",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Failed to verify payment",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized Access",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error: Failed to process payment verification",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "security": [
@@ -2886,7 +2943,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/seller/sales/daily": {
+        "/seller/sales": {
             "get": {
                 "security": [
                     {
@@ -2904,6 +2961,14 @@ const docTemplate = `{
                     "Seller Sales"
                 ],
                 "summary": "Get daily sales report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Time intervals",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success: Daily sales fetched successfully",
@@ -3980,6 +4045,20 @@ const docTemplate = `{
             ],
             "properties": {
                 "otp": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.VerifyPaymentReq": {
+            "type": "object",
+            "properties": {
+                "razorpay_order_id": {
+                    "type": "string"
+                },
+                "razorpay_payment_id": {
+                    "type": "string"
+                },
+                "razorpay_signature": {
                     "type": "string"
                 }
             }
