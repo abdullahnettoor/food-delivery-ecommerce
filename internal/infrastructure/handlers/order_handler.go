@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	res "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/response_models"
@@ -86,7 +87,8 @@ func (h *OrderHandler) PlaceOrderPayOnline(c *fiber.Ctx) error {
 	var req req.NewOrderReq
 
 	user := fiber.Map{"userId": "10", "firstName": "Abdullah", "email": "abdullahnettoor@gmail.com", "phone": "9061904860"}
-	id := fmt.Sprint(user["userId"])
+	userId := fmt.Sprint(user["userId"])
+	// userId := c.Query("userId")
 
 	if err := c.QueryParser(&req); err != nil {
 		return c.Status(fiber.StatusInternalServerError).
@@ -105,7 +107,7 @@ func (h *OrderHandler) PlaceOrderPayOnline(c *fiber.Ctx) error {
 			})
 	}
 
-	order, err := h.usecase.PlaceOrder(id, &req)
+	order, err := h.usecase.PlaceOrder(userId, &req)
 	if err == e.ErrNotAvailable || err == e.ErrQuantityExceeds {
 		return c.Status(fiber.StatusBadRequest).
 			JSON(res.CommonRes{
@@ -354,29 +356,46 @@ func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 //	@Tags			Seller Sales
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	res.CommonRes	"Success: Daily sales fetched successfully"
-//	@Failure		401	{object}	res.CommonRes	"Unauthorized Access"
-//	@Failure		500	{object}	res.CommonRes	"Internal Server Error: Failed to fetch daily sales"
-//	@Router			/seller/sales/daily [get]
-func (h *OrderHandler) GetDailySales(c *fiber.Ctx) error {
+//	@Param			status	query		string			false	"Time intervals"
+//	@Success		200		{object}	res.CommonRes	"Success: Daily sales fetched successfully"
+//	@Failure		401		{object}	res.CommonRes	"Unauthorized Access"
+//	@Failure		500		{object}	res.CommonRes	"Internal Server Error: Failed to fetch daily sales"
+//	@Router			/seller/sales [get]
+func (h *OrderHandler) GetSales(c *fiber.Ctx) error {
+	var sales *entities.Sales
+	var err error
 
 	seller := c.Locals("SellerModel").(map[string]any)
 	id := fmt.Sprint(seller["sellerId"])
 
-	dailySales, err := h.usecase.GetDailySalesReport(id)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			JSON(res.CommonRes{
-				Status:  "failed",
-				Error:   err.Error(),
-				Message: "failed to fetch daily sales",
-			})
+	timeIntervals := c.Query("filter")
+	switch strings.ToLower(timeIntervals) {
+	case "daily":
+		sales, err = h.usecase.GetDailySales(id)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).
+				JSON(res.CommonRes{
+					Status:  "failed",
+					Error:   err.Error(),
+					Message: "failed to fetch daily sales",
+				})
+		}
+	case "":
+		sales, err = h.usecase.GetTotalSales(id)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).
+				JSON(res.CommonRes{
+					Status:  "failed",
+					Error:   err.Error(),
+					Message: "failed to fetch daily sales",
+				})
+		}
 	}
 
 	return c.Status(fiber.StatusInternalServerError).
 		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully fetched daily sales",
-			Result:  *dailySales,
+			Result:  *sales,
 		})
 }

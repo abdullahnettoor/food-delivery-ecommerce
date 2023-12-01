@@ -34,5 +34,5 @@ func SellerRoutes(
 	s.Put("/offers/:id", offer.UpdateOffer)
 	s.Patch("/offers/:id", offer.UpdateOfferStatus)
 
-	s.Get("/sales/daily", order.GetDailySales)
+	s.Get("/sales", order.GetSales)
 }

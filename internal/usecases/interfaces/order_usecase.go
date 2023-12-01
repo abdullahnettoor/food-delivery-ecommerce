@@ -16,6 +16,7 @@ type IOrderUseCase interface {
 	UpdateOrderStatus(id, status string) error
 	CancelOrder(id string) error
 
-	GetDailySalesReport(sellerId string) (*entities.Sales, error)
-	GetSalesReportByRange(sellerId string, startDate, endDate time.Time) (*entities.Sales, error)
+	GetDailySales(sellerId string) (*entities.Sales, error)
+	GetTotalSales(sellerId string) (*entities.Sales, error)
+	GetSalesByRange(sellerId string, startDate, endDate time.Time) (*entities.Sales, error)
 }

@@ -204,19 +204,23 @@ func (uc *orderUsecase) CancelOrder(id string) error {
 	return uc.orderRepo.CancelOrder(id)
 }
 
-func (uc *orderUsecase) GetDailySalesReport(sellerId string) (*entities.Sales, error) {
+func (uc *orderUsecase) GetDailySales(sellerId string) (*entities.Sales, error) {
 
 	now := time.Now()
 	startDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	endDate := startDate.Add(time.Hour * 24)
+	endDate := startDate.Add((time.Hour * 24) - time.Millisecond)
 
 	return uc.orderRepo.FindSales(sellerId, startDate, endDate)
 }
 
-func (uc *orderUsecase) GetSalesReportByRange(sellerId string, startDate, endDate time.Time) (*entities.Sales, error) {
+func (uc *orderUsecase) GetTotalSales(sellerId string) (*entities.Sales, error) {
+	return uc.orderRepo.FindSales(sellerId, time.Time{}, time.Time{})
+}
+
+func (uc *orderUsecase) GetSalesByRange(sellerId string, startDate, endDate time.Time) (*entities.Sales, error) {
 
 	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
-	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, endDate.Location())
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 59, endDate.Location())
 
 	return uc.orderRepo.FindSales(sellerId,startDate, endDate)
 }
