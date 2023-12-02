@@ -1,6 +1,12 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"bytes"
+	"log"
+
+	embedfiles "github.com/abdullahnettoor/food-delivery-eCommerce"
+	"github.com/spf13/viper"
+)
 
 type DbConfig struct {
 	Host     string `mapstructure:"DBHOST"`
@@ -15,13 +21,21 @@ func LoadDbConfig() (*DbConfig, error) {
 	var dbConfig DbConfig
 
 	viper.AddConfigPath("/")
-	viper.SetConfigFile(".env")
 
-	if err := viper.ReadInConfig(); err != nil {
+	env, err := embedfiles.ENV.ReadFile(".env")
+	if err != nil {
+		return nil, err
+	}
+
+	viper.SetConfigType("env")
+
+	if err := viper.ReadConfig(bytes.NewBuffer(env)); err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	if err := viper.Unmarshal(&dbConfig); err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
