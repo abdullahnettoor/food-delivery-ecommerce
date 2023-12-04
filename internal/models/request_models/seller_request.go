@@ -44,12 +44,13 @@ type UpdateOrderStatusReq struct {
 }
 
 type CreateOfferReq struct {
-	Title      string    `json:"offerTitle" validate:"required"`
-	CategoryID uint      `json:"categoryId" validate:"required,number"`
-	Percentage uint      `json:"offerPercentage" validate:"required,gt=0,lte=100"`
-	StartDate  time.Time `json:"startDate" `
-	EndDate    time.Time `json:"endDate" `
-	Status     string    `json:"status" validate:"required,oneof=ACTIVE CLOSED"`
+	Title      string    `form:"offerTitle" validate:"required"`
+	CategoryID uint      `form:"categoryId" validate:"required,number"`
+	Percentage uint      `form:"offerPercentage" validate:"required,gt=0,lte=100"`
+	StartDate  time.Time `form:"startDate" `
+	EndDate    time.Time `form:"endDate" `
+	Status     string    `form:"status" validate:"required,oneof=ACTIVE CLOSED"`
+	ImageUrl   string    `swaggerignore:"true"`
 }
 
 type UpdateOfferReq struct {

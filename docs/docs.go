@@ -2579,7 +2579,7 @@ const docTemplate = `{
                 ],
                 "description": "Create new offer for the seller",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -2590,13 +2590,50 @@ const docTemplate = `{
                 "summary": "Create an offer",
                 "parameters": [
                     {
-                        "description": "Create Offer Request",
-                        "name": "req",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.CreateOfferReq"
-                        }
+                        "type": "file",
+                        "description": "Image file for the dish",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "categoryId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "endDate",
+                        "in": "formData"
+                    },
+                    {
+                        "maximum": 100,
+                        "type": "integer",
+                        "name": "offerPercentage",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "offerTitle",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "startDate",
+                        "in": "formData"
+                    },
+                    {
+                        "enum": [
+                            "ACTIVE",
+                            "CLOSED"
+                        ],
+                        "type": "string",
+                        "name": "status",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3339,6 +3376,9 @@ const docTemplate = `{
                 "endDate": {
                     "type": "string"
                 },
+                "imageUrl": {
+                    "type": "string"
+                },
                 "offerId": {
                     "type": "integer"
                 },
@@ -3663,40 +3703,6 @@ const docTemplate = `{
                     "enum": [
                         "ACTIVE",
                         "INACTIVE"
-                    ]
-                }
-            }
-        },
-        "req.CreateOfferReq": {
-            "type": "object",
-            "required": [
-                "categoryId",
-                "offerPercentage",
-                "offerTitle",
-                "status"
-            ],
-            "properties": {
-                "categoryId": {
-                    "type": "integer"
-                },
-                "endDate": {
-                    "type": "string"
-                },
-                "offerPercentage": {
-                    "type": "integer",
-                    "maximum": 100
-                },
-                "offerTitle": {
-                    "type": "string"
-                },
-                "startDate": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "ACTIVE",
-                        "CLOSED"
                     ]
                 }
             }

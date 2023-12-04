@@ -71,6 +71,8 @@ definitions:
         type: integer
       endDate:
         type: string
+      imageUrl:
+        type: string
       offerId:
         type: integer
       offerPercentage:
@@ -287,30 +289,6 @@ definitions:
         type: string
     required:
     - couponCode
-    type: object
-  req.CreateOfferReq:
-    properties:
-      categoryId:
-        type: integer
-      endDate:
-        type: string
-      offerPercentage:
-        maximum: 100
-        type: integer
-      offerTitle:
-        type: string
-      startDate:
-        type: string
-      status:
-        enum:
-        - ACTIVE
-        - CLOSED
-        type: string
-    required:
-    - categoryId
-    - offerPercentage
-    - offerTitle
-    - status
     type: object
   req.ForgotPasswordReq:
     properties:
@@ -2472,15 +2450,40 @@ paths:
   /seller/offers/addOffer:
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Create new offer for the seller
       parameters:
-      - description: Create Offer Request
-        in: body
-        name: req
+      - description: Image file for the dish
+        in: formData
+        name: image
         required: true
-        schema:
-          $ref: '#/definitions/req.CreateOfferReq'
+        type: file
+      - in: formData
+        name: categoryId
+        required: true
+        type: integer
+      - in: formData
+        name: endDate
+        type: string
+      - in: formData
+        maximum: 100
+        name: offerPercentage
+        required: true
+        type: integer
+      - in: formData
+        name: offerTitle
+        required: true
+        type: string
+      - in: formData
+        name: startDate
+        type: string
+      - enum:
+        - ACTIVE
+        - CLOSED
+        in: formData
+        name: status
+        required: true
+        type: string
       produces:
       - application/json
       responses:

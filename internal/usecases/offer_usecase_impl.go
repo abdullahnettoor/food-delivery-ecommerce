@@ -29,6 +29,7 @@ func (uc *offerUsecase) CreateOffer(sellerId string, req *req.CreateOfferReq) er
 		Title:      req.Title,
 		SellerID:   uint(sId),
 		CategoryID: req.CategoryID,
+		ImageUrl:   req.ImageUrl,
 		Percentage: req.Percentage,
 		StartDate:  req.StartDate,
 		EndDate:    req.EndDate,
