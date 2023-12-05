@@ -6,7 +6,7 @@ import (
 )
 
 type IAdminUseCase interface {
-	Login(admin *req.AdminLoginReq) (string, error)
+	Login(admin *req.AdminLoginReq) (*string, error)
 
 	GetAllSellers() (*[]entities.Seller, error)
 	VerifySeller(id string) error

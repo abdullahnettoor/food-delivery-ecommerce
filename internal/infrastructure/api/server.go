@@ -34,7 +34,6 @@ func NewServerHttp(
 	f := embedfiles.Tmpl
 	views := html.New("internal/view", ".html")
 	app := fiber.New(fiber.Config{Views: views})
-	// app := fiber.New()
 
 	
 

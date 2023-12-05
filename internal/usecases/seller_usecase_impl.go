@@ -24,42 +24,42 @@ func NewSellerUsecase(repo interfaces.ISellerRepository) i.ISellerUseCase {
 	return &sellerUcase{repo}
 }
 
-func (uc *sellerUcase) Login(req *req.SellerLoginReq) (string, error) {
+func (uc *sellerUcase) Login(req *req.SellerLoginReq) (*string, error) {
 
 	seller, err := uc.repo.FindByEmail(req.Email)
 	if err != nil {
 		fmt.Println("DB Error", err.Error())
-		return "", err
+		return nil, err
 	}
 
 	switch seller.Status {
 	case "Pending":
-		return "", errors.New("seller is not verified")
+		return nil, errors.New("seller is not verified")
 	case "Blocked":
-		return "", errors.New("seller is blocked")
+		return nil, errors.New("seller is blocked")
 	case "Rejected":
-		return "", errors.New("seller's application is rejected")
+		return nil, errors.New("seller's application is rejected")
 	}
 
 	if err := hashpassword.CompareHashedPassword(seller.Password, req.Password); err != nil {
 		fmt.Println("Error is Invalid Password")
-		return "", e.ErrInvalidPassword
+		return nil, e.ErrInvalidPassword
 	}
 
 	secret := viper.GetString("KEY")
 	token, _, err := jwttoken.CreateToken(secret, "seller", time.Hour*24, seller)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	return &token, nil
 }
 
-func (uc *sellerUcase) SignUp(req *req.SellerSignUpReq) (string, error) {
+func (uc *sellerUcase) SignUp(req *req.SellerSignUpReq) (*string, error) {
 
 	_, err := uc.repo.FindByEmail(req.Email)
 	if err != nil && err != e.ErrNotFound {
-		return "", err
+		return nil, err
 	}
 
 	hashedPwd, _ := hashpassword.HashPassword(req.Password)
@@ -73,17 +73,17 @@ func (uc *sellerUcase) SignUp(req *req.SellerSignUpReq) (string, error) {
 	}
 
 	if err := uc.repo.Create(&seller); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	secret := viper.GetString("KEY")
 
 	token, _, err := jwttoken.CreateToken(secret, "seller", time.Hour*24, seller)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	return &token, nil
 }
 
 func (uc *sellerUcase) SearchSeller(search string) (*[]entities.Seller, error) {

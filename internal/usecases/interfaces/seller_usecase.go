@@ -6,8 +6,8 @@ import (
 )
 
 type ISellerUseCase interface {
-	Login(req *req.SellerLoginReq) (string, error)
-	SignUp(req *req.SellerSignUpReq) (string, error)
+	Login(req *req.SellerLoginReq) (*string, error)
+	SignUp(req *req.SellerSignUpReq) (*string, error)
 
 	SearchSeller(search string) (*[]entities.Seller, error)
 	GetSellersPage(page, limit string) (*[]entities.Seller, error)

@@ -60,7 +60,7 @@ func (h *AdminHandler) Login(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).
 		JSON(res.AdminLoginRes{
 			Status:  "success",
-			Token:   token,
+			Token:   *token,
 			Message: "successfully logged in",
 		})
 }
@@ -378,4 +378,3 @@ func (h *AdminHandler) EditCategory(c *fiber.Ctx) error {
 			Message: "successfully updated category",
 		})
 }
-

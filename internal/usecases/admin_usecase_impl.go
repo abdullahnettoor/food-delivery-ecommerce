@@ -8,6 +8,7 @@ import (
 	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
+	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 	jwttoken "github.com/abdullahnettoor/food-delivery-eCommerce/pkg/jwt_token"
 	"github.com/spf13/viper"
 )
@@ -23,30 +24,30 @@ func NewAdminUsecase(
 	AdminRepo interfaces.IAdminRepository,
 	UserRepo interfaces.IUserRepository,
 	SellerRepo interfaces.ISellerRepository,
-	CategoryRepo interfaces.ICategoryRepository) *adminUcase {
+	CategoryRepo interfaces.ICategoryRepository) i.IAdminUseCase {
 	return &adminUcase{AdminRepo, UserRepo, SellerRepo, CategoryRepo}
 }
 
-func (uc *adminUcase) Login(loginReq *req.AdminLoginReq) (string, error) {
+func (uc *adminUcase) Login(loginReq *req.AdminLoginReq) (*string, error) {
 
 	admin, err := uc.AdminRepo.FindByEmail(loginReq.Email)
 	if err != nil {
 		fmt.Println("DB Error", err.Error())
-		return "", err
+		return nil, err
 	}
 
 	if admin.Password != loginReq.Password {
 		fmt.Println("Error is Invalid Password")
-		return "", e.ErrInvalidPassword
+		return nil, e.ErrInvalidPassword
 	}
 
 	secret := viper.GetString("KEY")
 	token, _, err := jwttoken.CreateToken(secret, "admin", time.Hour*24, admin)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	return &token, nil
 }
 
 func (uc *adminUcase) GetAllSellers() (*[]entities.Seller, error) {

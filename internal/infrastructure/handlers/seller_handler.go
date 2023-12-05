@@ -62,7 +62,7 @@ func (h *SellerHandler) SignUp(c *fiber.Ctx) error {
 		JSON(res.SellerLoginRes{
 			Status:  "success",
 			Message: "successfully signed up",
-			Token:   token,
+			Token:   *token,
 		})
 }
 
@@ -110,7 +110,7 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 		JSON(res.SellerLoginRes{
 			Status:  "success",
 			Message: "successfully logged in",
-			Token:   token,
+			Token:   *token,
 		})
 }
 
