@@ -367,7 +367,7 @@ func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 			})
 	}
 
-	return c.Status(fiber.StatusInternalServerError).
+	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully updated order",
@@ -416,7 +416,7 @@ func (h *OrderHandler) GetSales(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.Status(fiber.StatusInternalServerError).
+	return c.Status(fiber.StatusOK).
 		JSON(res.CommonRes{
 			Status:  "success",
 			Message: "successfully fetched daily sales",
