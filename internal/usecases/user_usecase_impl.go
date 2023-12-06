@@ -31,7 +31,7 @@ func (uc *userUcase) SignUp(req *req.UserSignUpReq) (*string, error) {
 	if err != nil && err != e.ErrNotFound {
 		return nil, err
 	}
-	if err == e.ErrNotFound {
+	if err != e.ErrNotFound {
 		return nil, e.ErrConflict
 	}
 
