@@ -29,6 +29,8 @@ func (repo *DishRepository) FindPageWise(sellerId, categoryId string, page, limi
 		query += " AND category_id = " + categoryId
 	}
 
+	query += " ORDER BY id DESC "
+
 	offset := (page - 1) * uint(limit)
 	if limit != 0 && page != 0 {
 		query += fmt.Sprintf(" OFFSET %v LIMIT %v", offset, limit)
@@ -77,6 +79,8 @@ func (repo *DishRepository) FindBySeller(sellerId, category_id string) (*[]entit
 	if category_id != "" {
 		query += " AND category_id = " + category_id
 	}
+
+	query += " ORDER BY id DESC "
 
 	res := repo.DB.Raw(query).Scan(&dishList)
 	if res.Error != nil {
@@ -195,7 +199,7 @@ func (repo *DishRepository) Delete(id, sellerId string) error {
 func (repo *DishRepository) Search(search string) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 
-	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND deleted = false", search, search)
+	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND deleted = false 	ORDER BY id DESC", search, search)
 
 	fmt.Println("Query is", query)
 

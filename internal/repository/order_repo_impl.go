@@ -64,7 +64,9 @@ func (repo *orderRepository) FindAllOrdersByUserId(userId string) (*[]entities.O
 	res := repo.DB.Raw(`
 	SELECT *
 	FROM orders
-	WHERE user_id = ?`,
+	WHERE user_id = ?
+	ORDER BY id DESC
+	`,
 		userId).Scan(&orderList)
 
 	if res.Error != nil {
@@ -85,7 +87,9 @@ func (repo *orderRepository) FindAllOrdersBySellerId(sellerId string) (*[]entiti
 	FROM orders
 	WHERE seller_id = ?
 	AND ((payment_status <> 'Pending')
-	OR (payment_method = 'COD' AND payment_status = 'Pending'))`,
+	OR (payment_method = 'COD' AND payment_status = 'Pending'))
+	ORDER BY id DESC
+	`,
 		sellerId).Scan(&orderList)
 
 	if res.Error != nil {

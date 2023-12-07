@@ -21,7 +21,8 @@ func (repo *favouriteRepository) Create(userId, dishId string, item *entities.Fa
 	SELECT * 
 	FROM favourites
 	WHERE dish_id = ?
-	AND user_id = ?`,
+	AND user_id = ?
+	`,
 		dishId, userId).Scan(&favItem)
 	if res.RowsAffected != 0 {
 		return e.ErrConflict
@@ -38,7 +39,9 @@ func (repo *favouriteRepository) FindByUserId(userId string) (*[]entities.Favour
 	res := repo.DB.Raw(`
 	SELECT * 
 	FROM favourites
-	WHERE user_id = ?`,
+	WHERE user_id = ?
+	ORDER BY id DESC
+	`,
 		userId).Scan(&favList)
 	if res.RowsAffected == 0 {
 		return nil, e.ErrIsEmpty

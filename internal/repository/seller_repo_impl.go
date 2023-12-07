@@ -23,7 +23,8 @@ func (repo *SellerRepository) FindAll() (*[]entities.Seller, error) {
 	if err := repo.DB.Raw(`
 	SELECT * 
 	FROM sellers
-	WHERE status <> 'Deleted'`).
+	WHERE status <> 'Deleted'
+	ORDER BY id DESC`).
 		Scan(&sellerList).Error; err != nil {
 		return nil, err
 	}
@@ -130,7 +131,7 @@ func (repo *SellerRepository) Unblock(id string) error {
 func (repo *SellerRepository) SearchByStatus(search, status string) (*[]entities.Seller, error) {
 	var sellersList []entities.Seller
 
-	query := fmt.Sprintf("SELECT * FROM sellers WHERE ((name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%')) AND status ILIKE '%%%s%%'", search, search, status)
+	query := fmt.Sprintf("SELECT * FROM sellers WHERE ((name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%')) AND status ILIKE '%%%s%%' ORDER BY id DESC", search, search, status)
 
 	res := repo.DB.Raw(query).Scan(&sellersList)
 
@@ -153,6 +154,7 @@ func (repo *SellerRepository) FindPageWise(page, limit uint) (*[]entities.Seller
 	SELECT *
 	FROM sellers
 	WHERE status ILIKE 'verified'
+	ORDER BY id DESC
 	OFFSET ? LIMIT ?`
 
 	res := repo.DB.Raw(query, offset, limit).Scan(&sellersList)

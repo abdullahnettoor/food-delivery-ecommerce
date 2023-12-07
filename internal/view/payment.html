@@ -56,6 +56,8 @@
             "name": "Foodie Buddie",
             "description": "Checkout Transaction",
             "order_id": "{{.OrderID}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            // In Some systems you need to specify an ONLINE url as callback
+            // If you are developing locally you have option to set NGORK as an ONLINE URL
             // "callback_url":"https://49ed-2409-40f3-100e-4909-f4d4-e07-24de-b501.ngrok-free.app/cart/checkout/online/",
             "callback_url":"http://localhost:8080/cart/checkout/online/",
             // "handler": function (response) {
