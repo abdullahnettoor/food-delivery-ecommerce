@@ -380,7 +380,7 @@ func (h *OrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 //	@Tags			Seller Sales
 //	@Accept			json
 //	@Produce		json
-//	@Param			status	query		string			false	"Time intervals"
+//	@Param			filter	query		string			false	"Time intervals"
 //	@Success		200		{object}	res.CommonRes	"Success: Daily sales fetched successfully"
 //	@Failure		401		{object}	res.CommonRes	"Unauthorized Access"
 //	@Failure		500		{object}	res.CommonRes	"Internal Server Error: Failed to fetch daily sales"

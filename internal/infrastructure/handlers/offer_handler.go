@@ -258,7 +258,7 @@ func (h *OfferHandler) UpdateOffer(c *fiber.Ctx) error {
 //	@Summary		Update offer status
 //	@Description	Updates the status of a specific offer
 //	@Security		Bearer
-//	@Tags			Seller Order
+//	@Tags			Seller Offer
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		string			true	"Offer ID"

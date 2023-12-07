@@ -2729,7 +2729,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Seller Order"
+                    "Seller Offer"
                 ],
                 "summary": "Update offer status",
                 "parameters": [
@@ -3002,7 +3002,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Time intervals",
-                        "name": "status",
+                        "name": "filter",
                         "in": "query"
                     }
                 ],

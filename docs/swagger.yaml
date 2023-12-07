@@ -2410,7 +2410,7 @@ paths:
       - Bearer: []
       summary: Update offer status
       tags:
-      - Seller Order
+      - Seller Offer
     put:
       consumes:
       - application/json
@@ -2651,7 +2651,7 @@ paths:
       parameters:
       - description: Time intervals
         in: query
-        name: status
+        name: filter
         type: string
       produces:
       - application/json
