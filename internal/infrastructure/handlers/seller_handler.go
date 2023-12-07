@@ -191,7 +191,7 @@ func (h *SellerHandler) GetSeller(c *fiber.Ctx) error {
 func (h *SellerHandler) SearchSeller(c *fiber.Ctx) error {
 	searchQuery := c.Query("q")
 
-	sellersList, err := h.usecase.SearchSeller(searchQuery)
+	sellersList, err := h.usecase.SearchVerifiedSeller(searchQuery)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{

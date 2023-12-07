@@ -127,10 +127,10 @@ func (repo *SellerRepository) Unblock(id string) error {
 	return nil
 }
 
-func (repo *SellerRepository) SearchVerified(search string) (*[]entities.Seller, error) {
+func (repo *SellerRepository) SearchByStatus(search, status string) (*[]entities.Seller, error) {
 	var sellersList []entities.Seller
 
-	query := fmt.Sprintf("SELECT * FROM sellers WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND status ILIKE 'verified'", search, search)
+	query := fmt.Sprintf("SELECT * FROM sellers WHERE ((name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%')) AND status ILIKE '%%%s%%'", search, search, status)
 
 	res := repo.DB.Raw(query).Scan(&sellersList)
 

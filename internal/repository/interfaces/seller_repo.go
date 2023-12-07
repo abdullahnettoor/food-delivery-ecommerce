@@ -13,7 +13,7 @@ type ISellerRepository interface {
 	Block(id string) error
 	Unblock(id string) error
 
-	SearchVerified(search string) (*[]entities.Seller, error)
+	SearchByStatus(search, status string) (*[]entities.Seller, error)
 	FindPageWise(page, limit uint) (*[]entities.Seller, error)
 	FindVerifiedByID(id string) (*entities.Seller, error)
 	// TODO: FindByQuery(query string) ([]*entities.Seller, error)

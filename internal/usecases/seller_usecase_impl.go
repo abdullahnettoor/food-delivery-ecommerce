@@ -86,8 +86,8 @@ func (uc *sellerUcase) SignUp(req *req.SellerSignUpReq) (*string, error) {
 	return &token, nil
 }
 
-func (uc *sellerUcase) SearchSeller(search string) (*[]entities.Seller, error) {
-	return uc.repo.SearchVerified(search)
+func (uc *sellerUcase) SearchVerifiedSeller(search string) (*[]entities.Seller, error) {
+	return uc.repo.SearchByStatus(search, "VERIFIED")
 }
 
 func (uc *sellerUcase) GetSellersPage(page, limit string) (*[]entities.Seller, error) {
