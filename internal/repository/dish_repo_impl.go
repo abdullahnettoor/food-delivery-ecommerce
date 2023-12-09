@@ -196,10 +196,16 @@ func (repo *DishRepository) Delete(id, sellerId string) error {
 
 }
 
-func (repo *DishRepository) Search(search string) (*[]entities.Dish, error) {
+func (repo *DishRepository) Search(search, sellerId string) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 
-	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND deleted = false 	ORDER BY id DESC", search, search)
+	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND deleted = false ", search, search)
+
+	if sellerId != "" {
+		query += " AND seller_id = " + sellerId
+	}
+
+	query += " ORDER BY id DESC"
 
 	fmt.Println("Query is", query)
 

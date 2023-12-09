@@ -120,8 +120,8 @@ func (uc *dishUsecase) DeleteDish(id, sellerId string) error {
 	return uc.dishRepo.Delete(id, sellerId)
 }
 
-func (uc *dishUsecase) SearchDish(search string) (*[]entities.Dish, error) {
-	dishList, err := uc.dishRepo.Search(search)
+func (uc *dishUsecase) SearchDish(search, sellerId string) (*[]entities.Dish, error) {
+	dishList, err := uc.dishRepo.Search(search, sellerId)
 	if err != nil {
 		return nil, err
 	}

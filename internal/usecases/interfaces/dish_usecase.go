@@ -12,7 +12,7 @@ type IDishUseCase interface {
 	UpdateDish(id, sellerId string, req *req.UpdateDishReq) (*entities.Dish, error)
 	DeleteDish(id, sellerId string) error
 
-	SearchDish(search string) (*[]entities.Dish, error)
+	SearchDish(search, sellerId string) (*[]entities.Dish, error)
 	GetDishesPage(sellerId,categoryId string, page, limit string) (*[]entities.Dish, error)
 	GetDish(id string) (*entities.Dish, error)
 

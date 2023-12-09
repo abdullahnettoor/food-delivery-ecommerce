@@ -366,13 +366,15 @@ func (h *DishHandler) GetDish(c *fiber.Ctx) error {
 // @Accept			json
 // @Produce		json
 // @Param			q	query		string			true	"Search query"
+// @Param			seller	query		string			false	"Search query"
 // @Success		200	{object}	res.DishListRes	"Successfully fetched dishes"
 // @Failure		500	{object}	res.CommonRes	"Internal Server Error"
 // @Router			/search/dishes [get]
 func (h *DishHandler) SearchDish(c *fiber.Ctx) error {
 	searchQuery := c.Query("q")
+	sellerId := c.Query("seller")
 
-	dishList, err := h.dishUc.SearchDish(searchQuery)
+	dishList, err := h.dishUc.SearchDish(searchQuery, sellerId)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{

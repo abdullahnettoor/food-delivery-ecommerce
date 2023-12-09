@@ -2085,6 +2085,10 @@ paths:
         name: q
         required: true
         type: string
+      - description: Search query
+        in: query
+        name: seller
+        type: string
       produces:
       - application/json
       responses:

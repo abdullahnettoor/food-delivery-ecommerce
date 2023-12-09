@@ -2117,6 +2117,12 @@ const docTemplate = `{
                         "name": "q",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "seller",
+                        "in": "query"
                     }
                 ],
                 "responses": {
