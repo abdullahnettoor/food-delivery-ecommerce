@@ -15,7 +15,7 @@ type IOrderRepository interface {
 	FindAllOrdersByUserId(userId string) (*[]entities.Order, error)
 	FindAllOrdersBySellerId(sellerId string) (*[]entities.Order, error)
 
-	UpdateOrderStatus(id, status string) error
+	UpdateOrderStatus(id, status, paymentStatus string) error
 	UpdateOrderPaymentStatus(id, status string) error
 
 	CancelOrder(id string) error

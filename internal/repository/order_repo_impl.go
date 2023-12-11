@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -86,8 +85,8 @@ func (repo *orderRepository) FindAllOrdersBySellerId(sellerId string) (*[]entiti
 	SELECT *
 	FROM orders
 	WHERE seller_id = ?
-	AND ((payment_status <> 'Pending')
-	OR (payment_method = 'COD' AND payment_status = 'Pending'))
+	AND ((UPPER(payment_status) <> 'PENDING')
+	OR (payment_method = 'COD' AND payment_status ILIKE 'PENDING'))
 	ORDER BY id DESC
 	`,
 		sellerId).Scan(&orderList)
@@ -121,11 +120,7 @@ func (repo *orderRepository) FindOrderItems(id string) (*[]entities.OrderItem, e
 	return &orderItems, nil
 }
 
-func (repo *orderRepository) UpdateOrderStatus(id, status string) error {
-	paymentStatus := "Pending"
-	if strings.ToLower(status) == "delivered" {
-		paymentStatus = "Success"
-	}
+func (repo *orderRepository) UpdateOrderStatus(id, status, paymentStatus string) error {
 
 	if err := repo.DB.Exec(`
 	UPDATE orders
@@ -172,7 +167,7 @@ func (repo *orderRepository) FindSales(sellerId string, startDate, endDate time.
 	COUNT(*) as count,
 	COALESCE(SUM(total_price), 0) as total_amt 
 	FROM orders`
-	query += fmt.Sprintf(" WHERE seller_id = %v AND status ILIKE 'DELIVERED' ", sellerId)
+	query += fmt.Sprintf(" WHERE seller_id = %v AND UPPER(status) <> 'PENDING' ", sellerId)
 
 	if !startDate.IsZero() && !endDate.IsZero() {
 		start := startDate.Format("2006-01-02 15:04:05-07")

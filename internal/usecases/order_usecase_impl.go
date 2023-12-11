@@ -3,6 +3,7 @@ package usecases
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
@@ -197,7 +198,16 @@ func (uc *orderUsecase) ViewOrdersForSeller(sellerId string) (*[]entities.Order,
 }
 
 func (uc *orderUsecase) UpdateOrderStatus(id, status string) error {
-	return uc.orderRepo.UpdateOrderStatus(id, status)
+	order, err := uc.orderRepo.FindOrderById(id)
+	if err != nil {
+		return e.ErrNotFound
+	}
+
+	if strings.ToUpper(order.PaymentMethod) == "ONLINE" || strings.ToUpper(status) == "DELIVERED" {
+		order.PaymentStatus = "SUCCESS"
+	}
+
+	return uc.orderRepo.UpdateOrderStatus(id, status, order.PaymentStatus)
 }
 
 func (uc *orderUsecase) CancelOrder(id string) error {
@@ -222,5 +232,5 @@ func (uc *orderUsecase) GetSalesByRange(sellerId string, startDate, endDate time
 	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
 	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 59, endDate.Location())
 
-	return uc.orderRepo.FindSales(sellerId,startDate, endDate)
+	return uc.orderRepo.FindSales(sellerId, startDate, endDate)
 }

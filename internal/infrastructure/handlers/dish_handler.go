@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	res "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/response_models"
 	imageuploader "github.com/abdullahnettoor/food-delivery-eCommerce/internal/services/image_uploader"
@@ -375,8 +376,16 @@ func (h *DishHandler) SearchDish(c *fiber.Ctx) error {
 	sellerId := c.Query("seller")
 
 	dishList, err := h.dishUc.SearchDish(searchQuery, sellerId)
-	if err != nil {
+	if err != nil && err != e.ErrNotFound {
 		return c.Status(fiber.StatusInternalServerError).
+			JSON(res.CommonRes{
+				Status:  "failed",
+				Message: "failed to fetch dish",
+				Error:   err.Error(),
+			})
+	}
+	if err == e.ErrNotFound {
+		return c.Status(fiber.StatusNotFound).
 			JSON(res.CommonRes{
 				Status:  "failed",
 				Message: "failed to fetch dish",
