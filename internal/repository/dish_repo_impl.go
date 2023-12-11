@@ -199,7 +199,7 @@ func (repo *DishRepository) Delete(id, sellerId string) error {
 func (repo *DishRepository) Search(search, sellerId string) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 
-	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%') OR (description ILIKE '%%%s%%') AND deleted = false ", search, search)
+	query := fmt.Sprintf("SELECT * FROM dishes WHERE (name ILIKE '%%%s%%' OR description ILIKE '%%%s%%') AND deleted = false ", search, search)
 
 	if sellerId != "" {
 		query += " AND seller_id = " + sellerId
