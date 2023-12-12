@@ -35,4 +35,5 @@ func SellerRoutes(
 	s.Patch("/offers/:id", offer.UpdateOfferStatus)
 
 	s.Get("/sales", order.GetSales)
+	s.Get("/profile", seller.GetSellerProfile)
 }
