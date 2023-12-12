@@ -2637,6 +2637,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.CommonRes'
+      security:
+      - Bearer: []
       summary: Get seller profile
       tags:
       - Seller

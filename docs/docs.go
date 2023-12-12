@@ -2942,6 +2942,11 @@ const docTemplate = `{
         },
         "/seller/profile": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Retrieve a seller profile",
                 "consumes": [
                     "application/json"

@@ -180,6 +180,7 @@ func (h *SellerHandler) GetSeller(c *fiber.Ctx) error {
 
 // @Summary		Get seller profile
 // @Description	Retrieve a seller profile 
+// @Security		Bearer
 // @Tags			Seller
 // @Accept			json
 // @Produce		json
