@@ -2940,6 +2940,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/seller/profile": {
+            "get": {
+                "description": "Retrieve a seller profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Seller"
+                ],
+                "summary": "Get seller profile",
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched seller profile",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.CommonRes"
+                        }
+                    }
+                }
+            }
+        },
         "/seller/register": {
             "post": {
                 "description": "Register a new seller",

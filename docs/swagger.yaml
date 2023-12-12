@@ -2617,6 +2617,29 @@ paths:
       summary: Update order status
       tags:
       - Seller Order
+  /seller/profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a seller profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fetched seller profile
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.CommonRes'
+      summary: Get seller profile
+      tags:
+      - Seller
   /seller/register:
     post:
       consumes:

@@ -11,7 +11,7 @@ import (
 )
 
 type SellerHandler struct {
-	usecase   interfaces.ISellerUseCase
+	usecase interfaces.ISellerUseCase
 }
 
 func NewSellerHandler(uCase interfaces.ISellerUseCase) *SellerHandler {
@@ -114,7 +114,6 @@ func (h *SellerHandler) Login(c *fiber.Ctx) error {
 		})
 }
 
-
 // @Summary		Get paginated list of sellers
 // @Description	Retrieve a paginated list of sellers for the user
 // @Tags			Common
@@ -176,6 +175,26 @@ func (h *SellerHandler) GetSeller(c *fiber.Ctx) error {
 			Status:  "success",
 			Message: "successfully fetched seller",
 			Seller:  *seller,
+		})
+}
+
+// @Summary		Get seller profile
+// @Description	Retrieve a seller profile 
+// @Tags			Seller
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	res.CommonRes	"Successfully fetched seller profile"
+// @Failure		400	{object}	res.CommonRes		"Bad Request"
+// @Failure		500	{object}	res.CommonRes		"Internal Server Error"
+// @Router			/seller/profile [get]
+func (h *SellerHandler) GetSellerProfile(c *fiber.Ctx) error {
+	seller := c.Locals("SellerModel").(map[string]any)
+
+	return c.Status(fiber.StatusOK).
+		JSON(res.CommonRes{
+			Status:  "success",
+			Message: "successfully fetched seller profile",
+			Result:  seller,
 		})
 }
 
