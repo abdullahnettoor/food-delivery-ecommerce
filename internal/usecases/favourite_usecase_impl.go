@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 )
@@ -47,10 +48,12 @@ func (uc *favUseCase) ViewFavourites(userId string) (*[]entities.Dish, error) {
 	var dishList []entities.Dish
 	for i := range list {
 		dish, err := uc.dishUcase.GetDish(fmt.Sprint(list[i].DishID))
-		if err != nil {
+		if err != nil && err != e.ErrNotFound{
 			return nil, err
 		}
-		dishList = append(dishList, *dish)
+		if err != e.ErrNotFound {
+			dishList = append(dishList, *dish)
+		}
 	}
 	return &dishList, nil
 }

@@ -137,7 +137,7 @@ func (h *FavHandler) ViewFavItems(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(res.CommonRes{
 				Status:  "failed",
-				Message: "failed to added fav",
+				Message: "failed to fetch fav",
 				Error:   err.Error(),
 			})
 	}
