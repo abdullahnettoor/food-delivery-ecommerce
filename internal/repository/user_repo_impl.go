@@ -20,9 +20,7 @@ func NewUserRepository(DB *gorm.DB) interfaces.IUserRepository {
 func (repo *UserRepository) FindAll() (*[]entities.User, error) {
 	var usersList []entities.User
 
-	if err := repo.DB.Raw(`
-	SELECT *
-	FROM users`).
+	if err := repo.DB.Raw(`SELECT * FROM users`).
 		Scan(&usersList).Error; err != nil {
 		return nil, err
 	}
