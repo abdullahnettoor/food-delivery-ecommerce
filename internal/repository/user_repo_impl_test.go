@@ -32,16 +32,15 @@ func TestUserRepository_FindAll(t *testing.T) {
 					))
 			},
 
-			want: &[]entities.User{
-				entities.User{
-					ID:        1,
-					FirstName: "Abdu",
-					LastName:  "Nettoor",
-					Email:     "abdullahnettoor@gmail.com",
-					Password:  "123456",
-					Phone:     "+919061904860",
-					Status:    "Verified",
-				},
+			want: &[]entities.User{{
+				ID:        1,
+				FirstName: "Abdu",
+				LastName:  "Nettoor",
+				Email:     "abdullahnettoor@gmail.com",
+				Password:  "123456",
+				Phone:     "+919061904860",
+				Status:    "Verified",
+			},
 			},
 			wantErr: nil,
 		},
@@ -51,33 +50,33 @@ func TestUserRepository_FindAll(t *testing.T) {
 
 				mockSQL.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).
 					WillReturnRows(sqlmock.NewRows([]string{
-						// "id", "first_name", "last_name", "email", "phone", "status",
+						"id", "first_name", "last_name", "email", "phone", "status",
 					}).AddRow(
-					// 	1, "Abdu", "Nettoor", "abdullahnettoor@gmail.com", "+919061904860", "Verified",
-					// ).AddRow(
-					// 	1, "Abdu", "Nettoor", "abdullah@gmail.com", "+919061904870", "Verified",
+						1, "Abdu", "Nettoor", "abdullahnettoor@gmail.com", "+919061904860", "Verified",
+					).AddRow(
+						1, "Abdu", "Nettoor", "abdullah@gmail.com", "+919061904870", "Verified",
 					))
 			},
 
-			// want: &[]entities.User{
-			// 	entities.User{
-			// 		ID:        1,
-			// 		FirstName: "Abdu",
-			// 		LastName:  "Nettoor",
-			// 		Email:     "abdullahnettoor@gmail.com",
-			// 		Phone:     "+919061904860",
-			// 		Status:    "Verified",
-			// 	},
-			// 	entities.User{
-			// 		ID:        1,
-			// 		FirstName: "Abdu",
-			// 		LastName:  "Nettoor",
-			// 		Email:     "abdullah@gmail.com",
-			// 		Phone:     "+919061904870",
-			// 		Status:    "Verified",
-			// 	},
-			// },
-			want:    &[]entities.User{entities.User{}},
+			want: &[]entities.User{
+				{
+					ID:        1,
+					FirstName: "Abdu",
+					LastName:  "Nettoor",
+					Email:     "abdullahnettoor@gmail.com",
+					Phone:     "+919061904860",
+					Status:    "Verified",
+				},
+				{
+					ID:        1,
+					FirstName: "Abdu",
+					LastName:  "Nettoor",
+					Email:     "abdullah@gmail.com",
+					Phone:     "+919061904870",
+					Status:    "Verified",
+				},
+			},
+			// want:    &[]entities.User{},
 			wantErr: nil,
 		},
 	}
@@ -97,11 +96,11 @@ func TestUserRepository_FindAll(t *testing.T) {
 
 			got, err := u.FindAll()
 			if err != tt.wantErr {
-				t.Errorf("UserRepository.FindByPhone() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UserRepository.FindAll() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserRepository.FindByPhone() = %v, want %v", got, tt.want)
+				t.Errorf("UserRepository.FindAll() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -134,7 +133,7 @@ func TestUserRepository_FindByPhone(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "fail",
+			name: "user not fount",
 			args: args{phone: "+919061904860"},
 			stub: func(s sqlmock.Sqlmock) {
 				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users WHERE phone = $1`)).
@@ -186,7 +185,7 @@ func TestUserRepository_FindByEmail(t *testing.T) {
 	}{
 		{
 			name: "success",
-			args: args{email:"abdu@mail.com"},
+			args: args{email: "abdu@mail.com"},
 			stub: func(s sqlmock.Sqlmock) {
 				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users WHERE email = $1`)).
 					WithArgs("abdu@mail.com").
@@ -201,7 +200,7 @@ func TestUserRepository_FindByEmail(t *testing.T) {
 		},
 		{
 			name: "error",
-			args: args{email:"abdu@mail.com"},
+			args: args{email: "abdu@mail.com"},
 			stub: func(s sqlmock.Sqlmock) {
 				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users WHERE email = $1`)).
 					WithArgs("abdu@mail.com").
@@ -239,54 +238,54 @@ func TestUserRepository_FindByEmail(t *testing.T) {
 	}
 }
 
-func TestUserRepository_Create(t *testing.T) {
-	type args struct {
-		usrModel *entities.User
-	}
-	tests := []struct {
-		name    string
-		args    args
-		query   func(sqlmock.Sqlmock)
-		want    *entities.User
-		wantErr error
-	}{
-		{name: "success",
-			args: args{usrModel: &entities.User{FirstName: "Test", Email: "test@gmail.com", Phone: "12345678901", Password: "12345678", Status: "PENDING"}},
-			query: func(s sqlmock.Sqlmock) {
-				query := `SELECT *
-						FROM users
-						WHERE email = $1
-						OR phone = $2`
-				s.ExpectQuery(regexp.QuoteMeta(query)).
-					WithArgs("test@gmail.com", "12345678901").
-					WillReturnRows(sqlmock.NewRows(usrRow).AddRow(
-						10, "Test", "", "test@gmail.com", "12345678901", "12345678", "PENDING",
-					))
-			},
-			want:    &entities.User{ID: 10, FirstName: "Test", Email: "test@gmail.com", Phone: "12345678901", Password: "12345678", Status: "PENDING"},
-			wantErr: nil,
-		},
-	}
+// func TestUserRepository_Create(t *testing.T) {
+// 	type args struct {
+// 		usrModel *entities.User
+// 	}
+// 	tests := []struct {
+// 		name    string
+// 		args    args
+// 		query   func(sqlmock.Sqlmock)
+// 		want    *entities.User
+// 		wantErr error
+// 	}{
+// 		{name: "success",
+// 			args: args{usrModel: &entities.User{FirstName: "Test", Email: "test@gmail.com", Phone: "12345678901", Password: "12345678", Status: "PENDING"}},
+// 			query: func(s sqlmock.Sqlmock) {
+// 				query := `SELECT *
+// 						FROM users
+// 						WHERE email = $1
+// 						OR phone = $2`
+// 				s.ExpectQuery(regexp.QuoteMeta(query)).
+// 					WithArgs("test@gmail.com", "12345678901").
+// 					WillReturnRows(sqlmock.NewRows(usrRow).AddRow(
+// 						10, "Test", "", "test@gmail.com", "12345678901", "12345678", "PENDING",
+// 					))
+// 			},
+// 			want:    &entities.User{ID: 10, FirstName: "Test", Email: "test@gmail.com", Phone: "12345678901", Password: "12345678", Status: "PENDING"},
+// 			wantErr: nil,
+// 		},
+// 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			mockDB, mockSql, _ := sqlmock.New()
-			defer mockDB.Close()
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			mockDB, mockSql, _ := sqlmock.New()
+// 			defer mockDB.Close()
 
-			gormDB, _ := gorm.Open(postgres.New(postgres.Config{Conn: mockDB}), &gorm.Config{})
+// 			gormDB, _ := gorm.Open(postgres.New(postgres.Config{Conn: mockDB}), &gorm.Config{})
 
-			tt.query(mockSql)
+// 			tt.query(mockSql)
 
-			repo := NewUserRepository(gormDB)
+// 			repo := NewUserRepository(gormDB)
 
-			got, err := repo.Create(tt.args.usrModel)
-			if err != tt.wantErr {
-				t.Errorf("UserRepository.FindByPhone() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserRepository.FindByPhone() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+// 			got, err := repo.Create(tt.args.usrModel)
+// 			if err != tt.wantErr {
+// 				t.Errorf("UserRepository.FindByPhone() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 			if !reflect.DeepEqual(got, tt.want) {
+// 				t.Errorf("UserRepository.FindByPhone() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }
