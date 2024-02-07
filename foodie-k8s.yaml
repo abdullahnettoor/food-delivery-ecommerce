@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foodie-api
+  labels:
+    app: foodie-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foodie-api
+  template:
+    metadata:
+      labels:
+        app: foodie-api
+    spec:
+      containers:
+      - name: foodie-api
+        image: abdullahnettoor/foodie:latest
+        ports:
+        - containerPort: 8989
+        # resources:
+        #   limits:
+        #     memory: 512Mi
+        #     cpu: "1"
+        #   requests:
+        #     memory: 256Mi
+        #     cpu: "0.2"
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: foodie-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: foodie-api
+  ports:
+    - protocol: TCP
+      port: 8989
+      targetPort: 8989 
+      nodePort: 30100    

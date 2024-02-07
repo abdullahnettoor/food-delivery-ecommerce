@@ -67,5 +67,5 @@ func NewServerHttp(
 }
 
 func (sh *ServerHttp) Start() {
-	sh.app.Listen("localhost:8080")
+	sh.app.Listen(":8989")
 }
