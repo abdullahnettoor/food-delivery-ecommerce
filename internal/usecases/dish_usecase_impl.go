@@ -5,13 +5,14 @@ import (
 	"strconv"
 
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/entities"
+	e "github.com/abdullahnettoor/food-delivery-eCommerce/internal/domain/errors"
 	req "github.com/abdullahnettoor/food-delivery-eCommerce/internal/models/request_models"
 	"github.com/abdullahnettoor/food-delivery-eCommerce/internal/repository/interfaces"
 	i "github.com/abdullahnettoor/food-delivery-eCommerce/internal/usecases/interfaces"
 )
 
 type dishUsecase struct {
-	dishRepo   interfaces.IDishRepository
+	dishRepo  interfaces.IDishRepository
 	offerRepo interfaces.IOfferRepository
 }
 
@@ -27,7 +28,8 @@ func (uc *dishUsecase) ApplyOfferToDishList(dishList *[]entities.Dish) (*[]entit
 		sId := fmt.Sprint(list[i].SellerID)
 
 		offer, err := uc.offerRepo.FindBySellerAndCategory(sId, cId)
-		if err != nil {
+		if err != nil && err != e.ErrNotFound {
+			fmt.Println("Error is", err)
 			return nil, err
 		}
 		list[i].SalePrice = list[i].Price - (list[i].Price * float64(offer.Percentage) / 100)
@@ -41,7 +43,8 @@ func (uc *dishUsecase) ApplyOfferToDish(dish *entities.Dish) (*entities.Dish, er
 	sId := fmt.Sprint(dish.SellerID)
 	cId := fmt.Sprint(dish.CategoryID)
 	offer, err := uc.offerRepo.FindBySellerAndCategory(sId, cId)
-	if err != nil {
+	if err != nil && err != e.ErrNotFound {
+		fmt.Println("Error is", err)
 		return nil, err
 	}
 
@@ -131,18 +134,20 @@ func (uc *dishUsecase) SearchDish(search, sellerId string) (*[]entities.Dish, er
 func (uc *dishUsecase) GetDishesPage(sellerId, categoryId string, page, limit string) (*[]entities.Dish, error) {
 	p, err := strconv.ParseUint(page, 10, 0)
 	if err != nil {
+		fmt.Println("Parsing Error 1", err)
 		return nil, err
 	}
 	l, err := strconv.ParseUint(limit, 10, 0)
 	if err != nil {
+		fmt.Println("Parsing Error 2", err)
 		return nil, err
 	}
 
 	dishList, err := uc.dishRepo.FindPageWise(sellerId, categoryId, uint(p), uint(l))
 	if err != nil {
+		fmt.Println("Error Finding Page wise", err)
 		return nil, err
 	}
-
 	return uc.ApplyOfferToDishList(dishList)
 }
 

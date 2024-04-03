@@ -37,6 +37,7 @@ func (repo *DishRepository) FindPageWise(sellerId, categoryId string, page, limi
 	}
 
 	res := repo.DB.Raw(query).Scan(&dishList)
+	fmt.Println("Query is", query)
 	if res.Error != nil {
 		return nil, res.Error
 	}

@@ -21,13 +21,13 @@
 
 # # Command to run the application
 # CMD ["./main"]
+# RUN CGO_ENABLED=0 GOOS=linux
 
 FROM golang:1.21.6-alpine3.18 AS build
 WORKDIR /app
 COPY ./ /app
 RUN mkdir -p /app/build
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux
 RUN go build -v -o /app/build/api ./cmd/main.go
 
 FROM gcr.io/distroless/static-debian11
