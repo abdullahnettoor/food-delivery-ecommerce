@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/redirect"
 	"github.com/gofiber/swagger"
 	"github.com/gofiber/template/html/v2"
 )
@@ -35,7 +36,12 @@ func NewServerHttp(
 	views := html.New("internal/view", ".html")
 	app := fiber.New(fiber.Config{Views: views})
 
-	
+	app.Use(redirect.New(redirect.Config{
+		Rules: map[string]string{
+			"/":   "/swagger",
+		},
+		StatusCode: 301,
+	}))
 
 	app.Use(logger.New(logger.Config{TimeFormat: "2006/01/02 15:04:05"}))
 
@@ -48,7 +54,7 @@ func NewServerHttp(
 	//	@description				Authentication using a JSON Web Token (JWT). The token should be included in the request header named "Authorization". The format of the header is: Authorization: Bearer <token>. Replace `<token>` with the actual JWT token.
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	app.Use("/internal/view", filesystem.New(filesystem.Config{Root: http.FS(f),PathPrefix: "/internal/view"}))
+	app.Use("/internal/view", filesystem.New(filesystem.Config{Root: http.FS(f), PathPrefix: "/internal/view"}))
 	// app.Use("", filesystem.New(filesystem.Config{
 	// 	Root:       http.FS(env),
 	// 	PathPrefix: ".",
