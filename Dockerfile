@@ -33,6 +33,5 @@ RUN go build -v -o /app/build/api ./cmd/main.go
 FROM gcr.io/distroless/static-debian11
 COPY --from=build /app/build/api /
 COPY --from=build /app/internal/view /internal/view
-COPY --from=build /app/.env /
 EXPOSE 8989
 ENTRYPOINT ["/api"]
